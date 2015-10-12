@@ -1,0 +1,1 @@
+These forms from vlcj-adpater needs to be available when compiling the player-ui project.

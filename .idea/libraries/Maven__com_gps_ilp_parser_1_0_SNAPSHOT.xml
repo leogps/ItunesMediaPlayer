@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Maven: com.gps.ilp:parser:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/gps/ilp/parser/1.0-SNAPSHOT/parser-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/gps/ilp/parser/1.0-SNAPSHOT/parser-1.0-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/gps/ilp/parser/1.0-SNAPSHOT/parser-1.0-SNAPSHOT-sources.jar!/" />
+      <root url="file://$PROJECT_DIR$/../ItunesLibraryParser/utils/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../ItunesLibraryParser/parser/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../ItunesLibraryParser/parser/src/main/test/java" />
+    </SOURCES>
+  </library>
+</component>

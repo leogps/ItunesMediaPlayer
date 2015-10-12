@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>ItunesMediaPlayer_Jdk_1.6.sh</string>
+	<key>CFBundleGetInfoString</key>
+	<string>IMP application</string>
+	<key>CFBundleIconFile</key>
+	<string>imp.icns</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>8.0</string>
+	<key>CFBundleName</key>
+	<string>Itunes Media Player</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>8.0</string>
+</dict>
+</plist>

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="dist">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/log4j-1.2.17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/commons-io-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/ItunesLibraryParser.jar!/" />
+      <root url="jar://$PROJECT_DIR$/dist/ItunesLibraryParserUtils.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

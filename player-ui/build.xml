@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ItunesMediaPlayer" default="default" basedir=".">
+    <!--<import file="nbproject/build-impl.xml"/>-->
+    <!-- This does not seem to work with JDK 1.6 -->
+    <taskdef name="bundleapp"
+             classname="com.oracle.appbundler.AppBundlerTask"
+             classpath="lib/appbundler-1.0.jar" />
+
+    <target name="bundle-itunesMediaPlayer">
+        <bundleapp outputdirectory="target"
+                   name="ItunesMediaPlayer"
+                   displayname="Itunes Media Player"
+                   identifier="components.ItunesMediaPlayer"
+                   icon="../executable-dependencies/resources/imp.icns"
+                   mainclassname="com.gps.itunes.media.player.ui.Main">
+            <classpath file="target/ItunesMediaPlayer-jar-with-dependencies.jar" />
+            <runtime dir="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home" />
+        </bundleapp>
+    </target>
+
+</project>
