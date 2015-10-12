@@ -1,7 +1,324 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bd811274-d813-41f1-9985-f27fe31240d3" name="Default" comment="" />
+    <list default="true" id="bd811274-d813-41f1-9985-f27fe31240d3" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/ant.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__asm_asm_3_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__asm_asm_commons_3_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__asm_asm_tree_3_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_beust_jcommander_1_12.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_gps_ilp_parser_1_0_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_gps_ilp_parser_1_0_SNAPSHOT.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_gps_ilp_utils_1_0_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_intellij_forms_rt_7_0_3.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_jgoodies_forms_1_1_preview.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_oracle_javafx_2_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_4.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__jdom_jdom_1_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_3_8_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__log4j_log4j_1_2_17.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_jna_3_5_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_java_dev_jna_platform_3_5_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_beanshell_bsh_2_0b4.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jdesktop_beansbinding_1_2_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_10.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_swinglabs_swing_layout_1_0_3.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_testng_testng_6_1_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_6.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Maven__uk_co_caprica_vlcj_3_9_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/dist.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/log/iTunesMediaPlayer/imp.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/log/iTunesMediaPlayer/imp.log.1" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/log/iTunesMediaPlayer/imp.log.2" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/log/iTunesMediaPlayer/imp.log.3" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/log/iTunesMediaPlayer/imp.log.4" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/log/iTunesMediaPlayer/imp.log.5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/swing-ui.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/ItunesMediaPlayer-jar-with-dependencies.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/ItunesMediaPlayer.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/LibraryFileBrowser.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/Main$1$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/Main$1$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/Main$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/Main.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/NowPlayingPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$10.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$11.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$12.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$13.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$14.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$15.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$16.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$17.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$18.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$8.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame$9.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UIMenuBar.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/UserInformer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyInformationTrackerFrame$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyInformationTrackerFrame$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyInformationTrackerFrame$CopyInformationTableModel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyInformationTrackerFrame$CopyProgressInformation.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyInformationTrackerFrame$CopyProgressInformer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyInformationTrackerFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog$ResponseHanlder.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/CopyPlaylistConfirmDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/components/TracksContextMenu.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/Controller$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/Controller$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/Controller$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/Controller$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/Controller$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/Controller.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/controller/MajorTaskInfo.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/events/UIFrameEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/exceptions/TaskExecutionException.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialog$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialog$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialog$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialog$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialog$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserDialogListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTree$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTree$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTree$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTree$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTree$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTree.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileBrowserTreeEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/fileutils/FileNode.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/handlers/ProgressHandler$TaskRunner.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/handlers/ProgressHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/handlers/StatusMessageWriter$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/handlers/StatusMessageWriter.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/holders/PlaylistHolder.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/holders/TrackHolder.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/splash/SplashAnimator.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/columns/TrackTableColumns.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/comparators/RowComparators$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/comparators/RowComparators$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/comparators/RowComparators$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/comparators/RowComparators.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/comparators/TrackTime.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/models/PlaylistTableModel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tablehelpers/models/TracksTableModel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/CopyTaskParams.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/PlaylistCopier$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/PlaylistCopier$CopyProgressInformation.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/PlaylistCopier$CopyProgressInformer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/PlaylistCopier.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/PlaylistLoader.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/ProgressingTask.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/TaskParams.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/TaskType.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/TrackDataParser.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/com/gps/itunes/media/player/ui/tasks/TracksLoader.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/ui.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/classes/ui_en_US.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/asm-3.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/asm-commons-3.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/asm-tree-3.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/beansbinding-1.2.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/bsh-2.0b4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/commons-io-2.4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/forms-1.1-preview.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/forms_rt-7.0.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/javafx-2.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/jcommander-1.12.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/jdom-1.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/jna-3.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/junit-3.8.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/log4j-1.2.17.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/parser-1.0.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/platform-3.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/slf4j-api-1.7.10.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/snakeyaml-1.6.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/swing-layout-1.0.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/testng-6.1.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/utils-1.0-SNAPSHOT.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/utils-1.0.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/vlcj-3.9.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/lib/vlcj-adapter-1.0-SNAPSHOT.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/player-ui/target/maven-archiver/pom.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/Constants.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/JavaVersionUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/URLFetchException.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/YoutubeLink$Extension.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/YoutubeLink$Quality.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/YoutubeLink.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/classes/com/gps/ilp/utils/YoutubeUrlFetcher.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/com.gps.imp-utils-1.0-SNAPSHOT.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/maven-archiver/pom.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/utils/utils.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/VLCJUtils.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/FXPlayerFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/ItunesMediaPlayer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/SeekInfo.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/VLCJAudioPlayer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/VLCJPlayer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/VLCJVideoPlayer.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/events/MediaPlayerEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/DummyFXPlayerFrame$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/DummyFXPlayerFrame$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/DummyFXPlayerFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$CanvasBufferFormatCallback$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$CanvasBufferFormatCallback.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$CanvasPlayerComponent$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl$CanvasPlayerComponent.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/FXPlayerFrameImpl.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$7.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$ItunesMediaPlayerEventAdapter.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$PlayProgressHandler$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl$PlayProgressHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/ItunesMediaPlayerImpl.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/NowPlayingList$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/player/impl/NowPlayingList.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel$4.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel$5.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel$6.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/BasicPlayerControlPanel.form" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/FullscreenVideoPlayerFrame$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/FullscreenVideoPlayerFrame$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/FullscreenVideoPlayerFrame$3.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/FullscreenVideoPlayerFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/NowPlayingListData.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/NowPlayingListFrame$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/NowPlayingListFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/NowPlayingListTableModel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/PlayerControlPanel$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/PlayerControlPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/PlayerControlPanel.form" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/StatusPanel.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/VideoPlayerFrame$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/VideoPlayerFrame$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/VideoPlayerFrame.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/VideoPlayerFrame.form" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/PlayerControlEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/PlayerEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/PlayerKeyEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/SeekChangeListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/SeekEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/UserCommandEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/VideoPlayerKeyListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/VideoPlayerMouseAdapter.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/VideoPlayerMouseWheelListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/handler/FileOpenEventHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/events/handler/NetworkFileOpenEventHandler.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/utils/GoToSpinnerDialog$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/utils/GoToSpinnerDialog$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/utils/GoToSpinnerDialog.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/utils/GotoValueSubmissionEventListener.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/com/gps/itunes/media/player/vlcj/ui/player/utils/TrackTime.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/forward-pressed.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/forward.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/pause-pressed.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/pause.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/play-pressed.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/play.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/previous-pressed.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/icons/previous.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/vlcjAdapterUi.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/classes/vlcjAdapterUi_en_US.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/com.gps.imp-vlcj-adapter-1.0-SNAPSHOT.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/asm-3.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/asm-commons-3.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/asm-tree-3.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/beansbinding-1.2.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/bsh-2.0b4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/commons-io-2.4.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/forms-1.1-preview.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/forms_rt-7.0.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/javafx-2.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/jcommander-1.12.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/jdom-1.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/jna-3.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/junit-3.8.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/log4j-1.2.17.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/platform-3.5.2.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/slf4j-api-1.7.10.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/snakeyaml-1.6.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/swing-layout-1.0.3.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/testng-6.1.1.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/utils-1.0-SNAPSHOT.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/utils-1.0.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/lib/vlcj-3.9.0.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/maven-archiver/pom.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/Command line test.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/Command line test.properties" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/Command line test.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/classes.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/groups.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/main.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/methods-alphabetical.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/methods-not-run.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/methods.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/reporter-output.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/testng.xml.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/Command line suite/toc.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/TEST-TestSuite.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/TestSuite.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/emailable-report.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/junitreports/TEST-AudioPlayerTest.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/junitreports/TEST-PlayerControlPanelTest.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/junitreports/TEST-VideoPlayerTest.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/testng-results.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/surefire-reports/testng.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/test-classes/AudioPlayerTest.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/test-classes/PlayerControlPanelTest.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/target/test-classes/VideoPlayerTest.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vlcj-adapter/vlcj-adapter.iml" afterPath="" />
+    </list>
     <ignored path="ItunesMediaPlayer.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -50,6 +367,9 @@
     <FindUsagesManager>
       <setting name="OPEN_NEW_TAB" value="true" />
     </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
@@ -206,7 +526,7 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
     <OptionsSetting value="true" id="Checkout" />
@@ -274,6 +594,16 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="splash" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ItunesMediaPlayer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -353,16 +683,6 @@
             <PATH_ELEMENT USER_OBJECT="src/test/java">
               <option name="myItemId" value="" />
               <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ItunesMediaPlayer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -1112,12 +1432,12 @@
       <workItem from="1444283082432" duration="5098000" />
       <workItem from="1444527200267" duration="17054000" />
       <workItem from="1444564374123" duration="6740000" />
-      <workItem from="1444611957191" duration="11582000" />
+      <workItem from="1444611957191" duration="11913000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="264478000" />
+    <option name="totallyTimeSpent" value="264809000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1139,12 +1459,12 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.58096594" sideWeight="0.46203554" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38933763" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.64204544" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.58096594" sideWeight="0.53796446" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3181818" sideWeight="0.5145396" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3181818" sideWeight="0.5145396" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36591277" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36591277" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1769,9 +2089,9 @@
         <state vertical-scroll-proportion="0.37387386">
           <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1944#1945#0" expanded="true" />
-            <element signature="e#2025#2026#0" expanded="true" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#1944#1945#0" expanded="false" />
+            <element signature="e#2025#2026#0" expanded="false" />
           </folding>
         </state>
       </provider>

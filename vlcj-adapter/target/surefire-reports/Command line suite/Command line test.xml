@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite hostname="Pauls-MacBook-Pro.local" tests="3" failures="0" timestamp="12 Oct 2015 04:49:47 GMT" time="0.452" errors="0">
-  <testcase name="test" time="0.007" classname="AudioPlayerTest"/>
-  <testcase name="test" time="0.436" classname="PlayerControlPanelTest"/>
-  <testcase name="test" time="0.001" classname="VideoPlayerTest"/>
-</testsuite>
