@@ -12,7 +12,7 @@ import com.gps.itunes.lib.tasks.progressinfo.ProgressTracker;
 import com.gps.itunes.media.player.ui.controller.MajorTaskInfo;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
 import com.gps.itunes.media.player.ui.handlers.ProgressHandler;
-import com.gps.itunes.media.player.ui.holders.PlaylistHolder;
+import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.lib.tasks.LibraryParser;
 import com.gps.itunes.lib.tasks.ProgressInformer;
 import com.gps.itunes.lib.tasks.progressinfo.CopyTrackInformation;

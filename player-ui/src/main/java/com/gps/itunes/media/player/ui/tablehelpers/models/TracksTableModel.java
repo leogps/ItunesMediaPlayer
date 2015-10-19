@@ -20,7 +20,7 @@ import java.util.EnumSet;
  */
 public class TracksTableModel extends DefaultTableModel {
     
-    private static final int HOLDER_INDEX = 1;
+    private static final int HOLDER_INDEX = 2;
 
     public TracksTableModel() {
         this.setRowCount(0);
@@ -33,7 +33,7 @@ public class TracksTableModel extends DefaultTableModel {
         return false;
     }
 
-    public static int getHOLDER_INDEX() {
+    public static int getHolderIndex() {
         return HOLDER_INDEX;
     }
 

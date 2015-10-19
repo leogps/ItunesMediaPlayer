@@ -7,7 +7,7 @@ package com.gps.itunes.media.player.ui.tasks;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
 import com.gps.itunes.media.player.ui.handlers.ProgressHandler;
-import com.gps.itunes.media.player.ui.holders.PlaylistHolder;
+import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.lib.tasks.LibraryParser;
 import javax.swing.JProgressBar;

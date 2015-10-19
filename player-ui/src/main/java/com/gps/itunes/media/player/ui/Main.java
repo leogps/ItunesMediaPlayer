@@ -1,6 +1,8 @@
 package com.gps.itunes.media.player.ui;
 
 import com.gps.itunes.lib.exceptions.NoChildrenException;
+import com.gps.itunes.lib.items.tracks.Track;
+import com.gps.itunes.lib.parser.utils.LogInitializer;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.ui.controller.Controller;
@@ -19,6 +21,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  * Created by leogps on 10/4/14.
@@ -26,6 +29,8 @@ import java.util.Properties;
 public class Main {
 
     private static Logger LOG = Logger.getLogger(Main.class);
+    private static final java.util.logging.Logger BASIC_LOGGER
+            = java.util.logging.Logger.getLogger(Main.class.getName());
 
     private static boolean vlcjInitSucceeded = false;
 
@@ -35,7 +40,19 @@ public class Main {
 
     private static ItunesMediaPlayer itunesMediaPlayer;
 
+    static {
+        LogInitializer.getInstance();
+    }
+
     public static void main(String[] args) throws IOException {
+
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BASIC_LOGGER.log(Level.ALL, "Shutting down the application...");
+
+            }
+        }));
 
         final SplashAnimator splashAnimator = new SplashAnimator();
 
@@ -89,44 +106,53 @@ public class Main {
                     if(isVlcjInitSucceeded()) {
 
                         splashAnimator.renderSplashFrame(35, "Initializing Media Player...");
-                        itunesMediaPlayer = new ItunesMediaPlayerImpl(uiFrame.getPlayerControlPanel());
+                        try {
+                            itunesMediaPlayer = new ItunesMediaPlayerImpl(uiFrame.getPlayerControlPanel());
 
-                        splashAnimator.renderSplashFrame(40, "Registering Media Player Event Listeners...");
-                        controller.registerPlayerEventListener();
+                            splashAnimator.renderSplashFrame(40, "Registering Media Player Event Listeners...");
+                            controller.registerPlayerEventListener();
 
-                        itunesMediaPlayer.addMediaPlayerListener(new MediaPlayerEventListener() {
-                            @Override
-                            public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
-                                uiFrame.getNowPlayingPanel().getTrackNameLabel().setText(currentTrack.getName());
-                                uiFrame.getNowPlayingPanel().getTrackNameLabel().setToolTipText(currentTrack.getName());
+                            itunesMediaPlayer.addMediaPlayerListener(new MediaPlayerEventListener() {
+                                @Override
+                                public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
+                                    uiFrame.getNowPlayingPanel().getTrackNameLabel().setText(currentTrack.getName());
+                                    uiFrame.getNowPlayingPanel().getTrackNameLabel().setToolTipText(currentTrack.getName());
 
-                                uiFrame.getNowPlayingPanel().getTrackAlbumNameLabel().setText(currentTrack.getAlbum());
-                                uiFrame.getNowPlayingPanel().getTrackAlbumNameLabel().setToolTipText(currentTrack.getAlbum());
+                                    uiFrame.getNowPlayingPanel().getTrackAlbumNameLabel().setText(currentTrack.getAlbum());
+                                    uiFrame.getNowPlayingPanel().getTrackAlbumNameLabel().setToolTipText(currentTrack.getAlbum());
 
-                                uiFrame.getNowPlayingPanel().getTrackArtistNameLabel().setText(currentTrack.getArtist());
-                                uiFrame.getNowPlayingPanel().getTrackArtistNameLabel().setToolTipText(currentTrack.getArtist());
-                            }
+                                    uiFrame.getNowPlayingPanel().getTrackArtistNameLabel().setText(currentTrack.getArtist());
+                                    uiFrame.getNowPlayingPanel().getTrackArtistNameLabel().setToolTipText(currentTrack.getArtist());
+                                }
 
-                            @Override
-                            public void paused(ItunesMediaPlayer player, String location) {
+                                @Override
+                                public void paused(ItunesMediaPlayer player, String location) {
 
-                            }
+                                }
 
-                            @Override
-                            public void stopped(ItunesMediaPlayer player, String location) {
+                                @Override
+                                public void stopped(ItunesMediaPlayer player, String location) {
 
-                            }
+                                }
 
-                            @Override
-                            public void finished(ItunesMediaPlayer player, String location) {
+                                @Override
+                                public void finished(ItunesMediaPlayer player, String location) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onPlayProgressed() {
+                                @Override
+                                public void onPlayProgressed() {
 
-                            }
-                        });
+                                }
+                            });
+
+                        } catch(Exception ex) {
+                            vlcjInitSucceeded = false;
+                            LOG.error("MediaPlayer Initialization failed.", ex);
+                        } catch(Error ex) {
+                            vlcjInitSucceeded = false;
+                            LOG.error("MediaPlayer Initialization failed.", ex);
+                        }
 
                     }
 
@@ -144,9 +170,9 @@ public class Main {
                         }
 
                         @Override
-                        public void onTracksPlayRequested(List<NowPlayingListData> trackLocations) {
+                        public void onTracksPlayRequested(List<Track> trackList) {
                             if (isVlcjInitSucceeded()) {
-                                controller.playTracks(trackLocations);
+                                controller.playTracks(trackList);
                             } else {
                                 new UserInformer(uiFrame.getMainUIPanel())
                                         .informUser("VLCJ Audio libraries instantiation failed. Content cannot be played!!");

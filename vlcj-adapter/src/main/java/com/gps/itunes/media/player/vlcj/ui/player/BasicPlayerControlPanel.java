@@ -1,15 +1,14 @@
 package com.gps.itunes.media.player.vlcj.ui.player;
 
+import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ResourceBundle;
 
 /**
  * Created by leogps on 10/6/14.
@@ -176,7 +175,18 @@ public class BasicPlayerControlPanel extends JPanel {
 
     private void createUIComponents() {
         volumeSlider = new JSlider(JSlider.HORIZONTAL, VOL_MIN, VOL_MAX, VOL_INIT);
+
+        boolean showVolumeLabel = false;
+        String property = "show.volume.label";
+        try {
+
+            showVolumeLabel = PropertyManager.getProperties().containsKey(property) &&
+                    Boolean.valueOf(PropertyManager.getProperties().getProperty(property));
+        } catch (Exception ex) {
+            log.debug("Failed to read property: " + property);
+        }
         volumeValueLabel = new JLabel(String.valueOf(VOL_INIT));
+        volumeValueLabel.setVisible(showVolumeLabel);
         volumeValueLabel.setText(String.valueOf(VOL_INIT));
         volumeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent changeEvent) {

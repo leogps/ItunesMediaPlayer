@@ -4,9 +4,10 @@
  */
 package com.gps.itunes.media.player.ui.controller;
 
-import com.gps.ilp.utils.Constants;
+import com.gps.imp.utils.Constants;
 import com.gps.itunes.lib.exceptions.LibraryParseException;
 import com.gps.itunes.lib.exceptions.NoChildrenException;
+import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.tasks.LibraryParser;
 import com.gps.itunes.media.player.ui.LibraryFileBrowser;
 import com.gps.itunes.media.player.ui.Main;
@@ -18,7 +19,6 @@ import com.gps.itunes.media.player.ui.fileutils.FileBrowserDialogListener;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
 import com.gps.itunes.media.player.ui.tasks.*;
 import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
-import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
 
 import javax.swing.*;
@@ -110,7 +110,7 @@ public class Controller {
                 loadData();
                 log.info("Playlists loaded: " + parser.getAllPlaylists().length);
             } catch (LibraryParseException lpe) {
-                log.debug(lpe);
+                log.debug(lpe.getMessage(), lpe);
                 if (lpe.isLibraryFileNotFound()) {
                     letUserSpecifyLibrary();
                 }
@@ -262,10 +262,10 @@ public class Controller {
         }
     }
     
-    public void playTracks(final List<NowPlayingListData> trackLocations) {
+    public void playTracks(final List<Track> trackList) {
         synchronized(this){
             final ItunesMediaPlayer player = getPlayer();
-            player.play(trackLocations);
+            player.play(trackList);
         }
     }
     
@@ -280,8 +280,8 @@ public class Controller {
             @Override
             public void playClicked() {
                 if(!getPlayer().isPlaying()){
-                    final List<NowPlayingListData> trackLocations = uiFrame.getSelectedTracks();
-                    playTracks(trackLocations);
+                    final List<Track> trackList = uiFrame.getSelectedTracks();
+                    playTracks(trackList);
                 } else {
                     getPlayer().pause();
                 }

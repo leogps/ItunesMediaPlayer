@@ -52,6 +52,12 @@
             <artifactId>javafx</artifactId>
             <version>2.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.gps.ilp</groupId>
+            <artifactId>parser</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

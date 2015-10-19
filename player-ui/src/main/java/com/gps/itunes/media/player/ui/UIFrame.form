@@ -2,11 +2,11 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.gps.itunes.media.player.ui.UIFrame">
   <grid id="27dc6" binding="wrapperPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="1120" height="403"/>
+      <xy x="20" y="20" width="1200" height="403"/>
     </constraints>
     <properties>
-      <minimumSize width="1120" height="403"/>
-      <preferredSize width="1120" height="403"/>
+      <minimumSize width="1200" height="403"/>
+      <preferredSize width="1200" height="403"/>
     </properties>
     <border type="none"/>
     <children>
@@ -20,8 +20,8 @@
               <splitpane position="left"/>
             </constraints>
             <properties>
-              <minimumSize width="820" height="403"/>
-              <preferredSize width="820" height="403"/>
+              <minimumSize width="830" height="403"/>
+              <preferredSize width="830" height="403"/>
             </properties>
             <border type="none"/>
             <children>
@@ -107,7 +107,8 @@
                   <grid id="f2b6" binding="centerHeaderPanel" layout-manager="BorderLayout" hgap="5" vgap="5">
                     <constraints border-constraint="Center"/>
                     <properties>
-                      <preferredSize width="300" height="100"/>
+                      <minimumSize width="200" height="98"/>
+                      <preferredSize width="320" height="100"/>
                     </properties>
                     <border type="none"/>
                     <children>
@@ -282,8 +283,8 @@
               <splitpane position="right"/>
             </constraints>
             <properties>
-              <minimumSize width="300" height="80"/>
-              <preferredSize width="300" height="80"/>
+              <minimumSize width="330" height="80"/>
+              <preferredSize width="330" height="80"/>
             </properties>
             <border type="none"/>
             <children>

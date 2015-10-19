@@ -4,7 +4,9 @@
  */
 package com.gps.itunes.media.player.vlcj.ui.player;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -12,18 +14,24 @@ import javax.swing.table.DefaultTableModel;
  */
 public class NowPlayingListTableModel extends DefaultTableModel {
 
-    private static final String[] COLUMNS = {"Name", "Artist", "Album"};
-
     public NowPlayingListTableModel() {
         this.setRowCount(0);
-        this.setColumnIdentifiers(COLUMNS);
-        this.setColumnCount(COLUMNS.length);
+
+        NowPlayingListTableColumn[] columns = NowPlayingListTableColumn.asArray();
+        this.setColumnIdentifiers(columns);
+        this.setColumnCount(columns.length);
+    }
+
+    public void setWidthsForTable(JTable table) {
+        NowPlayingListTableColumn[] columns = NowPlayingListTableColumn.asArray();
+        for(NowPlayingListTableColumn column : columns) {
+            TableColumn tableColumn = table.getColumn(column.getName());
+            tableColumn.setPreferredWidth(column.getWidth());
+        }
     }
 
     @Override
     public boolean isCellEditable(int i, int i1) {
         return false;
     }
-    
-    
 }

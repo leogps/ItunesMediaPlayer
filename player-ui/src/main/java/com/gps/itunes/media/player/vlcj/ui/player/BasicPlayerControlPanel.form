@@ -43,13 +43,20 @@
               </component>
             </children>
           </grid>
-          <grid id="b816" binding="volumePanel" layout-manager="FlowLayout" hgap="0" vgap="5" flow-align="1">
+          <grid id="b816" binding="volumePanel" layout-manager="FormLayout">
+            <rowspec value="center:d:noGrow"/>
+            <colspec value="fill:d:grow"/>
+            <colspec value="left:4dlu:noGrow"/>
+            <colspec value="fill:d:grow"/>
             <constraints/>
             <properties/>
             <border type="none"/>
             <children>
               <component id="3017b" class="javax.swing.JSlider" binding="volumeSlider" custom-create="true">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
                 <properties>
                   <maximum value="200"/>
                   <paintLabels value="false"/>
@@ -60,9 +67,12 @@
                 </properties>
               </component>
               <component id="24e82" class="javax.swing.JLabel" binding="volumeValueLabel" custom-create="true">
-                <constraints/>
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
                 <properties>
-                  <horizontalAlignment value="0"/>
+                  <horizontalAlignment value="2"/>
                   <horizontalTextPosition value="0"/>
                   <text value=""/>
                   <toolTipText resource-bundle="vlcjAdapterUi" key="volume.label.tooltip"/>

@@ -1,6 +1,8 @@
 package com.gps.itunes.media.player.vlcj.player;
 
+import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
+import com.gps.itunes.media.player.vlcj.player.impl.TraversableLinkedList;
 import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
 
@@ -17,7 +19,7 @@ public interface ItunesMediaPlayer extends Runnable {
 
     void play(URL url);
 
-    void play(final List<NowPlayingListData> trackLocations);
+    void play(final List<Track> trackList);
 
     void pause();
 
@@ -41,7 +43,7 @@ public interface ItunesMediaPlayer extends Runnable {
 
     String getNowPlayingUrl();
 
-    List<NowPlayingListData> getNowPlaylingList();
+    TraversableLinkedList<NowPlayingListData> getNowPlaylingList();
 
     boolean isPlaying();
 
@@ -62,4 +64,6 @@ public interface ItunesMediaPlayer extends Runnable {
     void handleVolumeDecreasedEvent(int decreasedBy);
 
     void registerPlayerControlEventListener(PlayerControlEventListener playerControlEventListener);
+
+    boolean isCurrentTrack(long trackId);
 }

@@ -1,6 +1,7 @@
 package com.gps.itunes.media.player.vlcj.player;
 
-import com.gps.ilp.utils.JavaVersionUtils;
+import com.gps.imp.utils.Constants;
+import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.media.player.vlcj.player.impl.DummyFXPlayerFrame;
 import com.gps.itunes.media.player.vlcj.player.impl.FXPlayerFrameImpl;
@@ -48,7 +49,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 	}
 
     protected void init() {
-        mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : "";
+        mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : Constants.EMPTY;
         mediaPlayerFactory = new MediaPlayerFactory(mediaFactoryArgs);
 
         vFrame = new VideoPlayerFrame();

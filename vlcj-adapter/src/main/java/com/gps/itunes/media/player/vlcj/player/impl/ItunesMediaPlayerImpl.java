@@ -1,12 +1,16 @@
 package com.gps.itunes.media.player.vlcj.player.impl;
 
-import com.gps.ilp.utils.JavaVersionUtils;
-import com.gps.ilp.utils.YoutubeLink;
-import com.gps.ilp.utils.YoutubeUrlFetcher;
+import com.gps.imp.utils.Constants;
+import com.gps.imp.utils.JavaVersionUtils;
+import com.gps.imp.utils.YoutubeLink;
+import com.gps.imp.utils.YoutubeUrlFetcher;
+import com.gps.imp.utils.ui.LabelCell;
+import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.media.player.vlcj.player.*;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
+import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
 import com.gps.itunes.media.player.vlcj.ui.player.events.handler.FileOpenEventHandler;
@@ -21,11 +25,10 @@ import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -59,12 +62,45 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     /**
      * Now Playing list.
      */
-    private final List<NowPlayingListData> nowPlaylingList = new NowPlayingList();
+    private final TraversableLinkedList<NowPlayingListData> nowPlaylingList = new TraversableLinkedList<NowPlayingListData>() {
+        @Override
+        public boolean add(NowPlayingListData nowPlayingListData) {
+            boolean added = super.add(nowPlayingListData);
+            nowPlayingListFrame.add(nowPlayingListData);
+            return added;
+        }
+
+        @Override
+        public void clear() {
+            super.clear();
+            nowPlayingListFrame.clear();
+        }
+    };
+
+    /**
+     * Now Playing List frame.
+     */
+    private final NowPlayingListFrame nowPlayingListFrame = new NowPlayingListFrame();
+
+    private final ImageIcon currentlyPlayingIcon = new ImageIcon(ItunesMediaPlayerImpl.class.getClassLoader().getResource("images/play_20x20.png")) {
+        @Override
+        public String toString() {
+            return "Playing";
+        }
+    };
+
+    private final ImageIcon currentlyPausedIcon = new ImageIcon(ItunesMediaPlayerImpl.class.getClassLoader().getResource("images/pause_20x20.png")) {
+        @Override
+        public String toString() {
+            return "Paused";
+        }
+    };
 
     /**
      * List iterator to traverse left and right in the playlist.
      */
-    private ListIterator<NowPlayingListData> listIterator = nowPlaylingList.listIterator();
+    private final TraversableLinkedList<NowPlayingListData>.ListTraverser<NowPlayingListData> listTraverser
+            = nowPlaylingList.getListTraverser();
 
     /**
      * Audio Player that is closely bound to the VLCJ adapter.
@@ -230,6 +266,43 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         videoPlayerMouseWheelListener.addUserCommandEventListener(userCommandEventListener);
         VLCJ_VIDEO_PLAYER.attachCommandListener(videoPlayerMouseWheelListener);
 
+        /**
+         * NowPlayingList frame utils.
+         */
+        JTable nowPlayingListTable = nowPlayingListFrame.getNowPlayingList();
+        final DefaultTableModel model = (DefaultTableModel) nowPlayingListTable.getModel();
+        nowPlayingListTable.getColumnModel().getColumn(0).setCellEditor(new LabelCell());
+        nowPlayingListTable.getColumnModel().getColumn(0).setCellRenderer(new LabelCell());
+        addMediaPlayerListener(new MediaPlayerEventListener() {
+            public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
+                updateStatusCells(true);
+            }
+
+            private void updateStatusCells(final boolean isPlaying) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        for (int i = 0; i < model.getDataVector().size(); i++) {
+                            Vector objectVector = (Vector) model.getDataVector().get(i);
+                            NowPlayingListData nowPlayingListData = (NowPlayingListData) objectVector.get(1);
+                            if (isCurrentTrack(nowPlayingListData.getTrackId())) {
+                                objectVector.set(0, (isPlaying) ? currentlyPlayingIcon : currentlyPausedIcon);
+                            } else {
+                                objectVector.set(0, Constants.EMPTY);
+                            }
+                            model.fireTableCellUpdated(i, 0); // first column, every row
+                        }
+                    }
+                });
+            }
+
+            public void paused(ItunesMediaPlayer player, String location) {
+                updateStatusCells(false);
+            }
+
+            public void stopped(ItunesMediaPlayer player, String location) {}
+            public void finished(ItunesMediaPlayer player, String location) {}
+            public void onPlayProgressed() {}
+        });
     }
 
     public void handleVolumeIncreasedEvent(int increasedBy) {
@@ -435,9 +508,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             super.playing(mediaPlayer);
             VLCJ_AUDIO_PLAYER.setPlaying();
             VLCJ_VIDEO_PLAYER.setPlaying();
-            NowPlayingList npList = (NowPlayingList) getNowPlaylingList();
-            if(!npList.isNowPlaylingListFrameVisible()) {
-                npList.showNowPlayingList();
+
+            if(!nowPlayingListFrame.isVisible()) {
+                nowPlayingListFrame.setVisible(true);
             }
 
             registerPlayProgressHandler(mediaPlayer);
@@ -475,7 +548,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         this.stopPlay();
         nowPlaylingList.clear();
 
-        this.currentTrack = new NowPlayingListData(file.getName(), file.getName(), file.getName(),
+        this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, file.getName(), file.getName(), file.getName(),
                 file.getAbsolutePath(), true);
         nowPlaylingList.add(currentTrack);
         new Thread(this).start();
@@ -493,10 +566,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
                 urlStr = youtubeLink.getUrl();
 
-                this.currentTrack = new NowPlayingListData(youtubeLink.getFileName(), urlStr, urlStr,
+                this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, youtubeLink.getFileName(), urlStr, urlStr,
                         urlStr, true);
             } else {
-                this.currentTrack = new NowPlayingListData(urlStr, urlStr, urlStr,
+                this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, urlStr, urlStr, urlStr,
                         urlStr, true);
             }
 
@@ -669,32 +742,51 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         return this.currentTrack.getLocation();
     }
 
-    public void play(final List<NowPlayingListData> trackLocations) {
+    public synchronized void play(final List<Track> trackList) {
+
         clearNowPlayingList();
-        addTracks(trackLocations);
-        resetIteratorPos();
-        log.debug(listIterator.nextIndex());
-        log.debug(listIterator.hasNext());
-        if(listIterator.hasNext()){
-            currentTrack = listIterator.next();
+
+        /*
+         * If more than one track passed, play the first track readily, process the rest of the tracks asynchronously.
+         * */
+
+        if(!trackList.isEmpty()) {
+            NowPlayingListData nowPlayingListData = getNowPlayingListData(trackList.get(0));
+            addTrack(nowPlayingListData);
+        }
+
+        //resetIteratorPos();
+        log.debug("Playable item available? " + listTraverser.hasNext());
+        if(listTraverser.hasNext()){
+            currentTrack = listTraverser.next();
         }
         play();
+
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (int i = 1; i < trackList.size(); i++) {
+                    addTrack(getNowPlayingListData(trackList.get(i)));
+                }
+            }
+        });
+
     }
 
     public void previous() {
-        if(listIterator.hasPrevious()){
-            currentTrack = listIterator.previous();
+        if(hasPrevious()){
+            currentTrack = listTraverser.previous();
             play();
         }
     }
 
     public boolean hasNext() {
-        return listIterator.hasNext();
+        return listTraverser.hasNext();
     }
 
     public void next() {
         if(hasNext()){
-            currentTrack = listIterator.next();
+            currentTrack = listTraverser.next();
             play();
         }
     }
@@ -707,7 +799,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
         if(!isPlaying() && !isSeekValueAdjusting() && hasPrevious()) {
             // Seeked when nothing is playing.
-            listIterator.previous();
+            listTraverser.previous();
             play();
 
         } else if(!player.isPlaying()) {
@@ -717,14 +809,14 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     public boolean hasPrevious() {
-        return listIterator.hasPrevious();
+        return listTraverser.hasPrevious();
     }
 
     public void addMediaPlayerListener(final MediaPlayerEventListener listener) {
         eventListenerList.add(listener);
     }
 
-    public List<NowPlayingListData> getNowPlaylingList() {
+    public TraversableLinkedList<NowPlayingListData> getNowPlaylingList() {
         return nowPlaylingList;
     }
 
@@ -737,37 +829,19 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     public void clearNowPlayingList() {
-        synchronized(nowPlaylingList) {
-            listIterator = null;
-            nowPlaylingList.clear();
-            listIterator = nowPlaylingList.listIterator();
-        }
+        nowPlaylingList.clear();
     }
 
-    private void addTracks(final List<NowPlayingListData> trackLocations) {
-        synchronized(nowPlaylingList) {
-            for(final NowPlayingListData trackLocation : trackLocations) {
-                listIterator.add(trackLocation);
-            }
-        }
-    }
-
-    private void resetIteratorPos() {
-        synchronized(listIterator) {
-            listIterator = nowPlaylingList.listIterator();
-        }
+    private void addTrack(final NowPlayingListData nowPlayingListData) {
+        nowPlaylingList.add(nowPlayingListData);
     }
 
     public MediaPlayer getPlayer() {
-
-        synchronized (listIterator) {
-            if(currentTrack != null && currentTrack.isMovie()) {
-                return VLCJ_VIDEO_PLAYER.getPlayer();
-            }
-
-            return VLCJ_AUDIO_PLAYER.getPlayer();
+        if(currentTrack != null && currentTrack.isMovie()) {
+            return VLCJ_VIDEO_PLAYER.getPlayer();
         }
 
+        return VLCJ_AUDIO_PLAYER.getPlayer();
     }
 
     /**
@@ -776,16 +850,15 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      * @return
      */
     public MediaPlayer getCurrentPlayer() {
-        synchronized (listIterator) {
-            if(currentTrack != null && currentTrack.isMovie()) {
-                if(JavaVersionUtils.isGreaterThan6()) {
-                    return ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).getFXPlayer();
-                }
-                return VLCJ_VIDEO_PLAYER.getPlayer();
+        if(currentTrack != null && currentTrack.isMovie()) {
+            if(JavaVersionUtils.isGreaterThan6()) {
+                return ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).getFXPlayer();
             }
-
-            return VLCJ_AUDIO_PLAYER.getPlayer();
+            return VLCJ_VIDEO_PLAYER.getPlayer();
         }
+
+        return VLCJ_AUDIO_PLAYER.getPlayer();
+
     }
 
     public List<MediaPlayer> getAllPlayers() {
@@ -854,6 +927,19 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         }
     }
 
+    public static NowPlayingListData getNowPlayingListData(Track track) {
+        return new NowPlayingListData(track.getTrackId(), track.getTrackName(), track.getAdditionalTrackInfo().getAdditionalInfo("Artist"),
+                track.getAdditionalTrackInfo().getAdditionalInfo("Album"), track.getLocation(),
+                track.isMovie() || track.hasVideo());
+    }
+
+    public boolean isCurrentTrack(long trackId) {
+        // TODO: Handle Long.MAX_VALUE.
+        if(isPlaying() && currentTrack != null) {
+            return currentTrack.getTrackId() == trackId;
+        }
+        return false;
+    }
 
 }
 

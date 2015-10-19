@@ -1,10 +1,9 @@
 package com.gps.itunes.media.player.ui;
 
-import com.gps.ilp.utils.Constants;
-import com.gps.ilp.utils.JavaVersionUtils;
+import com.gps.imp.utils.Constants;
+import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
-import com.gps.itunes.lib.parser.utils.LogInitializer;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.media.player.ui.components.TracksContextMenu;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
@@ -12,11 +11,10 @@ import com.gps.itunes.media.player.ui.fileutils.FileBrowserTree;
 import com.gps.itunes.media.player.ui.fileutils.FileBrowserTreeEventListener;
 import com.gps.itunes.media.player.ui.fileutils.FileNode;
 import com.gps.itunes.media.player.ui.handlers.StatusMessageWriter;
-import com.gps.itunes.media.player.ui.holders.PlaylistHolder;
-import com.gps.itunes.media.player.ui.holders.TrackHolder;
+import com.gps.itunes.media.player.dto.PlaylistHolder;
+import com.gps.itunes.media.player.dto.TrackHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
-import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerKeyEventListener;
 import org.apache.log4j.Logger;
@@ -117,7 +115,7 @@ public class UIFrame extends JFrame {
         setBounds(new Rectangle(0, 0, 860, 640));
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         setIconImage(fetchIconImage());
-        setMinimumSize(getPreferredSize());
+        setMinimumSize(new Dimension(850, 450));
         //setPreferredSize(new Dimension(1024, 660));
 
         titleLabel.setFont(new Font("Lucida Grande", 1, 14)); // NOI18N
@@ -308,10 +306,10 @@ public class UIFrame extends JFrame {
                 if (!me.isPopupTrigger() && !SwingUtilities.isRightMouseButton(me) && me.getClickCount() == doubleClickValue && !me.isConsumed()) {
                     me.consume();
 
-                    final List<NowPlayingListData> trackLocations = getSelectedTracks();
+                    final List<Track> trackList = getSelectedTracks();
 
                     for (UIFrameEventListener uiFrameEventListener : uiFrameEventListenerList) {
-                        uiFrameEventListener.onTracksPlayRequested(trackLocations);
+                        uiFrameEventListener.onTracksPlayRequested(trackList);
                     }
                 }
 
@@ -461,6 +459,8 @@ public class UIFrame extends JFrame {
         uiMenuBar.getCopyPlaylistsMenuItem().setEnabled(false); // initially, no playlist is selected.
 
 
+        this.setExtendedState(MAXIMIZED_BOTH);
+
         StatusMessageWriter.setStatusLabel(statusTextArea);
     }
 
@@ -546,24 +546,19 @@ public class UIFrame extends JFrame {
         return playerControlPanel;
     }
 
-    public List<NowPlayingListData> getSelectedTracks() {
+    public List<Track> getSelectedTracks() {
 
         final int[] rowIndices = tracksTable.getSelectedRows();
         LOG.debug("No. of items involved in this action: " + rowIndices.length + " items.");
 
-        final List<NowPlayingListData> trackData = new ArrayList<NowPlayingListData>();
+        final List<Track> trackList = new ArrayList<Track>();
 
         for (final int index : rowIndices) {
-            final TrackHolder holder = (TrackHolder) tracksTable.getValueAt(index, TracksTableModel.getHOLDER_INDEX());
-            final NowPlayingListData data;
-            final Track track = holder.getTrack();
-            data = new NowPlayingListData(track.getTrackName(), track.getAdditionalTrackInfo().getAdditionalInfo("Artist"),
-                    track.getAdditionalTrackInfo().getAdditionalInfo("Album"), track.getLocation(),
-                    track.isMovie() || track.hasVideo());
-            trackData.add(data);
+            final TrackHolder holder = (TrackHolder) tracksTable.getValueAt(index, TracksTableModel.getHolderIndex());
+            trackList.add(holder.getTrack());
         }
 
-        return trackData;
+        return trackList;
     }
 
     public JTable getPlaylistTable() {
@@ -582,10 +577,6 @@ public class UIFrame extends JFrame {
         return nowPlayingPanel;
     }
 
-    static {
-        new LogInitializer();
-    }
-
     private void createUIComponents() {
 
         //Tracks Table
@@ -593,17 +584,19 @@ public class UIFrame extends JFrame {
 
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                int modelIndex = convertRowIndexToModel(row);
                 Component returnComp = super.prepareRenderer(renderer, row, column);
+
                 if (!returnComp.getBackground().equals(getSelectionBackground())) {
-                    Color bg = (row % 2 == 0 ? Color.WHITE : ALTERNATE_COLOR);
+                    Color bg = (modelIndex % 2 == 0 ? Color.WHITE : ALTERNATE_COLOR);
                     returnComp.setBackground(bg);
                 }
 
                 JComponent jcomp = (JComponent) returnComp;
                 if (returnComp == jcomp) {
-                    String tooltipText = String.valueOf(getModel().getValueAt(row, column));
+                    String tooltipText = String.valueOf(getModel().getValueAt(modelIndex, column));
                     if (tooltipText.equals("null")) {
-                        tooltipText = "";
+                        tooltipText = Constants.EMPTY;
                     }
                     jcomp.setToolTipText(tooltipText);
                 }
@@ -655,5 +648,4 @@ public class UIFrame extends JFrame {
     public UIMenuBar getUiMenuBar() {
         return uiMenuBar;
     }
-
 }

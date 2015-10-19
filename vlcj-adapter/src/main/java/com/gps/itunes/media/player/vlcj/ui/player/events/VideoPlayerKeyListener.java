@@ -1,11 +1,8 @@
 package com.gps.itunes.media.player.vlcj.ui.player.events;
 
-import com.gps.ilp.utils.Constants;
+import com.gps.imp.utils.Constants;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Listener class for keyboard shortcuts on the application(JFrame).

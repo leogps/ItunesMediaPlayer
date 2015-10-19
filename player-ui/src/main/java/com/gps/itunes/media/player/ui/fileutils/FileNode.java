@@ -143,7 +143,7 @@ public class FileNode implements TreeNode {
         treePathList.add(this);
 
         FileNode parentNode = this;
-        for(int i = 1; i < pathTokenArray.length; i++) {
+        for(int i = 0; i < pathTokenArray.length; i++) {
             boolean found = false;
             List<FileNode> children = parentNode.getChildren();
 

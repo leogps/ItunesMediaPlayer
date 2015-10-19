@@ -4,20 +4,22 @@
  */
 package com.gps.itunes.media.player.ui.tasks;
 
-import com.gps.ilp.utils.Constants;
+import com.gps.imp.utils.Constants;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
-import com.gps.itunes.media.player.ui.handlers.ProgressHandler;
-import com.gps.itunes.media.player.ui.holders.PlaylistHolder;
-import com.gps.itunes.media.player.ui.holders.TrackHolder;
-import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
 import com.gps.itunes.lib.tasks.LibraryParser;
+import com.gps.itunes.media.player.dto.PlaylistHolder;
+import com.gps.itunes.media.player.dto.TrackHolder;
+import com.gps.imp.utils.ui.LabelCell;
+import com.gps.itunes.media.player.ui.Main;
+import com.gps.itunes.media.player.ui.handlers.ProgressHandler;
+import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
+import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
+import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
+import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.swing.*;
+import java.util.*;
 
 /**
  *
@@ -29,7 +31,21 @@ public class TracksLoader extends ProgressHandler {
 
     private static org.apache.log4j.Logger log =
             org.apache.log4j.Logger.getLogger(TracksLoader.class);
-    
+
+    private final ImageIcon currentlyPlayingIcon = new ImageIcon(TracksLoader.class.getClassLoader().getResource("images/play_20x20.png")) {
+        @Override
+        public String toString() {
+            return "Playing";
+        }
+    };
+
+    private final ImageIcon currentlyPausedIcon = new ImageIcon(TracksLoader.class.getClassLoader().getResource("images/pause_20x20.png")) {
+        @Override
+        public String toString() {
+            return "Paused";
+        }
+    };
+
     private final JTable playlistTable;
     private final JTable tracksTable;
     private final JMenuItem copyPlaylistsMenuItem;
@@ -74,6 +90,54 @@ public class TracksLoader extends ProgressHandler {
                     (TracksTableModel) tracksTable.getModel();
 
             model.clearTable(tracksTable);
+
+            Main.getItunesMediaPlayer().addMediaPlayerListener(new MediaPlayerEventListener() {
+                @Override
+                public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
+                    updateStatusCells(true);
+                }
+
+                @Override
+                public void paused(ItunesMediaPlayer player, String location) {
+                    updateStatusCells(false);
+                }
+
+                private void updateStatusCells(final boolean isPlaying) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i = 0; i < model.getDataVector().size(); i++) {
+                                Vector objectVector = (Vector) model.getDataVector().get(i);
+                                TrackHolder trackHolder = (TrackHolder) objectVector.get(TracksTableModel.getHolderIndex());
+                                if (Main.getItunesMediaPlayer().isCurrentTrack(trackHolder.getTrack().getTrackId())) {
+                                    objectVector.set(0, (isPlaying) ? currentlyPlayingIcon : currentlyPausedIcon);
+                                } else {
+                                    objectVector.set(0, Constants.EMPTY);
+                                }
+                                model.fireTableCellUpdated(i, 0); // first column, every row
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void stopped(ItunesMediaPlayer player, String location) {
+
+                }
+
+                @Override
+                public void finished(ItunesMediaPlayer player, String location) {
+
+                }
+
+                @Override
+                public void onPlayProgressed() {
+
+                }
+            });
+
+            tracksTable.getColumnModel().getColumn(0).setCellEditor(new LabelCell());
+            tracksTable.getColumnModel().getColumn(0).setCellRenderer(new LabelCell());
 
             final Map<Long, Track> trackMap = new HashMap<Long, Track>();
 
@@ -129,7 +193,7 @@ public class TracksLoader extends ProgressHandler {
             }
         
         } catch(Exception ex){
-            log.error(ex);
+            log.error("Exception occurred when loading tracks...", ex);
         }
 
     }
@@ -159,12 +223,19 @@ public class TracksLoader extends ProgressHandler {
 
     private void addTracks(final TracksTableModel model, final Track[] tracks) {
 
-
         for (final Track track : tracks) {
 
             final TrackHolder holder = new TrackHolder(track);
 
+            boolean isCurrentTrackLoaded = Main.getItunesMediaPlayer().isCurrentTrack(track.getTrackId());
+            Object status;
+            if(isCurrentTrackLoaded) {
+                status = Main.getItunesMediaPlayer().isPlaying() ? currentlyPlayingIcon : currentlyPausedIcon;
+            } else {
+                status = Constants.EMPTY;
+            }
             model.addRow(new Object[]{
+                    status, //      Status: playing/not-playing
                 model.getRowCount() + 1, //S.No.
                 holder, //Name
                 TrackDataParser.parseTime(
@@ -201,6 +272,4 @@ public class TracksLoader extends ProgressHandler {
     private boolean doMatch(final String str){
         return str != null && str.toUpperCase().contains(searchQuery);
     }
-    
-    
 }

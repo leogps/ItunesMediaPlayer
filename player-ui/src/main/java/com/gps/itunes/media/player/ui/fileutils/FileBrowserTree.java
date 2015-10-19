@@ -47,12 +47,12 @@ public class FileBrowserTree extends JPanel {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
-                if(mouseEvent.getClickCount() == 2) {
+                if (mouseEvent.getClickCount() == 2) {
                     TreePath[] selectedTreePath = getFileTree().getSelectionPaths();
                     if (selectedTreePath != null && selectedTreePath.length > 0) {
                         TreePath selectionPath = selectedTreePath[selectedTreePath.length - 1];
                         FileNode fileNode = (FileNode) selectionPath.getLastPathComponent();
-                        for(FileBrowserTreeEventListener fileBrowserTreeEventListener : fileBrowserTreeEventListenerList) {
+                        for (FileBrowserTreeEventListener fileBrowserTreeEventListener : fileBrowserTreeEventListenerList) {
                             fileBrowserTreeEventListener.onNodeDoubleClicked(fileNode);
                         }
                     }
@@ -62,7 +62,36 @@ public class FileBrowserTree extends JPanel {
     }
 
     private void createUIComponents() {
-        fileTree = new JTree();
+        fileTree = new JTree() {
+
+            @Override
+            public void expandPath(final TreePath treePath) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        expandPathAsync(treePath);
+                    }
+                });
+            }
+
+            private void expandPathAsync(TreePath treePath) {
+                super.expandPath(treePath);
+            }
+
+            @Override
+            public void expandRow(final int i) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        expandRowAsync(i);
+                    }
+                });
+            }
+
+            private void expandRowAsync(int i) {
+                super.expandRow(i);
+            }
+        };
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -73,8 +102,10 @@ public class FileBrowserTree extends JPanel {
     }
 
     private void initializeComponents() {
-        File file = new File(File.separator);
-        final FileNode rootNode = new FileNode(file);
+        final String ROOT_FILE_NAME = "__ROOT__";
+        File virtualRootFile = new VirtualFolder(ROOT_FILE_NAME);
+        final FileNode rootNode = new FileNode(virtualRootFile);
+
         fileTree.setModel(new DefaultTreeModel(rootNode));
         fileTree.getSelectionModel().setSelectionMode(selectionMode);
 
@@ -89,8 +120,10 @@ public class FileBrowserTree extends JPanel {
                 if (fileChooser == null) {
                     fileChooser = new JFileChooser();
                 }
-                Icon icon = fileChooser.getUI().getFileView(fileChooser).getIcon(node.getFile());
-                setIcon(icon);
+                if(node != rootNode) {
+                    Icon icon = fileChooser.getUI().getFileView(fileChooser).getIcon(node.getFile());
+                    setIcon(icon);
+                }
 
                 String fileName = FileSystemView.getFileSystemView().getSystemDisplayName(node.getFile());
                 setText(fileName);
@@ -139,6 +172,79 @@ public class FileBrowserTree extends JPanel {
 
     public void registerFileBrowserTreeEventListener(FileBrowserTreeEventListener fileBrowserTreeEventListener) {
         fileBrowserTreeEventListenerList.add(fileBrowserTreeEventListener);
+    }
+
+    /**
+     * Represents a Virtual Folder.
+     *
+     */
+    private class VirtualFolder extends File {
+
+        private final String name;
+
+        public VirtualFolder(String name) {
+            super(name);
+            this.name = name;
+        }
+
+        @Override
+        public boolean isDirectory() {
+            return true;
+        }
+
+        @Override
+        public File[] listFiles() {
+            return File.listRoots();
+        }
+
+        @Override
+        public String[] list() {
+            List<String> fileStr = new ArrayList<String>();
+            for(File file : listFiles()) {
+                fileStr.add(file.getName());
+            }
+            return fileStr.toArray(new String[fileStr.size()]);
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String getParent() {
+            return null;
+        }
+
+        @Override
+        public File getParentFile() {
+            return null;
+        }
+
+        @Override
+        public String getPath() {
+            return name;
+        }
+
+        @Override
+        public boolean isAbsolute() {
+            return true;
+        }
+
+        @Override
+        public String getAbsolutePath() {
+            return name;
+        }
+
+        @Override
+        public File getAbsoluteFile() {
+            return this;
+        }
+
+        @Override
+        public String getCanonicalPath() throws IOException {
+            return name;
+        }
     }
 
 }

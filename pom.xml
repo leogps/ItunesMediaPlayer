@@ -13,6 +13,7 @@
         <module>player-ui</module>
         <module>vlcj-adapter</module>
         <module>utils</module>
+        <module>dto</module>
     </modules>
 
     <dependencies>

@@ -4,6 +4,8 @@
  */
 package com.gps.itunes.media.player.ui.tablehelpers.columns;
 
+import com.gps.imp.utils.Constants;
+
 /**
  *
  * The Tracks table's columns.
@@ -12,7 +14,7 @@ package com.gps.itunes.media.player.ui.tablehelpers.columns;
  * @author leogps
  */
 public enum TrackTableColumns {
-    
+    STATUS(Constants.EMPTY, 5),
     S_NO("#", 20),
     Name("Name", 120),
     Time("Time", 30),
@@ -65,6 +67,7 @@ public enum TrackTableColumns {
      * 
      */
     public static final TrackTableColumns[] COLUMNS = {
+       TrackTableColumns.STATUS,
        TrackTableColumns.S_NO,
        TrackTableColumns.Name,
        TrackTableColumns.Time,

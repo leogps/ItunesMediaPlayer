@@ -4,8 +4,10 @@
  */
 package com.gps.itunes.media.player.vlcj.ui.player;
 
+import com.gps.imp.utils.Constants;
+
 import java.util.List;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,8 +16,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public class NowPlayingListFrame extends javax.swing.JFrame {
     
-    private static org.apache.log4j.Logger log =
+    private static final org.apache.log4j.Logger LOGGER =
             org.apache.log4j.Logger.getLogger(NowPlayingListFrame.class);
+
+    private DefaultTableModel tableModel = new NowPlayingListTableModel();
 
     /**
      * Creates new form NowPlayingListForm
@@ -24,6 +28,8 @@ public class NowPlayingListFrame extends javax.swing.JFrame {
         initComponents();
         setTitle("Now Playing List");
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+
+        ((NowPlayingListTableModel) tableModel).setWidthsForTable(getNowPlayingList());
     }
 
     /**
@@ -92,7 +98,7 @@ public class NowPlayingListFrame extends javax.swing.JFrame {
         /*
          * Create and display the form
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
                 new NowPlayingListFrame().setVisible(true);
@@ -109,21 +115,19 @@ public class NowPlayingListFrame extends javax.swing.JFrame {
         return nowPlayingList;
     }
     
-    private DefaultTableModel tableModel = new NowPlayingListTableModel();
-
-    public void populate(final List<NowPlayingListData> list) {
-        clearTable();
-        for(final NowPlayingListData track : list) {
-            tableModel.addRow(new Object[]{track.getName(), track.getArtist(), track.getAlbum()});
-        }
+    public void add(NowPlayingListData nowPlayingListData) {
+        tableModel.addRow(new Object[]{
+                Constants.EMPTY,
+                nowPlayingListData,
+                nowPlayingListData.getArtist(),
+                nowPlayingListData.getAlbum()});
     }
 
     private void clearTable() {
         tableModel.setRowCount(0);
     }
 
-    public void setCurrentPlayingTrack(int index) {
-        //
+    public void clear() {
+        clearTable();
     }
-    
 }

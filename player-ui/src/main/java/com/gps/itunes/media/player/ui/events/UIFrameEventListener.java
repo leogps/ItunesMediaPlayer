@@ -1,7 +1,7 @@
 package com.gps.itunes.media.player.ui.events;
 
+import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.media.player.ui.UIFrame;
-import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public abstract class UIFrameEventListener {
 
     public abstract void onPlaylistSelectedEvent(UIFrame uiFrame);
 
-    public abstract void onTracksPlayRequested(List<NowPlayingListData> trackLocations);
+    public abstract void onTracksPlayRequested(List<Track> trackList);
 
     public abstract void onReloadLibraryRequested(UIFrame uiFrame);
 
