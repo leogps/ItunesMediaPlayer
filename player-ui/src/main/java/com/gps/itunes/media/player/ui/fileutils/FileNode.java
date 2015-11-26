@@ -3,16 +3,23 @@ package com.gps.itunes.media.player.ui.fileutils;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by leogps on 10/10/15.
  */
 public class FileNode implements TreeNode {
+
+    private static final FileFilter NON_HIDDEN_FILE_FILTER = new FileFilter() {
+        @Override
+        public boolean accept(File file) {
+            return !file.isHidden();
+        }
+    };
+
+    private final Map<FileNode, Integer> childIndexMap = new HashMap<FileNode, Integer>();
 
     private final File file;
 
@@ -23,6 +30,8 @@ public class FileNode implements TreeNode {
     public FileNode(File file) {
         this.file = file;
     }
+
+    private List<FileNode> cachedChildren;// TODO: use timestamp and refresh if queried after sometime.
 
 
     public TreeNode getChildAt(int i) {
@@ -51,20 +60,18 @@ public class FileNode implements TreeNode {
     public int getIndex(TreeNode treeNode) {
         if(file.isDirectory() && treeNode instanceof FileNode) {
             FileNode fileNode = (FileNode) treeNode;
-
-            List<FileNode> childrenNodes = this.getChildren();
-            for(int index = 0; index < childrenNodes.size();  index++) {
-                try {
-                    if (fileNode.getFile().getCanonicalPath()
-                            .equals(childrenNodes.get(index).getFile().getCanonicalPath())) {
-                        return index;
-                    }
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
+            if (cachedChildren == null) {
+                buildChildIndex();
+            }
+            if (cachedChildren.contains(treeNode)) {
+                return childIndexMap.get(fileNode);
             }
         }
         return -1;
+    }
+
+    private void buildChildIndex() {
+        getChildren();
     }
 
     public boolean getAllowsChildren() {
@@ -86,15 +93,22 @@ public class FileNode implements TreeNode {
     }
 
     public List<FileNode> getChildren() {
+        if(cachedChildren == null) {
+            cachedChildren = doRetrieveChildren();
+        }
+        return cachedChildren;
+    }
+
+    private List<FileNode> doRetrieveChildren() {
         if(file.isDirectory()) {
-            File[] children = file.listFiles();
+            File[] children = file.listFiles(NON_HIDDEN_FILE_FILTER);
             if(children != null) {
                 List<FileNode> childNodeList = new ArrayList<FileNode>();
-                for (File child : children) {
-                    if(!child.isHidden()) {
-                        FileNode childNode = new FileNode(child);
-                        childNodeList.add(childNode);
-                    }
+                for (int index = 0; index < children.length; index++) {
+                    File child = children[index];
+                    FileNode childNode = new FileNode(child);
+                    childNodeList.add(childNode);
+                    childIndexMap.put(childNode, index);
                 }
                 return childNodeList;
             }

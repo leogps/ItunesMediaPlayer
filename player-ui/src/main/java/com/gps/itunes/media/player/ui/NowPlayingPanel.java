@@ -1,9 +1,6 @@
 package com.gps.itunes.media.player.ui;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.util.ResourceBundle;
 
 /**
  * Created by leogps on 9/17/15.

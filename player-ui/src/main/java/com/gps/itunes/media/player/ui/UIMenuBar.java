@@ -23,6 +23,10 @@ public class UIMenuBar extends JMenuBar {
     private final JMenuItem copyPlaylistsMenuItem;
     private final JMenuItem copyTracksMenuItem;
 
+    private final JMenu aboutMenu;
+
+    private final JMenuItem vlcMenuItem;
+
     public UIMenuBar() {
         super();
 
@@ -43,7 +47,7 @@ public class UIMenuBar extends JMenuBar {
 
         // Actions Menu.
         actionsMenu = new JMenu("Actions");
-        fileMenu.getAccessibleContext().setAccessibleDescription(
+        actionsMenu.getAccessibleContext().setAccessibleDescription(
                 "Library Operations");
 
         this.add(actionsMenu);
@@ -70,6 +74,15 @@ public class UIMenuBar extends JMenuBar {
         copyTracksMenuItem = new JMenuItem("Copy Tracks");
         copyTracksMenuItem.setMnemonic(KeyEvent.VK_T);
         actionsMenu.add(copyTracksMenuItem);
+
+        // About Menu
+        aboutMenu = new JMenu("About");
+        aboutMenu.getAccessibleContext().setAccessibleDescription(
+                "Library Operations");
+        this.add(aboutMenu);
+
+        vlcMenuItem = new JMenuItem("VLC");
+        aboutMenu.add(vlcMenuItem);
 
     }
 
@@ -111,5 +124,9 @@ public class UIMenuBar extends JMenuBar {
 
     public JMenuItem getGoToMenuItem() {
         return goToMenuItem;
+    }
+
+    public JMenuItem getVlcMenuItem() {
+        return vlcMenuItem;
     }
 }

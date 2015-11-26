@@ -5,6 +5,7 @@ import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
+import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.ui.components.TracksContextMenu;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.itunes.media.player.ui.fileutils.FileBrowserTree;
@@ -15,6 +16,7 @@ import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
+import com.gps.itunes.media.player.vlcj.VLCJUtils;
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerKeyEventListener;
 import org.apache.log4j.Logger;
@@ -458,6 +460,24 @@ public class UIFrame extends JFrame {
         uiMenuBar.getCopyPlaylistsMenuItem().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         uiMenuBar.getCopyPlaylistsMenuItem().setEnabled(false); // initially, no playlist is selected.
 
+        uiMenuBar.getVlcMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                StringBuffer message = new StringBuffer();
+                if(VLCJUtils.isVlcInitSucceeded()) {
+
+                    message.append("VLC initialized successfully.");
+                    message.append(String.format("\nVLC Version: %s", VLCJUtils.getVlcVersion()));
+                    message.append("\n" + resourceBundle.getString("vlc.link"));
+                    //TODO: JEditorPane for hyperlink.
+
+                } else {
+                    message.append("VLC failed to initialize.");
+                }
+                JOptionPane.showMessageDialog(null, message, "About VLC Engine", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
 
         this.setExtendedState(MAXIMIZED_BOTH);
 
@@ -647,5 +667,9 @@ public class UIFrame extends JFrame {
 
     public UIMenuBar getUiMenuBar() {
         return uiMenuBar;
+    }
+
+    public FileBrowserTree getFileBrowserTree() {
+        return fileBrowserTree;
     }
 }

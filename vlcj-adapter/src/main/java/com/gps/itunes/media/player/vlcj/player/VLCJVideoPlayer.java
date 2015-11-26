@@ -28,18 +28,17 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 
 	protected MediaPlayer player;
     protected VideoPlayerFrame vFrame;
-    protected String mediaFactoryArgs;
-    protected MediaPlayerFactory mediaPlayerFactory;
     protected AtomicBoolean ignoreSeekbarChange = new AtomicBoolean(false);
     private AtomicBoolean isFullScreen = new AtomicBoolean(false);
-
+    protected final MediaPlayerFactory mediaPlayerFactory;
     protected final List<SeekEventListener> seekEventListenerList = new ArrayList<SeekEventListener>();
     protected FullscreenVideoPlayerFrame fullscreenFrame = new FullscreenVideoPlayerFrame();
     protected FXPlayerFrame fxPlayerFrame;
 
     private static Logger log = Logger.getLogger(VLCJVideoPlayer.class);
 
-    public VLCJVideoPlayer() {
+    public VLCJVideoPlayer(MediaPlayerFactory mediaPlayerFactory) {
+        this.mediaPlayerFactory = mediaPlayerFactory;
         if(JavaVersionUtils.isGreaterThan6()) {
             fxPlayerFrame = new FXPlayerFrameImpl();
         } else {
@@ -49,8 +48,6 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 	}
 
     protected void init() {
-        mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : Constants.EMPTY;
-        mediaPlayerFactory = new MediaPlayerFactory(mediaFactoryArgs);
 
         vFrame = new VideoPlayerFrame();
         FullScreenStrategy fullScreenStrategy;

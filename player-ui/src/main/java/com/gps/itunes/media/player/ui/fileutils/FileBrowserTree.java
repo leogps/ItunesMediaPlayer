@@ -1,5 +1,8 @@
 package com.gps.itunes.media.player.ui.fileutils;
 
+import com.gps.itunes.media.player.ui.utils.SingleQueuedThreadExecutor;
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -11,7 +14,12 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +27,17 @@ import java.util.List;
  * Created by leogps on 10/11/15.
  */
 public class FileBrowserTree extends JPanel {
+
+    private static final Logger LOG = Logger.getLogger(FileBrowserTree.class);
+
     private JTree fileTree;
     private JScrollPane scrollPane;
     private JPanel wrapperPanel;
     private JPanel contentPanel;
     private JFileChooser fileChooser = new JFileChooser();
     private final String userRequestedFilePath;
+
+    private FileNode rootNode;
 
     private int selectionMode;
 
@@ -48,50 +61,50 @@ public class FileBrowserTree extends JPanel {
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
                 if (mouseEvent.getClickCount() == 2) {
-                    TreePath[] selectedTreePath = getFileTree().getSelectionPaths();
-                    if (selectedTreePath != null && selectedTreePath.length > 0) {
-                        TreePath selectionPath = selectedTreePath[selectedTreePath.length - 1];
-                        FileNode fileNode = (FileNode) selectionPath.getLastPathComponent();
-                        for (FileBrowserTreeEventListener fileBrowserTreeEventListener : fileBrowserTreeEventListenerList) {
-                            fileBrowserTreeEventListener.onNodeDoubleClicked(fileNode);
-                        }
+                    TreePath selectionPath = getCurrentSelectionPath();
+                    FileNode fileNode = getFileNodeFromSelectionPath(selectionPath);
+                    for (FileBrowserTreeEventListener fileBrowserTreeEventListener : fileBrowserTreeEventListenerList) {
+                        fileBrowserTreeEventListener.onNodeDoubleClicked(fileNode);
+                        expandAndScrollTo(selectionPath);
                     }
+
                 }
             }
         });
     }
 
+    private FileNode getFileNodeFromSelectionPath(TreePath selectionPath) {
+        return (FileNode) selectionPath.getLastPathComponent();
+    }
+
+    private TreePath getCurrentSelectionPath() {
+        TreePath[] selectedTreePath = getFileTree().getSelectionPaths();
+        if (selectedTreePath != null && selectedTreePath.length > 0) {
+            TreePath selectionPath = selectedTreePath[selectedTreePath.length - 1];
+            return selectionPath;
+        }
+        return null;
+    }
+
+    private FileNode getSelectedFileNode() {
+        return getFileNodeFromSelectionPath(getCurrentSelectionPath());
+    }
+
+    private void expandAndScrollTo(final TreePath selectionPath) {
+        getJFileTree().expandPathAsync(selectionPath, new JFileTreeNodeExpansionProcessor() {
+            @Override
+            public void onNodeExpansion() {
+                getJFileTree().scrollPathToVisible(selectionPath);
+            }
+        });
+    }
+
+    private JFileTree getJFileTree() {
+        return (JFileTree) getFileTree();
+    }
+
     private void createUIComponents() {
-        fileTree = new JTree() {
-
-            @Override
-            public void expandPath(final TreePath treePath) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        expandPathAsync(treePath);
-                    }
-                });
-            }
-
-            private void expandPathAsync(TreePath treePath) {
-                super.expandPath(treePath);
-            }
-
-            @Override
-            public void expandRow(final int i) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        expandRowAsync(i);
-                    }
-                });
-            }
-
-            private void expandRowAsync(int i) {
-                super.expandRow(i);
-            }
-        };
+        fileTree = new JFileTree();
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -101,10 +114,35 @@ public class FileBrowserTree extends JPanel {
         });
     }
 
+    private class JFileTree extends JTree {
+
+        private SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
+
+        public void expandPathAsync(final TreePath treePath, final JFileTreeNodeExpansionProcessor... nodeExpansionProcessors) {
+            final JTree thisTree = this;
+
+            singleQueuedThreadExecutor.terminateExistingAndInvokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    thisTree.expandPath(treePath);
+                    if (nodeExpansionProcessors != null && nodeExpansionProcessors.length > 0) {
+                        for (JFileTreeNodeExpansionProcessor nodeExpansionProcessor : nodeExpansionProcessors) {
+                            nodeExpansionProcessor.onNodeExpansion();
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private interface JFileTreeNodeExpansionProcessor {
+        void onNodeExpansion();
+    }
+
     private void initializeComponents() {
         final String ROOT_FILE_NAME = "__ROOT__";
         File virtualRootFile = new VirtualFolder(ROOT_FILE_NAME);
-        final FileNode rootNode = new FileNode(virtualRootFile);
+        rootNode = new FileNode(virtualRootFile);
 
         fileTree.setModel(new DefaultTreeModel(rootNode));
         fileTree.getSelectionModel().setSelectionMode(selectionMode);
@@ -151,19 +189,22 @@ public class FileBrowserTree extends JPanel {
                 }
 
                 File defaultFile = new File(defaultPath);
-                if (defaultFile.exists()) {
-                    try {
-                        TreePath path = rootNode.getPathTo(defaultFile);
-                        fileTree.expandPath(path);
-                        fileTree.setSelectionPath(path);
-                        fileTree.scrollPathToVisible(path);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
+                expandAndScrollToFile(defaultFile);
             }
         });
+    }
+
+    private void expandAndScrollToFile(File file) {
+        if (rootNode != null && file != null && file.exists()) {
+            try {
+                TreePath path = rootNode.getPathTo(file);
+                fileTree.setSelectionPath(path);
+                expandAndScrollTo(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     public JTree getFileTree() {
@@ -172,6 +213,50 @@ public class FileBrowserTree extends JPanel {
 
     public void registerFileBrowserTreeEventListener(FileBrowserTreeEventListener fileBrowserTreeEventListener) {
         fileBrowserTreeEventListenerList.add(fileBrowserTreeEventListener);
+    }
+
+    public void attemptToShowInTree(String location) {
+        if(location == null) {
+            return;
+        }
+
+        final File file = getFileFromLocation(location);
+        if(file != null && file.exists() && !isSelectedFile(file)) {
+            expandAndScrollToFile(file);
+        }
+    }
+
+    private boolean isSelectedFile(File file) {
+        FileNode selectedFileNode = getSelectedFileNode();
+        if(selectedFileNode != null) {
+            return selectedFileNode.getFile().getPath().equals(file.getPath());
+        }
+        return false;
+    }
+
+    private File getFileFromLocation(String location) {
+        try {// Fixme when files outside itunes playlist are played
+            URL locationURL = new URL(location);
+            if(isFileProtocol(locationURL)) {
+                String path = locationURL.getPath();
+                String decodedPath = URLDecoder.decode(path, "UTF-8");
+                LOG.debug("Decoded filepath: " + path);
+
+                File file = new File(decodedPath);
+                return file;
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean isFileProtocol(URL locationURL) {
+        return locationURL != null &&
+                locationURL.getProtocol().equals("file");
     }
 
     /**
@@ -195,6 +280,16 @@ public class FileBrowserTree extends JPanel {
         @Override
         public File[] listFiles() {
             return File.listRoots();
+        }
+
+        @Override
+        public File[] listFiles(FilenameFilter filenameFilter) {
+            return listFiles();
+        }
+
+        @Override
+        public File[] listFiles(java.io.FileFilter fileFilter) {
+            return listFiles();
         }
 
         @Override
@@ -244,6 +339,11 @@ public class FileBrowserTree extends JPanel {
         @Override
         public String getCanonicalPath() throws IOException {
             return name;
+        }
+
+        @Override
+        public boolean isHidden() {
+            return false;
         }
     }
 

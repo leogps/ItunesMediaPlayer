@@ -47,7 +47,7 @@ public class VLCJUtils {
             }
         } finally {
             if(vlcInitSucceeded) {
-                log.debug(String.format("VLC Engine version %s", LibVlc.INSTANCE.libvlc_get_version()));
+                log.debug(String.format("VLC Engine version %s", getVlcVersion()));
             }
         }
 
@@ -55,5 +55,9 @@ public class VLCJUtils {
 
     public static boolean isVlcInitSucceeded() {
         return vlcInitSucceeded;
+    }
+
+    public static String getVlcVersion() {
+        return LibVlc.INSTANCE.libvlc_get_version();
     }
 }

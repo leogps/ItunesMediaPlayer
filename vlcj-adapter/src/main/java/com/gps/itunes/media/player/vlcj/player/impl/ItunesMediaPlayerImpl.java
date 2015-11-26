@@ -1,11 +1,9 @@
 package com.gps.itunes.media.player.vlcj.player.impl;
 
-import com.gps.imp.utils.Constants;
-import com.gps.imp.utils.JavaVersionUtils;
-import com.gps.imp.utils.YoutubeLink;
-import com.gps.imp.utils.YoutubeUrlFetcher;
+import com.gps.imp.utils.*;
 import com.gps.imp.utils.ui.LabelCell;
 import com.gps.itunes.lib.items.tracks.Track;
+import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.media.player.vlcj.player.*;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
@@ -19,8 +17,10 @@ import com.gps.itunes.media.player.vlcj.ui.player.utils.GoToSpinnerDialog;
 import com.gps.itunes.media.player.vlcj.ui.player.utils.GotoValueSubmissionEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.utils.TrackTime;
 import org.apache.log4j.Logger;
+import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -58,6 +58,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      * Holds currently playing track.
      */
     private NowPlayingListData currentTrack;
+
+    private final String mediaFactoryArgs;
+    private final MediaPlayerFactory mediaPlayerFactory;
 
     /**
      * Now Playing list.
@@ -110,7 +113,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     /**
      * Video Player that is closely bound to the VLCJ adapter.
      */
-    private static final VLCJPlayer VLCJ_VIDEO_PLAYER = new VLCJVideoPlayer();
+    private final VLCJPlayer VLCJ_VIDEO_PLAYER;
 
     /**
      * Array containing both players.
@@ -141,8 +144,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     private final FileOpenEventHandler fileOpenEventHandler = new FileOpenEventHandler();
 
     public ItunesMediaPlayerImpl(final PlayerControlPanel playerControlPanel) {
+        mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : Constants.EMPTY;
+        mediaPlayerFactory = new MediaPlayerFactory(mediaFactoryArgs);
+        VLCJ_VIDEO_PLAYER = new VLCJVideoPlayer(mediaPlayerFactory);
+
+
         this.playerControlPanel = playerControlPanel;
-        this.VLCJ_AUDIO_PLAYER = new VLCJAudioPlayer(playerControlPanel);
+        this.VLCJ_AUDIO_PLAYER = new VLCJAudioPlayer(mediaPlayerFactory, playerControlPanel);
         this.VLCJ_PLAYERS = new VLCJPlayer[]{VLCJ_AUDIO_PLAYER, VLCJ_VIDEO_PLAYER};
 
         attachVolumeSyncEvents();
@@ -456,12 +464,24 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
         @Override
         public void finished(MediaPlayer mediaPlayer) {
-            super.finished(mediaPlayer);
-            log.debug("Finished!!");
-            reportPlayCompletion();
-            VLCJ_AUDIO_PLAYER.setPaused();
-            VLCJ_VIDEO_PLAYER.setPaused();
-            next();
+            if(mediaPlayer.getSubItemMediaMeta().size() <= 1) {
+                super.finished(mediaPlayer);
+                log.debug("Finished!!");
+                reportPlayCompletion();
+                VLCJ_AUDIO_PLAYER.setPaused();
+                VLCJ_VIDEO_PLAYER.setPaused();
+                next();
+            }
+        }
+
+        @Override
+        public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
+            log.debug(mediaPlayer.getSubItemMediaMeta());
+        }
+
+        @Override
+        public void mediaSubItemTreeAdded(MediaPlayer mediaPlayer, libvlc_media_t item) {
+            log.debug(mediaPlayer.getSubItemMediaMeta());
         }
 
         private void reportPlayCompletion() {
@@ -558,8 +578,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         this.stopPlay();
         nowPlaylingList.clear();
 
+        String urlStr = url.toString();
+
         try {
-            String urlStr = url.toString();
 
             if(urlStr.toLowerCase().contains("youtube.com") || urlStr.toLowerCase().contains("youtu.be")) {
                 YoutubeLink youtubeLink = YoutubeUrlFetcher.getBest(YoutubeUrlFetcher.fetch(urlStr));
@@ -573,13 +594,24 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                         urlStr, true);
             }
 
-            nowPlaylingList.add(currentTrack);
-            new Thread(this).start();
+            addToNowPlayinglistAndStartPlaying();
+
+        } catch (URLFetchException ex) {
+            log.error("Could not recognize URL.", ex);
+            this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, urlStr, urlStr, urlStr,
+                    urlStr, true);
+            addToNowPlayinglistAndStartPlaying();
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Could not recognize URL. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
+            log.error("Could not recognize URL.", ex);
         }
 
+    }
+
+    private void addToNowPlayinglistAndStartPlaying() {
+        nowPlaylingList.add(currentTrack);
+        new Thread(this).start();
     }
 
     private void playFrom(float time) {
@@ -607,8 +639,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
 
     public void stopPlay() {
-        VLCJ_AUDIO_PLAYER.getPlayer().stop();
-        VLCJ_VIDEO_PLAYER.getPlayer().stop();
+        for(VLCJPlayer vlcjPlayer : VLCJ_PLAYERS) {
+            vlcjPlayer.getPlayer().stop();
+        }
         log.debug("Playing stopped");
         VLCJ_AUDIO_PLAYER.setPaused();
         VLCJ_VIDEO_PLAYER.setPaused();
@@ -664,7 +697,17 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                         ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).setVisible(false);
                     }
 
-                    mediaPlayer.playMedia(this.currentTrack.getLocation());
+                    try {
+                        mediaPlayer.setPlaySubItems(true);
+                        mediaPlayer.playMedia(this.currentTrack.getLocation());
+                    } catch (Exception ex) {
+                        log.error(ex.getMessage(), ex);
+                        JOptionPane.showMessageDialog(null, "Could not play the file. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
+                        if(!mediaPlayer.isPlaying()) {
+                            playSignal.countDown();
+                            playerControlPanel.setPaused();
+                        }
+                    }
 
                     if (startFrom != 0) {
                         mediaPlayer.setPosition(startFrom);
@@ -759,6 +802,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         log.debug("Playable item available? " + listTraverser.hasNext());
         if(listTraverser.hasNext()){
             currentTrack = listTraverser.next();
+            log(currentTrack);
         }
         play();
 
@@ -771,6 +815,15 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             }
         });
 
+    }
+
+    private void log(NowPlayingListData currentTrack) {
+        if (currentTrack != null) {
+            log.debug(String.format("Playing item -> name: %s, location: %s, trackid: %s, isMovie: %s", currentTrack.getName(),
+                    currentTrack.getLocation(), String.valueOf(currentTrack.getTrackId()), currentTrack.isMovie()));
+        } else {
+            log.debug("Track is null.");
+        }
     }
 
     public void previous() {
@@ -786,7 +839,16 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     public void next() {
         if(hasNext()){
+            NowPlayingListData nextTrack = currentTrack;
             currentTrack = listTraverser.next();
+            avoidPlayingSameTrackOnNext(nextTrack, currentTrack);
+        }
+    }
+
+    private void avoidPlayingSameTrackOnNext(NowPlayingListData nextTrack, NowPlayingListData currentTrack) {
+        if(nextTrack == currentTrack) {
+            next();
+        } else {
             play();
         }
     }

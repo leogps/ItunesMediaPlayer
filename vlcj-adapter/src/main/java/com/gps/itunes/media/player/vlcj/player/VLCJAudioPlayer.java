@@ -22,8 +22,8 @@ public class VLCJAudioPlayer implements VLCJPlayer {
 
     private final List<SeekEventListener> seekEventListenerList = new ArrayList<SeekEventListener>();
 	
-	public VLCJAudioPlayer(final PlayerControlPanel playerControlPanel) {
-		player = new MediaPlayerFactory().newHeadlessMediaPlayer();
+	public VLCJAudioPlayer(MediaPlayerFactory mediaPlayerFactory, final PlayerControlPanel playerControlPanel) {
+		player = mediaPlayerFactory.newHeadlessMediaPlayer();
         this.playerControlPanel = playerControlPanel;
 
         playerControlPanel.getSeekbar().addChangeListener(

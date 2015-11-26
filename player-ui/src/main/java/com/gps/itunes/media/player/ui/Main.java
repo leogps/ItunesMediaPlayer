@@ -114,7 +114,7 @@ public class Main {
 
                             itunesMediaPlayer.addMediaPlayerListener(new MediaPlayerEventListener() {
                                 @Override
-                                public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
+                                public void playing(ItunesMediaPlayer player, final NowPlayingListData currentTrack) {
                                     uiFrame.getNowPlayingPanel().getTrackNameLabel().setText(currentTrack.getName());
                                     uiFrame.getNowPlayingPanel().getTrackNameLabel().setToolTipText(currentTrack.getName());
 
@@ -123,6 +123,13 @@ public class Main {
 
                                     uiFrame.getNowPlayingPanel().getTrackArtistNameLabel().setText(currentTrack.getArtist());
                                     uiFrame.getNowPlayingPanel().getTrackArtistNameLabel().setToolTipText(currentTrack.getArtist());
+
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            uiFrame.getFileBrowserTree().attemptToShowInTree(currentTrack.getLocation());
+                                        }
+                                    }).start();
                                 }
 
                                 @Override
