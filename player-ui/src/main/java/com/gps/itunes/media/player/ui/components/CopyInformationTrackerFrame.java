@@ -14,6 +14,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 
 /**
  * Created by leogps on 3/27/15.
@@ -89,6 +91,7 @@ public class CopyInformationTrackerFrame extends JFrame {
         this.copyInformationTableModel = new CopyInformationTableModel();
         this.copyInformationTable.setModel(copyInformationTableModel);
 
+        addRepaintOnScrollEvent();
         jPanel.add(jScrollPane1);
         jScrollPane1.setViewportView(copyInformationTable);
 
@@ -98,6 +101,18 @@ public class CopyInformationTrackerFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         pack();
         setVisible(true);
+    }
+
+    private void addRepaintOnScrollEvent() {
+        // In Java 6 for Mac on El Capitan, the scroll event does not repaint the table contents correctly.
+        jScrollPane1.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            @Override
+            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+                if (!adjustmentEvent.getValueIsAdjusting()) {
+                    copyInformationTable.repaint();
+                }
+            }
+        });
     }
 
     private class CopyProgressInformer<CopyProgressInformation> implements ProgressInformer<ProgressInformation<CopyTrackInformation>> {

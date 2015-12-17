@@ -4,6 +4,7 @@ import com.gps.imp.utils.*;
 import com.gps.imp.utils.ui.LabelCell;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
+import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.vlcj.player.*;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
@@ -16,6 +17,8 @@ import com.gps.itunes.media.player.vlcj.ui.player.events.handler.NetworkFileOpen
 import com.gps.itunes.media.player.vlcj.ui.player.utils.GoToSpinnerDialog;
 import com.gps.itunes.media.player.vlcj.ui.player.utils.GotoValueSubmissionEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.utils.TrackTime;
+import com.gps.youtube.dl.YoutubeDL;
+import com.gps.youtube.dl.YoutubeDLResult;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -581,7 +584,27 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         String urlStr = url.toString();
 
         try {
+            String youtubeDLExecutable = fetchYoutubeDLExecutable();
+            YoutubeDLResult youtubeDLResult = YoutubeDL.fetchBest(youtubeDLExecutable, urlStr);
 
+            String retrievedTitle = youtubeDLResult.getTitle();
+            String retrievedUrl = youtubeDLResult.getUrl();
+            String retrievedFilename = youtubeDLResult.getFilename();
+            this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, retrievedTitle, retrievedTitle, retrievedFilename,
+                    retrievedUrl, true);
+
+            log.debug(youtubeDLResult);
+
+            addToNowPlayinglistAndStartPlaying();
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+            attemptFallbackUrlFetch(urlStr);
+        }
+    }
+
+    private void attemptFallbackUrlFetch(String urlStr) {
+        try {
             if(urlStr.toLowerCase().contains("youtube.com") || urlStr.toLowerCase().contains("youtu.be")) {
                 YoutubeLink youtubeLink = YoutubeUrlFetcher.getBest(YoutubeUrlFetcher.fetch(urlStr));
 
@@ -606,7 +629,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             JOptionPane.showMessageDialog(null, "Could not recognize URL. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
             log.error("Could not recognize URL.", ex);
         }
+    }
 
+    private String fetchYoutubeDLExecutable() {
+        return new File("").getAbsolutePath() + PropertyManager.getProperties().getProperty("youtube-dl-executable");
     }
 
     private void addToNowPlayinglistAndStartPlaying() {

@@ -21,7 +21,7 @@ public interface ProgressingTask<T extends TaskParams> {
      * @param t
      * @throws TaskExecutionException
      */
-    public void submitTask(final T t) throws TaskExecutionException;
+    void submitTask(final T t) throws TaskExecutionException;
 
     /**
      *
@@ -29,7 +29,7 @@ public interface ProgressingTask<T extends TaskParams> {
      *
      * @param t
      */
-    public void runTask(final T t);
+    void runTask(final T t);
 
     /**
      * Notifies task start. Init progress info when the task's progress is
@@ -37,7 +37,7 @@ public interface ProgressingTask<T extends TaskParams> {
      * task run.
      *
      */
-    public void notifyEventTrigger();
+    void notifyEventTrigger();
 
     /**
      *
@@ -46,14 +46,14 @@ public interface ProgressingTask<T extends TaskParams> {
      *
      * @param i
      */
-    public void notifyEventTrigger(final int i);
+    void notifyEventTrigger(final int i);
 
     /**
      *
      * Called after the task is completed. Sets the progress to complete.
      *
      */
-    public void notifyEventCompletion();
+    void notifyEventCompletion();
 
     /**
      *
@@ -61,5 +61,5 @@ public interface ProgressingTask<T extends TaskParams> {
      *
      * @param i
      */
-    public void setProgress(final int i);
+    void setProgress(final int i);
 }
