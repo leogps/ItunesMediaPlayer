@@ -50,8 +50,8 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                BASIC_LOGGER.log(Level.ALL, "Shutting down the application...");
-
+                LOG.debug("Shutting down the application...");
+                BASIC_LOGGER.log(Level.INFO, "Shutting down the application...");
             }
         }));
 

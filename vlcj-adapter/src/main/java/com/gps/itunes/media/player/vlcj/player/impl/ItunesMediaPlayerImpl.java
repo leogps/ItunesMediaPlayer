@@ -7,10 +7,7 @@ import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.vlcj.player.*;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
-import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
-import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
-import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListFrame;
-import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
+import com.gps.itunes.media.player.vlcj.ui.player.*;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
 import com.gps.itunes.media.player.vlcj.ui.player.events.handler.FileOpenEventHandler;
 import com.gps.itunes.media.player.vlcj.ui.player.events.handler.NetworkFileOpenEventHandler;
@@ -19,6 +16,8 @@ import com.gps.itunes.media.player.vlcj.ui.player.utils.GotoValueSubmissionEvent
 import com.gps.itunes.media.player.vlcj.ui.player.utils.TrackTime;
 import com.gps.youtube.dl.YoutubeDL;
 import com.gps.youtube.dl.YoutubeDLResult;
+import com.gps.youtube.dl.process.AsyncProcess;
+import com.gps.youtube.dl.process.AsyncProcessListener;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -582,10 +581,54 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         nowPlaylingList.clear();
 
         String urlStr = url.toString();
-
+        String youtubeDLExecutable = fetchYoutubeDLExecutable();
         try {
-            String youtubeDLExecutable = fetchYoutubeDLExecutable();
-            YoutubeDLResult youtubeDLResult = YoutubeDL.fetchBest(youtubeDLExecutable, urlStr);
+            AsyncProcess asyncProcess =
+                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
+            final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
+
+            asyncProcess.registerListener(new AsyncProcessListener() {
+                public void onSuccess(AsyncProcess process) {
+                    interruptableProcessDialog.close();
+                }
+
+                public void onFailure(AsyncProcess process) {
+                    interruptableProcessDialog.close();
+                }
+            });
+            asyncProcess.executeProcess();
+            interruptableProcessDialog.showDialog();
+        } catch (Exception ex) {
+            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+        }
+    }
+
+    private void handleYoutubeDLFailure(String message, Exception ex, String urlStr) {
+        JOptionPane.showMessageDialog(null, message, "Failed", JOptionPane.ERROR_MESSAGE);
+        log.error(message, ex);
+        attemptFallbackUrlFetch(urlStr);
+    }
+
+    private List<AsyncProcessListener> fetchDefaultFetchProcessListeners(final String urlStr) {
+        AsyncProcessListener asyncProcessListener = new AsyncProcessListener() {
+            public void onSuccess(AsyncProcess asyncProcess) {
+                if(!asyncProcess.isInterrupted()) {
+                    handleYoutubeDLCompletion(asyncProcess.getProcess(), urlStr);
+                }
+            }
+
+            public void onFailure(AsyncProcess asyncProcess) {
+                if(!asyncProcess.isInterrupted()) {
+                    handleYoutubeDLFailure("Failed to retrieve media.", null, urlStr);
+                }
+            }
+        };
+        return wrapInList(asyncProcessListener);
+    }
+
+    private void handleYoutubeDLCompletion(Process process, String urlStr) {
+        try {
+            YoutubeDLResult youtubeDLResult = YoutubeDL.retrieveYoutubeDLResult(process);
 
             String retrievedTitle = youtubeDLResult.getTitle();
             String retrievedUrl = youtubeDLResult.getUrl();
@@ -596,11 +639,15 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             log.debug(youtubeDLResult);
 
             addToNowPlayinglistAndStartPlaying();
-
         } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-            attemptFallbackUrlFetch(urlStr);
+            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
         }
+    }
+
+    private static List wrapInList(Object object) {
+        List list = new ArrayList();
+        list.add(object);
+        return list;
     }
 
     private void attemptFallbackUrlFetch(String urlStr) {

@@ -1,6 +1,6 @@
 package com.gps.itunes.media.player.ui.fileutils;
 
-import com.gps.itunes.media.player.ui.utils.SingleQueuedThreadExecutor;
+import com.gps.imp.utils.SingleQueuedThreadExecutor;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;

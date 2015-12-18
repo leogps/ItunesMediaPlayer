@@ -1,8 +1,12 @@
 package com.gps.youtube.dl;
 
 import com.gps.youtube.dl.exception.YoutubeDLException;
+import com.gps.youtube.dl.process.AsyncProcess;
+import com.gps.youtube.dl.process.AsyncProcessImpl;
+import com.gps.youtube.dl.process.AsyncProcessListener;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by leogps on 12/17/15.
@@ -13,26 +17,31 @@ public class YoutubeDL {
         return fetchURL(youtubeDlExecutable, "best", input);
     }
 
+    public static AsyncProcess fetchBestAsyncProcess(String youtubeDlExecutable, String input,
+                                              List<AsyncProcessListener> asyncProcessListenerList) throws IOException {
+        String[] retrievalCommand = buildRetrievalCommand(youtubeDlExecutable, "best", input);
+        AsyncProcess asyncProcess = new AsyncProcessImpl(retrievalCommand);
+        asyncProcess.registerListeners(asyncProcessListenerList);
+        return asyncProcess;
+    }
+
     private static YoutubeDLResult fetchURL(String youtubeDlExecutable, String format, String input) throws InterruptedException, IOException, YoutubeDLException {
-        ProcessBuilder builder = new ProcessBuilder(
-                youtubeDlExecutable,
-                "--get-title",
-                "--get-url",
-                "--get-filename",
-                "-f",
-                format,
-                input);
+        String[] command = buildRetrievalCommand(youtubeDlExecutable, format, input);
+        ProcessBuilder builder = new ProcessBuilder(command);
         builder.redirectErrorStream(true);
         Process process = builder.start();
 
-        //FIXME: Timeout after sometime.
         process.waitFor();
 
+        return retrieveYoutubeDLResult(process);
+    }
+
+    public static YoutubeDLResult retrieveYoutubeDLResult(Process process) throws IOException, YoutubeDLException {
         String result = retrieveOutput(process);
         String error = retrieveErrorOutput(process);
 
         if(process.exitValue() != 0) {
-            throw new YoutubeDLException("Exit value returned: " +  process.exitValue());
+            throw new YoutubeDLException("Failed to retrieve media. Exit value returned : " +  process.exitValue());
         }
 
         if(result != null) {
@@ -45,6 +54,18 @@ public class YoutubeDL {
         }
 
         return new YoutubeDLResult(null, null, null, error);
+    }
+
+    private static String[] buildRetrievalCommand(String youtubeDlExecutable, String format, String input) {
+        return new String[]{
+                youtubeDlExecutable,
+                "--get-title",
+                "--get-url",
+                "--get-filename",
+                "-f",
+                format,
+                input
+            };
     }
 
     private static String retrieveFilename(String[] resultArray) {
