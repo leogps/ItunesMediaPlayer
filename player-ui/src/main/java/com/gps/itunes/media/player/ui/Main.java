@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -86,13 +87,13 @@ public class Main {
                 try {
 
                     splashAnimator.renderSplashFrame(15, "Reading properties...");
-                    Properties properties = PropertyManager.getProperties();
+                    Map<String, String> configurationMap = PropertyManager.getConfigurationMap();
 
                     splashAnimator.renderSplashFrame(20, "Logging properties...");
                     LOG.debug("Dumping properties read: ");
-                    for(Object keyObj : properties.keySet()) {
+                    for(Object keyObj : configurationMap.keySet()) {
                         String key = (String) keyObj;
-                        LOG.debug(key + ": " + properties.getProperty(key));
+                        LOG.debug(key + ": " + configurationMap.get(key));
                     }
 
                     splashAnimator.renderSplashFrame(20, "Initializing UI Frames...");

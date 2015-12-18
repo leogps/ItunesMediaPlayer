@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ItunesMediaPlayer</artifactId>
         <groupId>com.gps.imp</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,17 +17,22 @@
         <dependency>
             <groupId>com.gps.ilp</groupId>
             <artifactId>parser</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.gps.ilp</groupId>
             <artifactId>utils</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.gps.imp</groupId>
             <artifactId>vlcj-adapter</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gps.imp</groupId>
+            <artifactId>dto</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- ui deps -->
@@ -46,13 +51,6 @@
             <artifactId>forms_rt</artifactId>
             <version>7.0.3</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.gps.imp</groupId>
-            <artifactId>dto</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
 
     <build>

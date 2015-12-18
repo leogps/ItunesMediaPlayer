@@ -7,6 +7,7 @@ package com.gps.itunes.media.player.ui.tasks;
 import com.gps.itunes.lib.exceptions.FileCopyException;
 import com.gps.itunes.lib.exceptions.InvalidPlaylistException;
 import com.gps.itunes.lib.items.playlists.Playlist;
+import com.gps.itunes.lib.parser.ItunesLibraryParsedData;
 import com.gps.itunes.lib.tasks.progressinfo.CopyTrackFailureInformation;
 import com.gps.itunes.lib.tasks.progressinfo.ProgressTracker;
 import com.gps.itunes.media.player.ui.controller.MajorTaskInfo;
@@ -33,6 +34,7 @@ public class PlaylistCopier extends ProgressHandler {
 
     private final JTable playlistTable;
     private final LibraryParser parser;
+    private final ItunesLibraryParsedData itunesLibraryParsedData;
     private static org.apache.log4j.Logger log =
             org.apache.log4j.Logger.getLogger(PlaylistCopier.class);
 
@@ -43,9 +45,11 @@ public class PlaylistCopier extends ProgressHandler {
     private final List<ProgressTracker> progressTrackerList = new ArrayList<ProgressTracker>();
 
     public PlaylistCopier(final LibraryParser parser,
+                          final ItunesLibraryParsedData itunesLibraryParsedData,
             final JTable playlistTable, final JProgressBar progressBar, boolean analyzeDuplicates) {
         super(progressBar, TaskType.MAJOR_TASK);
         this.parser = parser;
+        this.itunesLibraryParsedData = itunesLibraryParsedData;
         this.playlistTable = playlistTable;
         this.analyzeDuplicates = analyzeDuplicates;
     }
@@ -82,7 +86,7 @@ public class PlaylistCopier extends ProgressHandler {
 
                 try {
                     parser.copyPlaylists(playlist.getPlaylistId(), cpParams.getCopyDestFolder(),
-                            currentProgressTrackerList, analyzeDuplicates);
+                            currentProgressTrackerList, analyzeDuplicates, itunesLibraryParsedData);
                 } catch (InvalidPlaylistException e) {
                     JOptionPane.showMessageDialog(null,
                             "Invalid playlist found: " + e.getLocalizedMessage(),

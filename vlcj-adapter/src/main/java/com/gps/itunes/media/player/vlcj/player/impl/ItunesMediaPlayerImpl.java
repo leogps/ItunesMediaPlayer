@@ -632,7 +632,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     private String fetchYoutubeDLExecutable() {
-        return new File("").getAbsolutePath() + PropertyManager.getProperties().getProperty("youtube-dl-executable");
+        return new File("").getAbsolutePath() + PropertyManager.getConfigurationMap().get("youtube-dl-executable");
     }
 
     private void addToNowPlayinglistAndStartPlaying() {

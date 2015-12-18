@@ -5,6 +5,7 @@
 package com.gps.itunes.media.player.ui.tasks;
 
 import com.gps.itunes.lib.items.playlists.Playlist;
+import com.gps.itunes.lib.parser.ItunesLibraryParsedData;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
 import com.gps.itunes.media.player.ui.handlers.ProgressHandler;
 import com.gps.itunes.media.player.dto.PlaylistHolder;
@@ -26,13 +27,13 @@ public class PlaylistLoader extends ProgressHandler{
     
     private final JTable playlistTable;
     
-    private final LibraryParser parser;
+    private final ItunesLibraryParsedData itunesLibraryParsedData;
     
     
-    public PlaylistLoader(final LibraryParser parser, final JProgressBar progressBar,
+    public PlaylistLoader(final ItunesLibraryParsedData itunesLibraryParsedData, final JProgressBar progressBar,
             final JTable playlistTable){
         super(progressBar, TaskType.MAJOR_TASK);
-        this.parser = parser;
+        this.itunesLibraryParsedData = itunesLibraryParsedData;
         this.playlistTable = playlistTable;
     }
     
@@ -45,8 +46,7 @@ public class PlaylistLoader extends ProgressHandler{
         model.clear();
         
         try {
-            
-            final Playlist plist[] = parser.getAllPlaylists();
+            final Playlist plist[] = itunesLibraryParsedData.getAllPlaylists();
             
             for(final Playlist playlist : plist){
                 model.addRow(new PlaylistHolder[]{new PlaylistHolder(playlist)});

@@ -7,7 +7,7 @@ package com.gps.itunes.media.player.ui.tasks;
 import com.gps.imp.utils.Constants;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
-import com.gps.itunes.lib.tasks.LibraryParser;
+import com.gps.itunes.lib.parser.ItunesLibraryParsedData;
 import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
 import com.gps.imp.utils.ui.LabelCell;
@@ -49,18 +49,19 @@ public class TracksLoader extends ProgressHandler {
     private final JTable playlistTable;
     private final JTable tracksTable;
     private final JMenuItem copyPlaylistsMenuItem;
-    private final LibraryParser parser;
+    private final ItunesLibraryParsedData itunesLibraryParsedData;
     private final String searchQuery;
     private final JLabel tracksTableHeadingLabel;
 
     private static final int TRACKS_TABLE_HEADING_LENGTH_LIMIT = 100;
 
-    public TracksLoader(final LibraryParser parser, final JProgressBar progressBar,
+    public TracksLoader(final ItunesLibraryParsedData itunesLibraryParsedData,
+                        final JProgressBar progressBar,
             final JTable tracksTable, final JTable playlistTable,
             final JMenuItem copyPlaylistsMenuItem,
             final JLabel tracksTableHeadingLabel) {
         super(progressBar, TaskType.SUB_TASK);
-        this.parser = parser;
+        this.itunesLibraryParsedData = itunesLibraryParsedData;
         this.tracksTable = tracksTable;
         this.playlistTable = playlistTable;
         this.copyPlaylistsMenuItem = copyPlaylistsMenuItem;
@@ -68,13 +69,13 @@ public class TracksLoader extends ProgressHandler {
         this.tracksTableHeadingLabel = tracksTableHeadingLabel;
     }
     
-    public TracksLoader(final LibraryParser parser, final JProgressBar progressBar,
+    public TracksLoader(final ItunesLibraryParsedData itunesLibraryParsedData, final JProgressBar progressBar,
             final JTable tracksTable, final JTable playlistTable,
             final JMenuItem copyPlaylistsMenuItem,
             final JLabel tracksTableHeadingLabel,
             final String searchQuery) {
         super(progressBar, TaskType.SUB_TASK);
-        this.parser = parser;
+        this.itunesLibraryParsedData = itunesLibraryParsedData;
         this.tracksTable = tracksTable;
         this.playlistTable = playlistTable;
         this.copyPlaylistsMenuItem = copyPlaylistsMenuItem;
@@ -149,7 +150,7 @@ public class TracksLoader extends ProgressHandler {
                 playlistList.add(playlist);
 
                 final Track[] tracks =
-                        parser.getPlaylistTracks(playlist.getPlaylistId());
+                        itunesLibraryParsedData.getPlaylistTracks(playlist.getPlaylistId());
 
 
                 for(final Track track : tracks){

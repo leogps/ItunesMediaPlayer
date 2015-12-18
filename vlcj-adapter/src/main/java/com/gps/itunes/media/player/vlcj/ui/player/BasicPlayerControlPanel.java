@@ -180,8 +180,8 @@ public class BasicPlayerControlPanel extends JPanel {
         String property = "show.volume.label";
         try {
 
-            showVolumeLabel = PropertyManager.getProperties().containsKey(property) &&
-                    Boolean.valueOf(PropertyManager.getProperties().getProperty(property));
+            showVolumeLabel = PropertyManager.getConfigurationMap().containsKey(property) &&
+                    Boolean.valueOf(PropertyManager.getConfigurationMap().get(property));
         } catch (Exception ex) {
             log.debug("Failed to read property: " + property);
         }

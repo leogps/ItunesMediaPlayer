@@ -8,6 +8,8 @@ import com.gps.imp.utils.Constants;
 import com.gps.itunes.lib.exceptions.LibraryParseException;
 import com.gps.itunes.lib.exceptions.NoChildrenException;
 import com.gps.itunes.lib.items.tracks.Track;
+import com.gps.itunes.lib.parser.ItunesLibraryParsedData;
+import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.lib.tasks.LibraryParser;
 import com.gps.itunes.media.player.ui.LibraryFileBrowser;
 import com.gps.itunes.media.player.ui.Main;
@@ -38,6 +40,7 @@ public class Controller {
             org.apache.log4j.Logger.getLogger(Controller.class);
     private final UIFrame uiFrame;
     private LibraryParser parser;
+    private ItunesLibraryParsedData itunesLibraryParsedData;
     
     private PlayerControlEventListener listener;
 
@@ -95,7 +98,10 @@ public class Controller {
                 && !libFileLocation.equals(Constants.EMPTY)) {
             try {
                 log.info("Loading library file: " + libFileLocation);
-                parser = new LibraryParser(libFileLocation);
+                parser = new LibraryParser();
+                parser.addParseConfiguration(
+                        PropertyManager.Property.LIBRARY_FILE_LOCATION_PROPERTY.getKey(),
+                        libFileLocation);
                 loadData();
             } catch (LibraryParseException lpe) {
                 log.error("Specified file is not a valid Itunes library file.", lpe);
@@ -108,7 +114,7 @@ public class Controller {
                 log.info("Loading library...");
                 parser = new LibraryParser();
                 loadData();
-                log.info("Playlists loaded: " + parser.getAllPlaylists().length);
+                log.info("Playlists loaded: " + itunesLibraryParsedData.getAllPlaylists().length);
             } catch (LibraryParseException lpe) {
                 log.debug(lpe.getMessage(), lpe);
                 if (lpe.isLibraryFileNotFound()) {
@@ -149,14 +155,16 @@ public class Controller {
      * @throws NoChildrenException
      * @throws TaskExecutionException
      */
-    public void loadData() throws NoChildrenException, TaskExecutionException {
+    public void loadData() throws NoChildrenException, TaskExecutionException, LibraryParseException {
+
+        itunesLibraryParsedData = parser.parse();
 
         uiFrame.getPlaylistTable().clearSelection();
 
         ((TracksTableModel) (uiFrame.getTracksTable().getModel())).clearTable(uiFrame.getTracksTable());
 
 
-        final PlaylistLoader playlistLoader = new PlaylistLoader(parser, uiFrame.getProgressBar(),
+        final PlaylistLoader playlistLoader = new PlaylistLoader(itunesLibraryParsedData, uiFrame.getProgressBar(),
                 uiFrame.getPlaylistTable());
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -181,7 +189,7 @@ public class Controller {
      */
     public void loadTracks() throws TaskExecutionException {
         
-        final TracksLoader tracksLoader = new TracksLoader(parser, uiFrame.getProgressBar(), uiFrame.getTracksTable(),
+        final TracksLoader tracksLoader = new TracksLoader(itunesLibraryParsedData, uiFrame.getProgressBar(), uiFrame.getTracksTable(),
                 uiFrame.getPlaylistTable(), uiFrame.getUiMenuBar().getCopyPlaylistsMenuItem(), uiFrame.getTracksTableHeadingLabel());
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -228,7 +236,7 @@ public class Controller {
                         params.setCopyDestFolder(copyDestFolder);
 
                         CopyInformationTrackerFrame copyInformationTrackerFrame =
-                                new CopyInformationTrackerFrame(new PlaylistCopier(parser, uiFrame.getPlaylistTable(),
+                                new CopyInformationTrackerFrame(new PlaylistCopier(parser, itunesLibraryParsedData, uiFrame.getPlaylistTable(),
                                         uiFrame.getProgressBar(), analyzeDuplicates));
 
                         copyInformationTrackerFrame.begin(params);
@@ -252,7 +260,7 @@ public class Controller {
      * @param searchQuery 
      */
     public void searchTracks(final String searchQuery) throws TaskExecutionException {
-        final TracksLoader tracksLoader = new TracksLoader(parser, uiFrame.getProgressBar(), uiFrame.getTracksTable(),
+        final TracksLoader tracksLoader = new TracksLoader(itunesLibraryParsedData, uiFrame.getProgressBar(), uiFrame.getTracksTable(),
                 uiFrame.getPlaylistTable(), uiFrame.getUiMenuBar().getCopyPlaylistsMenuItem(), uiFrame.getTracksTableHeadingLabel(), searchQuery);
         
         if (!MajorTaskInfo.isMajorTaskInProgress()) {

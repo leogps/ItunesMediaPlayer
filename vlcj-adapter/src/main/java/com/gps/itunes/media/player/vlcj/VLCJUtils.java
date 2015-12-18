@@ -21,12 +21,12 @@ public class VLCJUtils {
         //TODO: Use Bitness-checker to determine underlying OS architecture.
         // FIXME: Below will give JRE architecture not OS architecture.
         String path = new File("").getAbsolutePath() + (OSInfo.isArch64()
-                ? PropertyManager.getProperties().getProperty("vlc-intel-64")
-                : PropertyManager.getProperties().getProperty("vlc-intel-32"));
+                ? PropertyManager.getConfigurationMap().get("vlc-intel-64")
+                : PropertyManager.getConfigurationMap().get("vlc-intel-32"));
 
         String pluginsPath = new File("").getAbsolutePath() + (OSInfo.isArch64()
-                ? PropertyManager.getProperties().getProperty("vlc-intel-64-plugins")
-                : PropertyManager.getProperties().getProperty("vlc-intel-32-plugins"));
+                ? PropertyManager.getConfigurationMap().get("vlc-intel-64-plugins")
+                : PropertyManager.getConfigurationMap().get("vlc-intel-32-plugins"));
 
         uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
         NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
