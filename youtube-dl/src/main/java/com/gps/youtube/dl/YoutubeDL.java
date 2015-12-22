@@ -78,7 +78,9 @@ public class YoutubeDL {
     private static String retrieveURL(String[] resultArray) {
         if(resultArray != null) {
             for(String result : resultArray) {
-                if(result != null && (result.startsWith("http") || result.startsWith("rtmp"))) {
+                if(result != null && (result.startsWith("http") ||
+                        result.startsWith("rtmp") ||
+                        result.startsWith("ftp"))) {
                     return result;
                 }
             }

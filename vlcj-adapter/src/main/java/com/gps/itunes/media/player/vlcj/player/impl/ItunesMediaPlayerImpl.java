@@ -145,6 +145,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     private final FileOpenEventHandler fileOpenEventHandler = new FileOpenEventHandler();
 
+    private final AtomicBoolean playCurrentlyLoadedMedia = new AtomicBoolean();
+
     public ItunesMediaPlayerImpl(final PlayerControlPanel playerControlPanel) {
         mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : Constants.EMPTY;
         mediaPlayerFactory = new MediaPlayerFactory(mediaFactoryArgs);
@@ -204,6 +206,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     if(videoPlayer.isFullscreen()) {
                         pause();
                         videoPlayer.toggleFullScreen();
+                        playCurrentlyLoadedMedia.set(true);
                         playFrom(getPlayer().getPosition());
                     }
                 }
@@ -353,6 +356,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             log.debug("Fullscreen toggle requested.");
             pause();
             ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).toggleFullScreen();
+            playCurrentlyLoadedMedia.set(true);
             playFrom(getPlayer().getPosition());
         }
     }
@@ -736,6 +740,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     public void run() {
         try {
             if (this.currentTrack != null) {
+
                 log.debug("Signal count" + playSignal.getCount());
 
                 // Before playing the requested track, the previous one needs to be stopped; Aiming for single instance media player.
@@ -756,7 +761,6 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                         startFrom = 0;
                     }
 
-
                 } else {
 
                     // Hardware rendering available.
@@ -772,7 +776,19 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
                     try {
                         mediaPlayer.setPlaySubItems(true);
-                        mediaPlayer.playMedia(this.currentTrack.getLocation());
+                        if(playCurrentlyLoadedMedia.getAndSet(false)) {
+                            log.debug("Playing the currently loaded media...");
+                            mediaPlayer.play();
+                        } else {
+                            log.debug("Loading and playing new media...");
+                            mediaPlayer.playMedia(this.currentTrack.getLocation());
+                        }
+
+                        if (startFrom != 0) {
+                            mediaPlayer.setPosition(startFrom);
+                            startFrom = 0;
+                        }
+
                     } catch (Exception ex) {
                         log.error(ex.getMessage(), ex);
                         JOptionPane.showMessageDialog(null, "Could not play the file. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
@@ -780,11 +796,6 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                             playSignal.countDown();
                             playerControlPanel.setPaused();
                         }
-                    }
-
-                    if (startFrom != 0) {
-                        mediaPlayer.setPosition(startFrom);
-                        startFrom = 0;
                     }
                 }
 

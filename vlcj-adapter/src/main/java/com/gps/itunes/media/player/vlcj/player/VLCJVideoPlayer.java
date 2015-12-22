@@ -1,6 +1,5 @@
 package com.gps.itunes.media.player.vlcj.player;
 
-import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.media.player.vlcj.player.impl.DummyFXPlayerFrame;
@@ -11,14 +10,12 @@ import com.gps.itunes.media.player.vlcj.ui.player.events.*;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.DefaultFullScreenStrategy;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +32,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     protected FullscreenVideoPlayerFrame fullscreenFrame = new FullscreenVideoPlayerFrame();
     protected FXPlayerFrame fxPlayerFrame;
 
-    private static Logger log = Logger.getLogger(VLCJVideoPlayer.class);
+    private static final Logger LOG = Logger.getLogger(VLCJVideoPlayer.class);
 
     public VLCJVideoPlayer(MediaPlayerFactory mediaPlayerFactory) {
         this.mediaPlayerFactory = mediaPlayerFactory;
@@ -208,24 +205,14 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         isFullScreen.set(!isFullScreen.get());
 
         if(isFullScreen.get()) {
-            vFrame.setVisible(false);
-
-            fullscreenFrame.bringToFront(vFrame.getFrameCanvas());
-            showSlider();
+            vFrame.disableVideo();
+            fullscreenFrame.enableVideo(vFrame.getFrameCanvas());
         } else {
-            fullscreenFrame.hideInBackground();
-
-            vFrame.getVideoPanel().removeAll();
-            vFrame.getVideoPanel().add(vFrame.getFrameCanvas(), BorderLayout.CENTER);
-            vFrame.setVisible(true);
+            fullscreenFrame.disableVideo();
+            vFrame.enableVideo(vFrame.getFrameCanvas());
         }
 
-//        if(isFullScreen.get()) {
-//            vFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        }
-        if(player instanceof DirectMediaPlayer) {
-            //
-        } else {
+        if(player instanceof EmbeddedMediaPlayer) {
             ((EmbeddedMediaPlayer) (player)).setFullScreen(isFullScreen.get());
         }
     }

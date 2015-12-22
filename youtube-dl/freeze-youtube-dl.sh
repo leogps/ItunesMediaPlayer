@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+echo "Parsing args..."
+while echo $1 | grep -q ^-; do
+    eval $( echo $1 | sed 's/^-//' )=$2
+    shift
+    shift
+done
+
+echo "Disable freeze? " $disable_freeze
+if [[ $disable_freeze = true ]]; then
+    echo "Freeze disable requested. Quitting."
+    exit 0
+fi
+
 base_dir=$(pwd)
 parent_dir=$base_dir/../
 exec_dir="youtube-dl-exec"

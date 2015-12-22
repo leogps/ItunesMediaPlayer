@@ -123,4 +123,13 @@ public class VideoPlayerFrame extends JFrame {
         return basicPlayerControlPanel;
     }
 
+    public void disableVideo() {
+        setVisible(false);
+        getVideoPanel().removeAll();
+    }
+
+    public void enableVideo(Canvas frameCanvas) {
+        getVideoPanel().add(frameCanvas, BorderLayout.CENTER);
+        setVisible(true);
+    }
 }

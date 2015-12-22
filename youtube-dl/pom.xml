@@ -11,6 +11,14 @@
 
     <artifactId>youtube-dl</artifactId>
 
+    <description>
+        <![CDATA[
+            Usage:
+            Disable cloning youtube-dl and freezing it by passing:
+            mvn clean -Ddisable_freeze=true
+        ]]>
+    </description>
+
     <build>
         <plugins>
             <plugin>
@@ -25,6 +33,10 @@
                         </goals>
                         <configuration>
                             <executable>${basedir}/freeze-youtube-dl.sh</executable>
+                            <arguments>
+                                <argument>-disable_freeze</argument>
+                                <argument>${disable_freeze}</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

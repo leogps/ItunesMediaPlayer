@@ -122,18 +122,14 @@ public class FullscreenVideoPlayerFrame extends VideoPlayerFrame {
         //getStatusPanel().drawPaused();
     }
 
-    public void bringToFront(Canvas frameCanvas) {
-        getVideoPanel().removeAll();
-        getVideoPanel().add(frameCanvas, BorderLayout.CENTER);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setVisible(true);
-        //getFrameCanvas().requestFocus();
-        getFooterPanel().requestFocus();
-        reinitAutoHideLater();
+    public void enableVideo(Canvas frameCanvas) {
+        super.enableVideo(frameCanvas);
+        getFrameCanvas().requestFocus();
+        showSliderAndHideLater();
     }
 
-    public void hideInBackground() {
-        setVisible(false);
+    public void disableVideo() {
+        super.disableVideo();
         cancelAutoHideLaterTask();
     }
 }
