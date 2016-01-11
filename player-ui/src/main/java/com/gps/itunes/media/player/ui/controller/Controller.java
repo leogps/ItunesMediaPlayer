@@ -17,7 +17,7 @@ import com.gps.itunes.media.player.ui.UIFrame;
 import com.gps.itunes.media.player.ui.components.CopyInformationTrackerFrame;
 import com.gps.itunes.media.player.ui.components.CopyPlaylistConfirmDialog;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
-import com.gps.itunes.media.player.ui.fileutils.FileBrowserDialogListener;
+import com.gps.imp.utils.ui.fileutils.FileBrowserDialogListener;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
 import com.gps.itunes.media.player.ui.tasks.*;
 import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;

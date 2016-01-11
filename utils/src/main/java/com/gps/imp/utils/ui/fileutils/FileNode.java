@@ -1,5 +1,6 @@
-package com.gps.itunes.media.player.ui.fileutils;
+package com.gps.imp.utils.ui.fileutils;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.io.File;
@@ -10,10 +11,10 @@ import java.util.*;
 /**
  * Created by leogps on 10/10/15.
  */
-public class FileNode implements TreeNode {
+public class FileNode extends DefaultMutableTreeNode {
 
     private static final FileFilter NON_HIDDEN_FILE_FILTER = new FileFilter() {
-        @Override
+
         public boolean accept(File file) {
             return !file.isHidden();
         }
@@ -35,7 +36,7 @@ public class FileNode implements TreeNode {
 
 
     public TreeNode getChildAt(int i) {
-        if(file.isDirectory()) {
+        if(file != null && file.isDirectory()) {
             List<FileNode> children = getChildren();
             if(i < children.size()) {
                 return getChildren().get(i);
@@ -45,7 +46,7 @@ public class FileNode implements TreeNode {
     }
 
     public int getChildCount() {
-        if(file.isDirectory()) {
+        if(file != null && file.isDirectory()) {
             return getChildren().size();
         }
         return 0;
@@ -53,12 +54,15 @@ public class FileNode implements TreeNode {
 
 
     public TreeNode getParent() {
-        return new FileNode(file.getParentFile());
+        if(file != null && !file.getName().equals("__ROOT__")) {
+            // FIXME: Cannot blindly check the name. Maybe generate static random name and check for it here.
+            return new FileNode(file.getParentFile());
+        }
+        return null;
     }
 
-
     public int getIndex(TreeNode treeNode) {
-        if(file.isDirectory() && treeNode instanceof FileNode) {
+        if(file != null && file.isDirectory() && treeNode instanceof FileNode) {
             FileNode fileNode = (FileNode) treeNode;
             if (cachedChildren == null) {
                 buildChildIndex();
@@ -85,7 +89,7 @@ public class FileNode implements TreeNode {
 
 
     public Enumeration children() {
-        if(!file.isDirectory()) {
+        if(file == null || !file.isDirectory()) {
             return new Vector().elements();
         }
         Enumeration<FileNode> enumeration = new Vector<FileNode>(getChildren()).elements();
@@ -94,12 +98,15 @@ public class FileNode implements TreeNode {
 
     public List<FileNode> getChildren() {
         if(cachedChildren == null) {
-            cachedChildren = doRetrieveChildren();
+            cachedChildren = doRetrieveChildren(true);
         }
         return cachedChildren;
     }
 
-    private List<FileNode> doRetrieveChildren() {
+    private List<FileNode> doRetrieveChildren(boolean updateIndexMap) {
+        if(updateIndexMap) {
+            childIndexMap.clear();
+        }
         if(file.isDirectory()) {
             File[] children = file.listFiles(NON_HIDDEN_FILE_FILTER);
             if(children != null) {
@@ -108,7 +115,9 @@ public class FileNode implements TreeNode {
                     File child = children[index];
                     FileNode childNode = new FileNode(child);
                     childNodeList.add(childNode);
-                    childIndexMap.put(childNode, index);
+                    if(updateIndexMap) {
+                        childIndexMap.put(childNode, index);
+                    }
                 }
                 return childNodeList;
             }
@@ -150,34 +159,48 @@ public class FileNode implements TreeNode {
         }
     }
 
-    public TreePath getPathTo(File pathTo) throws IOException {
-        String[] pathTokenArray = pathTo.getCanonicalPath().split(File.separator);
+    @Override
+    public int hashCode() {
+        if(file == null) {
+            return -1;
+        }
+        return file.hashCode();
+    }
 
+    /**
+     * Pass null for @param: pathTo to get the path for the current node.
+     * @param pathTo
+     * @return
+     * @throws IOException
+     */
+    public TreePath getPathTo(File pathTo) throws IOException {
         List<FileNode> treePathList = new ArrayList<FileNode>();
         treePathList.add(this);
 
-        FileNode parentNode = this;
-        for(int i = 0; i < pathTokenArray.length; i++) {
-            boolean found = false;
-            List<FileNode> children = parentNode.getChildren();
+        if(pathTo != null) {
+            String[] pathTokenArray = pathTo.getCanonicalPath().split(File.separator);
+            FileNode parentNode = this;
+            for (int i = 0; i < pathTokenArray.length; i++) {
+                boolean found = false;
+                List<FileNode> children = parentNode.getChildren();
 
-            for(int j = 0; j < children.size(); j++) {
-                String pathToken = pathTokenArray[i];
-                FileNode fileNode = children.get(j);
-                if(fileNode.getFile().getName().equals(pathToken)) {
-                    found = true;
-                    parentNode = fileNode;
-                    treePathList.add(fileNode);
+                for (int j = 0; j < children.size(); j++) {
+                    String pathToken = pathTokenArray[i];
+                    FileNode fileNode = children.get(j);
+                    if (fileNode.getFile().getName().equals(pathToken)) {
+                        found = true;
+                        parentNode = fileNode;
+                        treePathList.add(fileNode);
 
+                        break;
+                    }
+                }
+                if (!found) {
                     break;
                 }
-            }
-            if(!found) {
-                break;
             }
         }
 
         return new TreePath(treePathList.toArray(new FileNode[treePathList.size()]));
     }
-
 }

@@ -3,7 +3,7 @@ package com.gps.youtube.dl;
 import com.gps.youtube.dl.exception.YoutubeDLException;
 import com.gps.youtube.dl.process.AsyncProcess;
 import com.gps.youtube.dl.process.AsyncProcessImpl;
-import com.gps.youtube.dl.process.AsyncProcessListener;
+import com.gps.imp.utils.ui.AsyncTaskListener;
 
 import java.io.*;
 import java.util.List;
@@ -18,10 +18,10 @@ public class YoutubeDL {
     }
 
     public static AsyncProcess fetchBestAsyncProcess(String youtubeDlExecutable, String input,
-                                              List<AsyncProcessListener> asyncProcessListenerList) throws IOException {
+                                              List<AsyncTaskListener> asyncTaskListenerList) throws IOException {
         String[] retrievalCommand = buildRetrievalCommand(youtubeDlExecutable, "best", input);
         AsyncProcess asyncProcess = new AsyncProcessImpl(retrievalCommand);
-        asyncProcess.registerListeners(asyncProcessListenerList);
+        asyncProcess.registerListeners(asyncTaskListenerList);
         return asyncProcess;
     }
 

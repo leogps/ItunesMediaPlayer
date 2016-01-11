@@ -66,4 +66,6 @@ public interface ItunesMediaPlayer extends Runnable {
     void registerPlayerControlEventListener(PlayerControlEventListener playerControlEventListener);
 
     boolean isCurrentTrack(long trackId);
+
+    void releaseResources();
 }

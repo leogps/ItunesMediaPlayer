@@ -11,6 +11,14 @@
 
     <artifactId>utils</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+            <version>7.0.3</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -18,6 +26,23 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <finalName>${project.groupId}-${project.artifactId}-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>ideauidesigner-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>javac2</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fork>true</fork>
+                    <debug>true</debug>
+                    <failOnError>true</failOnError>
                 </configuration>
             </plugin>
         </plugins>

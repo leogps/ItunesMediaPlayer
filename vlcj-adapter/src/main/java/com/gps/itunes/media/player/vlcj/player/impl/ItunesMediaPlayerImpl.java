@@ -1,15 +1,22 @@
 package com.gps.itunes.media.player.vlcj.player.impl;
 
 import com.gps.imp.utils.*;
+import com.gps.imp.utils.ui.AsyncTaskListener;
+import com.gps.imp.utils.ui.InterruptableAsyncTask;
+import com.gps.imp.utils.ui.InterruptableProcessDialog;
 import com.gps.imp.utils.ui.LabelCell;
+import com.gps.imp.utils.ui.fileutils.FileBrowserDialog;
+import com.gps.imp.utils.ui.fileutils.FileBrowserDialogListener;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.vlcj.player.*;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
-import com.gps.itunes.media.player.vlcj.ui.player.*;
+import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
+import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
+import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListFrame;
+import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
-import com.gps.itunes.media.player.vlcj.ui.player.events.handler.FileOpenEventHandler;
 import com.gps.itunes.media.player.vlcj.ui.player.events.handler.NetworkFileOpenEventHandler;
 import com.gps.itunes.media.player.vlcj.ui.player.utils.GoToSpinnerDialog;
 import com.gps.itunes.media.player.vlcj.ui.player.utils.GotoValueSubmissionEventListener;
@@ -17,12 +24,12 @@ import com.gps.itunes.media.player.vlcj.ui.player.utils.TrackTime;
 import com.gps.youtube.dl.YoutubeDL;
 import com.gps.youtube.dl.YoutubeDLResult;
 import com.gps.youtube.dl.process.AsyncProcess;
-import com.gps.youtube.dl.process.AsyncProcessListener;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.TrackInfo;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -30,7 +37,9 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,6 +47,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by leogps on 10/4/14.
  */
 public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
+
+    private static final int DISABLE_SUBTITLES = -1;
 
     /**
      * Helps in playing a fixed number of tracks at a single point of time.
@@ -143,7 +154,17 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     private final AtomicBoolean manualVolumeChange = new AtomicBoolean(false);
 
-    private final FileOpenEventHandler fileOpenEventHandler = new FileOpenEventHandler();
+    private final FileBrowserDialogListener mediaFileOpenEventListener = new FileBrowserDialogListener() { // TODO: Init once.
+        public void onFileSelected(File selectedFile) {
+            if (selectedFile != null) {
+                play(selectedFile);
+            }
+        }
+
+        public void onCancel() {
+
+        }
+    };
 
     private final AtomicBoolean playCurrentlyLoadedMedia = new AtomicBoolean();
 
@@ -181,21 +202,25 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             @Override
             public void onVolumeIncreaseCommand(int increasedBy) {
                 handleVolumeIncreasedEvent(increasedBy);
+                notifyOnVideoSurface("Volume increased");
             }
 
             @Override
             public void onVolumeDecreaseCommand(int decreasedBy) {
                 handleVolumeDecreasedEvent(decreasedBy);
+                notifyOnVideoSurface("Volume decreased");
             }
 
             @Override
             public void onFastForwardCommand() {
                 playerControlPanel.getSeekbar().setValue(playerControlPanel.getSeekbar().getValue() + 10);
+                notifyOnVideoSurface("Seeked forwards");
             }
 
             @Override
             public void onFastReverseCommand() {
                 playerControlPanel.getSeekbar().setValue(playerControlPanel.getSeekbar().getValue() - 10);
+                notifyOnVideoSurface("Seeked backwards");
             }
 
             @Override
@@ -234,24 +259,35 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             @Override
             public void onSeekDecreasedCommand(int decreasedBy) {
                 addToSeekValue(decreasedBy);
+                notifyOnVideoSurface("Seeked backwards");
             }
 
             @Override
             public void onSeekIncreasedCommand(int increasedBy) {
                 addToSeekValue(increasedBy);
+                notifyOnVideoSurface("Seeked forwards");
             }
 
             @Override
             public void onToggleSubtitles() {
                 if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer() ) {
                     VLCJVideoPlayer videoPlayer = ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER);
-                    videoPlayer.getPlayer().setSubTitleFile((String) null);
+                    if(videoPlayer.getPlayer().getSpu() == DISABLE_SUBTITLES) {
+                        // Subtitles disabled, enabling subtitles.
+                        videoPlayer.getPlayer().setSpu(getEmbeddedSubtitleFile(videoPlayer.getPlayer().getTrackInfo()));
+                    } else {
+                        // Subtitles enabled, disabling subtitles.
+                        videoPlayer.getPlayer().setSpu(DISABLE_SUBTITLES);
+                    }
+                    notifyOnVideoSurface("Subtitles toggled");
                 }
+
             }
 
             @Override
             public void onMuteToggleCommand() {
                 toggleMute();
+                notifyOnVideoSurface("Volume toggled");
             }
 
             private void addToSeekValue(int value) {
@@ -263,6 +299,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             @Override
             public void goTo() {
                 handleGoToEvent();
+                notifyOnVideoSurface("Seek complete");
             }
         };
 
@@ -316,6 +353,28 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             public void finished(ItunesMediaPlayer player, String location) {}
             public void onPlayProgressed() {}
         });
+    }
+
+    private void notifyOnVideoSurface(String message) {
+        if(currentTrack.isMovie()) {
+            ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).addOverlay(message, false);
+        }
+    }
+
+    private int getEmbeddedSubtitleFile(List<TrackInfo> trackInfoList) {
+        for(int index = 0; index < trackInfoList.size(); index++) {
+            TrackInfo trackInfo = trackInfoList.get(index);
+            if(trackInfo != null) {
+                String language = trackInfo.language();
+                if(language != null) {
+                    log.debug("Subtitle embedded in track: " + language);
+                    return index;
+                }
+            }
+        }
+
+        log.debug("No embedded subtitles file found in the track");
+        return DISABLE_SUBTITLES;
     }
 
     public void handleVolumeIncreasedEvent(int increasedBy) {
@@ -386,10 +445,11 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         if(videoPlayer.isFullscreen()) {
             videoPlayer.toggleFullScreen();
         }
-        File selectedFile = fileOpenEventHandler.handle();
-        if (selectedFile != null) {
-            play(selectedFile);
-        }
+
+        FileBrowserDialog fileBrowserDialog = new FileBrowserDialog(null, "Open Media file to play...", null);
+        fileBrowserDialog.registerFileBrowserDialogListener(mediaFileOpenEventListener);
+        fileBrowserDialog.pack();
+        fileBrowserDialog.setVisible(true);
     }
 
     private void attachVolumeSyncEvents() {
@@ -591,16 +651,16 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
             final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
 
-            asyncProcess.registerListener(new AsyncProcessListener() {
-                public void onSuccess(AsyncProcess process) {
+            asyncProcess.registerListener(new AsyncTaskListener() {
+                public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
                     interruptableProcessDialog.close();
                 }
 
-                public void onFailure(AsyncProcess process) {
+                public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
                     interruptableProcessDialog.close();
                 }
             });
-            asyncProcess.executeProcess();
+            asyncProcess.execute();
             interruptableProcessDialog.showDialog();
         } catch (Exception ex) {
             handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
@@ -613,21 +673,22 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         attemptFallbackUrlFetch(urlStr);
     }
 
-    private List<AsyncProcessListener> fetchDefaultFetchProcessListeners(final String urlStr) {
-        AsyncProcessListener asyncProcessListener = new AsyncProcessListener() {
-            public void onSuccess(AsyncProcess asyncProcess) {
-                if(!asyncProcess.isInterrupted()) {
+    private List<AsyncTaskListener> fetchDefaultFetchProcessListeners(final String urlStr) {
+        AsyncTaskListener asyncTaskListener = new AsyncTaskListener() {
+            public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
+                if(!interruptableAsyncTask.isInterrupted()) {
+                    AsyncProcess asyncProcess = (AsyncProcess) interruptableAsyncTask;
                     handleYoutubeDLCompletion(asyncProcess.getProcess(), urlStr);
                 }
             }
 
-            public void onFailure(AsyncProcess asyncProcess) {
-                if(!asyncProcess.isInterrupted()) {
+            public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
+                if(!interruptableAsyncTask.isInterrupted()) {
                     handleYoutubeDLFailure("Failed to retrieve media.", null, urlStr);
                 }
             }
         };
-        return wrapInList(asyncProcessListener);
+        return wrapInList(asyncTaskListener);
     }
 
     private void handleYoutubeDLCompletion(Process process, String urlStr) {
@@ -739,7 +800,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      */
     public void run() {
         try {
-            if (this.currentTrack != null) {
+            if (this.currentTrack != null && this.currentTrack.getLocation() != null) {
 
                 log.debug("Signal count" + playSignal.getCount());
 
@@ -1085,6 +1146,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             return currentTrack.getTrackId() == trackId;
         }
         return false;
+    }
+
+    public void releaseResources() {
+        for(MediaPlayer mediaPlayer : getAllPlayers()) {
+            mediaPlayer.release();
+        }
+        mediaPlayerFactory.release();
     }
 
 }

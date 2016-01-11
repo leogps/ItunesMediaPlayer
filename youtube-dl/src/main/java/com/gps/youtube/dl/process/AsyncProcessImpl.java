@@ -1,5 +1,7 @@
 package com.gps.youtube.dl.process;
 
+import com.gps.imp.utils.ui.AsyncTaskListener;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +13,14 @@ public class AsyncProcessImpl implements AsyncProcess {
 
     private final String[] command;
     private Process process;
-    private final List<AsyncProcessListener> asyncProcessListeners = new ArrayList<AsyncProcessListener>();
+    private final List<AsyncTaskListener> asyncTaskListeners = new ArrayList<AsyncTaskListener>();
     private boolean interrupted;
 
     public AsyncProcessImpl(String... command) {
         this.command = command;
     }
 
-    public Process executeProcess() throws IOException {
+    public Process execute() throws IOException {
         if(isExecuting()) {
             throw new IllegalStateException("Previously submitted process is still executing. Only one process is permitted.");
         }
@@ -41,18 +43,18 @@ public class AsyncProcessImpl implements AsyncProcess {
     }
 
     private void informFailure() {
-        for(AsyncProcessListener asyncProcessListener : asyncProcessListeners) {
-            asyncProcessListener.onFailure(this);
+        for(AsyncTaskListener asyncTaskListener : asyncTaskListeners) {
+            asyncTaskListener.onFailure(this);
         }
     }
 
     private void informSuccess() {
-        for(AsyncProcessListener asyncProcessListener : asyncProcessListeners) {
-            asyncProcessListener.onSuccess(this);
+        for(AsyncTaskListener asyncTaskListener : asyncTaskListeners) {
+            asyncTaskListener.onSuccess(this);
         }
     }
 
-    public void interruptProcess() {
+    public void interrupt() {
         if(isExecuting()) {
             process.destroy();
             interrupted = true;
@@ -63,8 +65,8 @@ public class AsyncProcessImpl implements AsyncProcess {
         return interrupted;
     }
 
-    public void registerListener(AsyncProcessListener asyncProcessListener) {
-        this.asyncProcessListeners.add(asyncProcessListener);
+    public void registerListener(AsyncTaskListener asyncTaskListener) {
+        this.asyncTaskListeners.add(asyncTaskListener);
     }
 
     public boolean isExecuting() {
@@ -78,8 +80,8 @@ public class AsyncProcessImpl implements AsyncProcess {
         return false;
     }
 
-    public void registerListeners(List<AsyncProcessListener> asyncProcessListenerList) {
-        this.asyncProcessListeners.addAll(asyncProcessListenerList);
+    public void registerListeners(List<AsyncTaskListener> asyncTaskListenerList) {
+        this.asyncTaskListeners.addAll(asyncTaskListenerList);
     }
 
     public Process getProcess() {

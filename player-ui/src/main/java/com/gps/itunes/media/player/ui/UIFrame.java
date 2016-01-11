@@ -2,15 +2,17 @@ package com.gps.itunes.media.player.ui;
 
 import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.JavaVersionUtils;
+import com.gps.imp.utils.ui.AsyncTaskListener;
+import com.gps.imp.utils.ui.InterruptableAsyncTask;
+import com.gps.imp.utils.ui.InterruptableProcessDialog;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
-import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.ui.components.TracksContextMenu;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
-import com.gps.itunes.media.player.ui.fileutils.FileBrowserTree;
-import com.gps.itunes.media.player.ui.fileutils.FileBrowserTreeEventListener;
-import com.gps.itunes.media.player.ui.fileutils.FileNode;
+import com.gps.imp.utils.ui.fileutils.FileBrowserTree;
+import com.gps.imp.utils.ui.fileutils.FileBrowserTreeEventListener;
+import com.gps.imp.utils.ui.fileutils.FileNode;
 import com.gps.itunes.media.player.ui.handlers.StatusMessageWriter;
 import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
@@ -30,8 +32,10 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
+import javax.swing.ImageIcon;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -92,6 +96,8 @@ public class UIFrame extends JFrame {
     private JPanel fileBrowserHeaderPanel;
     private JLabel fileBrowserHeaderLabel;
     private FileBrowserTree fileBrowserTree;
+    private JLabel refreshLabel;
+    private JPanel fileBrowserTreePanel;
 
     private List<UIFrameEventListener> uiFrameEventListenerList = new ArrayList<UIFrameEventListener>();
 
@@ -101,6 +107,11 @@ public class UIFrame extends JFrame {
     private UIMenuBar uiMenuBar;
 
     private PlayerKeyEventListener playerKeyEventListener;
+
+    // Refresh Icons
+    private static final Icon refreshIconBlue = new ImageIcon(UIFrame.class.getClassLoader().getResource("images/refresh-icon-blue.png"));
+    private static final Icon refreshIconGreen = new ImageIcon(UIFrame.class.getClassLoader().getResource("images/refresh-icon-green.png"));
+    private static final Icon refreshIconRed = new ImageIcon(UIFrame.class.getClassLoader().getResource("images/refresh-icon-red.png"));
 
     public UIFrame() {
         super(resourceBundle.getString("title"));
@@ -116,7 +127,7 @@ public class UIFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(new Rectangle(0, 0, 860, 640));
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        setIconImage(fetchIconImage());
+        //setIconImage(fetchIconImage());
         setMinimumSize(new Dimension(850, 450));
         //setPreferredSize(new Dimension(1024, 660));
 
@@ -223,6 +234,110 @@ public class UIFrame extends JFrame {
             }
         });
 
+        refreshLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                FileSystemRefreshTask fileSystemRefreshTask = new FileSystemRefreshTask();
+                final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(fileSystemRefreshTask);
+
+                fileSystemRefreshTask.registerListener(new AsyncTaskListener() {
+                    @Override
+                    public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
+                        interruptableProcessDialog.close();
+                    }
+
+                    @Override
+                    public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
+                        interruptableProcessDialog.close();
+                        JOptionPane.showMessageDialog(null, "File System refresh failed.");
+                    }
+                });
+
+                fileSystemRefreshTask.execute();
+                interruptableProcessDialog.showDialog();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                refreshLabel.setIcon(refreshIconRed);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+                refreshLabel.setIcon(refreshIconGreen);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+                refreshLabel.setIcon(refreshIconBlue);
+            }
+        });
+    }
+
+    protected class FileSystemRefreshTask implements InterruptableAsyncTask {
+
+        private final InterruptableAsyncTask _this;
+
+        public FileSystemRefreshTask() {
+            _this = this;
+        }
+
+        private Runnable refreshTask = new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    final TreePath selectedPath = fileBrowserTree.getCurrentSelectionPath();
+                    fileBrowserTree.refresh();
+
+                    if(selectedPath != null) {
+                        fileBrowserTree.select(selectedPath);
+                        fileBrowserTree.getJFileTree().expandPathAsync(selectedPath, new FileBrowserTree.JFileTreeNodeExpansionProcessor() {
+                            @Override
+                            public void onNodeExpansion() {
+                                fileBrowserTree.getJFileTree().scrollPathToVisible(selectedPath);
+                                for(AsyncTaskListener asyncTaskListener : asyncTaskListenerList) {
+                                    asyncTaskListener.onSuccess(_this);
+                                }
+                            }
+                        });
+                    }
+
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                    for(AsyncTaskListener asyncTaskListener : asyncTaskListenerList) {
+                        asyncTaskListener.onFailure(_this);
+                    }
+                }
+            }
+        };
+        private Thread executableThread;
+        private final List<AsyncTaskListener> asyncTaskListenerList = new ArrayList<AsyncTaskListener>();
+
+        public void execute() {
+            if(executableThread != null && executableThread.isAlive()) {
+                throw new IllegalStateException("A previously submitted task is still getting executed.");
+            }
+            executableThread = new Thread(refreshTask);
+            executableThread.start();
+        }
+
+        @Override
+        public void registerListener(AsyncTaskListener asyncTaskListener) {
+            asyncTaskListenerList.add(asyncTaskListener);
+        }
+
+        @Override
+        public void interrupt() {
+            if(executableThread != null & executableThread.isAlive()) {
+                executableThread.interrupt();
+            }
+        }
+
+        @Override
+        public boolean isInterrupted() {
+            return executableThread.isInterrupted();
+        }
     }
 
     /**
@@ -490,7 +605,7 @@ public class UIFrame extends JFrame {
      * @return
      */
     private static Image fetchIconImage() {
-        return new ImageIcon(resourceBundle.getString("icon")).getImage();
+        return new ImageIcon(resourceBundle.getString("imp")).getImage();
     }
 
     private void emailLinkHandler(MouseEvent evt) {
@@ -656,7 +771,6 @@ public class UIFrame extends JFrame {
                 }
             }
         });
-
     }
 
     private static final Color ALTERNATE_COLOR = new Color(252, 242, 206);

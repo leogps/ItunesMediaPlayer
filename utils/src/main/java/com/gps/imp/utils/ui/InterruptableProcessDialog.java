@@ -1,6 +1,4 @@
-package com.gps.itunes.media.player.vlcj.ui.player;
-
-import com.gps.youtube.dl.process.AsyncProcess;
+package com.gps.imp.utils.ui;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -11,10 +9,10 @@ public class InterruptableProcessDialog extends JDialog {
     private JLabel dialogText;
     private JProgressBar progressBar1;
 
-    private final AsyncProcess asyncProcess;
+    private final InterruptableAsyncTask asyncTask;
 
-    public InterruptableProcessDialog(final AsyncProcess asyncProcess) {
-        this.asyncProcess = asyncProcess;
+    public InterruptableProcessDialog(final InterruptableAsyncTask asyncTask) {
+        this.asyncTask = asyncTask;
         setContentPane(contentPane);
         setModal(true);
 
@@ -43,7 +41,7 @@ public class InterruptableProcessDialog extends JDialog {
     }
 
     private void onCancel() {
-        asyncProcess.interruptProcess();
+        asyncTask.interrupt();
         dispose();
     }
 

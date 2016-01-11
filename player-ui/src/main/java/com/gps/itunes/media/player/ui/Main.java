@@ -50,6 +50,11 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
+                LOG.debug("Shutting down initiated...");
+                if(itunesMediaPlayer != null) {
+                    LOG.debug("Releasing Media Player resources...");
+                    itunesMediaPlayer.releaseResources();
+                }
                 LOG.debug("Shutting down the application...");
                 BASIC_LOGGER.log(Level.INFO, "Shutting down the application...");
             }

@@ -19,6 +19,14 @@
         ]]>
     </description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.gps.imp</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

@@ -293,17 +293,52 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="977c7" class="javax.swing.JLabel" binding="fileBrowserHeaderLabel">
+                  <grid id="fbc19" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints/>
-                    <properties>
-                      <text resource-bundle="ui" key="filebrowser.header.label"/>
-                    </properties>
-                  </component>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="977c7" class="javax.swing.JLabel" binding="fileBrowserHeaderLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <text resource-bundle="ui" key="filebrowser.header.label"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                  <grid id="ecbd3" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
+                    <constraints/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="f62c9" class="javax.swing.JLabel" binding="refreshLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                        </constraints>
+                        <properties>
+                          <icon value="images/refresh-icon-blue.png"/>
+                          <text value=""/>
+                          <toolTipText resource-bundle="ui" key="filebrowser.refresh"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
                 </children>
               </grid>
-              <nested-form id="60c22" form-file="com/gps/itunes/media/player/ui/fileutils/FileBrowserTree.form" binding="fileBrowserTree" custom-create="true">
+              <grid id="a764e" binding="fileBrowserTreePanel" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints border-constraint="Center"/>
-              </nested-form>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <nested-form id="60c22" form-file="com/gps/imp/utils/ui/fileutils/FileBrowserTree.form" binding="fileBrowserTree" custom-create="true">
+                    <constraints border-constraint="Center"/>
+                  </nested-form>
+                </children>
+              </grid>
             </children>
           </grid>
         </children>

@@ -1,4 +1,4 @@
-package com.gps.itunes.media.player.ui.fileutils;
+package com.gps.imp.utils.ui.fileutils;
 
 import com.gps.imp.utils.SingleQueuedThreadExecutor;
 import org.apache.log4j.Logger;
@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class FileBrowserTree extends JPanel {
     private JPanel wrapperPanel;
     private JPanel contentPanel;
     private JFileChooser fileChooser = new JFileChooser();
-    private final String userRequestedFilePath;
+    private String userRequestedFilePath;
 
     private FileNode rootNode;
 
@@ -74,10 +75,13 @@ public class FileBrowserTree extends JPanel {
     }
 
     private FileNode getFileNodeFromSelectionPath(TreePath selectionPath) {
-        return (FileNode) selectionPath.getLastPathComponent();
+        if(selectionPath != null) {
+            return (FileNode) selectionPath.getLastPathComponent();
+        }
+        return null;
     }
 
-    private TreePath getCurrentSelectionPath() {
+    public TreePath getCurrentSelectionPath() {
         TreePath[] selectedTreePath = getFileTree().getSelectionPaths();
         if (selectedTreePath != null && selectedTreePath.length > 0) {
             TreePath selectionPath = selectedTreePath[selectedTreePath.length - 1];
@@ -92,14 +96,15 @@ public class FileBrowserTree extends JPanel {
 
     private void expandAndScrollTo(final TreePath selectionPath) {
         getJFileTree().expandPathAsync(selectionPath, new JFileTreeNodeExpansionProcessor() {
-            @Override
+
             public void onNodeExpansion() {
                 getJFileTree().scrollPathToVisible(selectionPath);
+                LOG.debug("Node expanded: " + selectionPath);
             }
         });
     }
 
-    private JFileTree getJFileTree() {
+    public JFileTree getJFileTree() {
         return (JFileTree) getFileTree();
     }
 
@@ -107,14 +112,53 @@ public class FileBrowserTree extends JPanel {
         fileTree = new JFileTree();
 
         SwingUtilities.invokeLater(new Runnable() {
-            @Override
+
             public void run() {
-                initializeComponents();
+
+                fileTree.getSelectionModel().setSelectionMode(selectionMode);
+
+                initializeComponents(null);
+
+                fileTree.setCellRenderer(new DefaultTreeCellRenderer() {
+
+                    @Override
+                    public Component getTreeCellRendererComponent(JTree tree,
+                                                                  Object value, boolean selected, boolean expanded,
+                                                                  boolean leaf, int row, boolean hasFocus) {
+                        Component _this = super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+                        FileNode node = (FileNode) value;
+                        if (fileChooser == null) {
+                            fileChooser = new JFileChooser();
+                        }
+                        if(node != rootNode) {
+                            Icon icon = fileChooser.getUI().getFileView(fileChooser).getIcon(node.getFile());
+                            setIcon(icon);
+                        }
+
+                        String fileName = FileSystemView.getFileSystemView().getSystemDisplayName(node.getFile());
+                        setText(fileName);
+                        setToolTipText(fileName);
+                        return _this;
+                    }
+                });
+
+                makeDefaultSelection();
             }
         });
     }
 
-    private class JFileTree extends JTree {
+    public Enumeration<TreePath> getExpandedPaths() throws IOException {
+        TreePath rootPath = rootNode.getPathTo(null);
+        return getFileTree().getExpandedDescendants(rootPath);
+    }
+
+    public FileNode getCurrentSelectedNode() {
+        TreePath previouslySelectedPath = getCurrentSelectionPath();
+        FileNode selectedNode = getFileNodeFromSelectionPath(previouslySelectedPath);
+        return selectedNode;
+    }
+
+    public class JFileTree extends JTree {
 
         private SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
 
@@ -122,7 +166,7 @@ public class FileBrowserTree extends JPanel {
             final JTree thisTree = this;
 
             singleQueuedThreadExecutor.terminateExistingAndInvokeLater(new Runnable() {
-                @Override
+
                 public void run() {
                     thisTree.expandPath(treePath);
                     if (nodeExpansionProcessors != null && nodeExpansionProcessors.length > 0) {
@@ -135,40 +179,19 @@ public class FileBrowserTree extends JPanel {
         }
     }
 
-    private interface JFileTreeNodeExpansionProcessor {
+    public interface JFileTreeNodeExpansionProcessor {
         void onNodeExpansion();
     }
 
-    private void initializeComponents() {
+    private void initializeComponents(Enumeration<TreePath> expandablePaths) {
         final String ROOT_FILE_NAME = "__ROOT__";
         File virtualRootFile = new VirtualFolder(ROOT_FILE_NAME);
         rootNode = new FileNode(virtualRootFile);
-
         fileTree.setModel(new DefaultTreeModel(rootNode));
-        fileTree.getSelectionModel().setSelectionMode(selectionMode);
+        expandPaths(expandablePaths);
+    }
 
-        fileTree.setCellRenderer(new DefaultTreeCellRenderer() {
-
-            @Override
-            public Component getTreeCellRendererComponent(JTree tree,
-                                                          Object value, boolean selected, boolean expanded,
-                                                          boolean leaf, int row, boolean hasFocus) {
-                super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
-                FileNode node = (FileNode) value;
-                if (fileChooser == null) {
-                    fileChooser = new JFileChooser();
-                }
-                if(node != rootNode) {
-                    Icon icon = fileChooser.getUI().getFileView(fileChooser).getIcon(node.getFile());
-                    setIcon(icon);
-                }
-
-                String fileName = FileSystemView.getFileSystemView().getSystemDisplayName(node.getFile());
-                setText(fileName);
-                setToolTipText(fileName);
-                return this;
-            }
-        });
+    public void makeDefaultSelection() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
@@ -192,6 +215,35 @@ public class FileBrowserTree extends JPanel {
                 expandAndScrollToFile(defaultFile);
             }
         });
+    }
+
+    public void select(TreePath treePath) {
+        fileTree.setSelectionPath(treePath);
+    }
+
+    public void expandPaths(Enumeration<TreePath> expandablePaths) {
+        if(expandablePaths != null) {
+            LOG.debug("Expanding paths...");
+            int count = 0; // FIXME: Make this static final. or move to properties.
+            // Only expanding top 10 paths to conserve memory.
+            while (expandablePaths.hasMoreElements() && ++count < 10) {
+                TreePath previouslyExpandedPath = expandablePaths.nextElement();
+                getFileTree().expandPath(previouslyExpandedPath);
+                LOG.debug("Expanded path: " + previouslyExpandedPath);
+            }
+        }
+    }
+
+    public void refresh() throws IOException {
+        LOG.debug("Refreshing file system...");
+
+        LOG.debug("Re-initializing file system tree...");
+        initializeComponents(null);
+        LOG.debug("Re-initializing file system tree completed.");
+    }
+
+    private DefaultTreeModel getTreeModel() {
+        return (DefaultTreeModel) fileTree.getModel();
     }
 
     private void expandAndScrollToFile(File file) {

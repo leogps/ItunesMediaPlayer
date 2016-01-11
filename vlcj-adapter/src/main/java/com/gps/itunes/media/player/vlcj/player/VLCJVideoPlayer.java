@@ -1,6 +1,7 @@
 package com.gps.itunes.media.player.vlcj.player;
 
 import com.gps.imp.utils.JavaVersionUtils;
+import com.gps.imp.utils.SingleQueuedThreadExecutor;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.media.player.vlcj.player.impl.DummyFXPlayerFrame;
 import com.gps.itunes.media.player.vlcj.player.impl.FXPlayerFrameImpl;
@@ -16,9 +17,12 @@ import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VLCJVideoPlayer implements VLCJPlayer {
@@ -31,6 +35,8 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     protected final List<SeekEventListener> seekEventListenerList = new ArrayList<SeekEventListener>();
     protected FullscreenVideoPlayerFrame fullscreenFrame = new FullscreenVideoPlayerFrame();
     protected FXPlayerFrame fxPlayerFrame;
+
+    private SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
 
     private static final Logger LOG = Logger.getLogger(VLCJVideoPlayer.class);
 
@@ -245,5 +251,34 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 
     public void playInFx(String location) {
         fxPlayerFrame.play(location);
+    }
+
+    public void addOverlay(String message, boolean sticky) {
+        final EmbeddedMediaPlayer embeddedMediaPlayer = ((EmbeddedMediaPlayer)(player));
+        embeddedMediaPlayer.setOverlay(getOverlayWindow(message));
+        embeddedMediaPlayer.enableOverlay(true);
+        if(!sticky) {
+            singleQueuedThreadExecutor.terminateExistingAndScheduleForLater(new Runnable() {
+                public void run() {
+                    embeddedMediaPlayer.setOverlay(null);
+                    embeddedMediaPlayer.enableOverlay(false);
+                }
+            }, 3000, TimeUnit.SECONDS);
+        }
+    }
+
+    private static Window getOverlayWindow(String message) {
+        final JWindow transparentWindow = new JWindow();
+
+        // Set basic window opacity if required - the window system must support WindowTranslucency (i.e. PERPIXEL_TRANSLUCENT)!
+        //transparentWindow.setOpacity(0.8f);
+        // White with transparent alpha channel - WindowTranslucency is required for translucency.
+        transparentWindow.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+
+        final JLabel superImposedLightweigtLabel = new JLabel(message, JLabel.CENTER);
+        superImposedLightweigtLabel.setOpaque(true);
+
+        transparentWindow.getContentPane().add(superImposedLightweigtLabel);
+        return transparentWindow;
     }
 }

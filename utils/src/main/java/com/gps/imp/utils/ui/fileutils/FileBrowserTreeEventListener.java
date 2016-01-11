@@ -1,4 +1,4 @@
-package com.gps.itunes.media.player.ui.fileutils;
+package com.gps.imp.utils.ui.fileutils;
 
 /**
  * Created by leogps on 10/11/15.

@@ -5,4 +5,4 @@ Pre-requisites:
 
 Usage:
 Disable cloning youtube-dl and freezing it by passing:
-mvn clean -Ddisable_freeze=true
+mvn clean install -Ddisable_freeze=true

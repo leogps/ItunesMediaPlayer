@@ -4,11 +4,10 @@
  */
 package com.gps.itunes.media.player.ui;
 
-import com.gps.itunes.media.player.ui.fileutils.FileBrowserDialog;
-import com.gps.itunes.media.player.ui.fileutils.FileBrowserDialogListener;
+import com.gps.imp.utils.ui.fileutils.FileBrowserDialog;
+import com.gps.imp.utils.ui.fileutils.FileBrowserDialogListener;
 
 import java.awt.Component;
-import java.io.File;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
