@@ -809,7 +809,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
                 resetSeekbar();
 
-                if(currentTrack.isMovie() && JavaVersionUtils.isGreaterThan6()) {
+                if(currentTrack.isMovie() && JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
 
                     VLCJVideoPlayer videoPlayer = ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER);
                     videoPlayer.setTitle(this.currentTrack.getName());
@@ -1058,7 +1058,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      */
     public MediaPlayer getCurrentPlayer() {
         if(currentTrack != null && currentTrack.isMovie()) {
-            if(JavaVersionUtils.isGreaterThan6()) {
+            if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
                 return ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).getFXPlayer();
             }
             return VLCJ_VIDEO_PLAYER.getPlayer();

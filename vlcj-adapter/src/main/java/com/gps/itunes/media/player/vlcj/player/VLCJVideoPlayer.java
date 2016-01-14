@@ -42,7 +42,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 
     public VLCJVideoPlayer(MediaPlayerFactory mediaPlayerFactory) {
         this.mediaPlayerFactory = mediaPlayerFactory;
-        if(JavaVersionUtils.isGreaterThan6()) {
+        if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
             fxPlayerFrame = new FXPlayerFrameImpl();
         } else {
             fxPlayerFrame = DummyFXPlayerFrame.getDummyInstance();
