@@ -13,3 +13,10 @@ Features:
 
 [License](http://creativecommons.org/licenses/by/4.0/legalcode)
 [License summary](http://creativecommons.org/licenses/by/4.0/)
+
+
+Known Limitations and Workarounds
+===================================
+
+Issue: On Linux, Splash screen interferes with vlcj initialization.
+Workaround: Start jvm with -DVLCJ_INITX=no 
