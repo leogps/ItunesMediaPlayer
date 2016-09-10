@@ -15,19 +15,6 @@
     <build>
         <plugins>
 
-            <!-- Cleaning archive directory. -->
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.basedir}/archive</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-
             <!-- Building MacOSX native App using the template. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -35,7 +22,7 @@
                 <configuration>
                     <descriptor>${project.parent.basedir}/MacOSX-App-Template/assembly.xml</descriptor>
                     <finalName>ItunesMediaPlayer.app</finalName>
-                    <outputDirectory>${project.basedir}/archive/${os.name}-${os.version}-${os.arch}/</outputDirectory>
+                    <outputDirectory>${project.basedir}/target/${os.name}-${os.version}-${os.arch}/</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -63,7 +50,7 @@
                             <arguments>
                                 <argument>-Rv</argument>
                                 <argument>../1.6.0.jdk</argument>
-                                <argument>archive/${os.name}-${os.version}-${os.arch}/ItunesMediaPlayer.app/Contents/MacOS/</argument>
+                                <argument>target/${os.name}-${os.version}-${os.arch}/ItunesMediaPlayer.app/Contents/MacOS/</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -71,6 +58,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
