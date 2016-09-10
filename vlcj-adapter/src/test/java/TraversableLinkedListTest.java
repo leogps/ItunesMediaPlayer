@@ -175,7 +175,7 @@ public class TraversableLinkedListTest {
         }
     }
 
-    @Test
+    @Test(enabled = false) // Disabling this as this is very resource hungry test case.
     public void testMultiThreadedRemove() {
         for(int i = 0; i < 50; i++) {
             doTestMultiThreadedRemove();

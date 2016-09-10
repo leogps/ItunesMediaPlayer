@@ -1,7 +1,5 @@
 package com.gps.itunes.media.player.ui.splash;
 
-import com.sun.javafx.applet.Splash;
-
 import java.awt.*;
 import java.util.concurrent.CountDownLatch;
 

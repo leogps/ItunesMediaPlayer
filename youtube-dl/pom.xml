@@ -33,7 +33,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
                 <executions>
-                    <execution><!-- Run our version calculation script -->
+                    <execution>
                         <id>freeze youtube-dl</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -49,8 +49,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>src/assembly/youtube-dl-frozen-exec.xml</descriptor>
+                    <finalName>youtube-dl-executable-${pom.version}-${os.name}-${os.version}-${os.arch}-${maven.build.timestamp}</finalName>
+                    <outputDirectory>${project.basedir}/youtube-dl-exec-frozen/</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-
 </project>

@@ -1,0 +1,42 @@
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.3 http://maven.apache.org/xsd/assembly-1.1.3.xsd">
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <fileSets>
+
+        <!-- Using Mac OSX native app template. -->
+        <fileSet>
+            <directory>${project.parent.basedir}/MacOSX-App-Template/ItunesMediaPlayer-Template.app/</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+
+        <!-- Using latest LibVLC. -->
+        <fileSet>
+            <directory>${project.parent.basedir}/LibVLC/macOs/intel-64_2.2.4</directory>
+            <outputDirectory>/Contents/MacOS/LibVLC/macOs/intel-64_2.2.4</outputDirectory>
+        </fileSet>
+
+        <!-- Using YouTube-DL. -->
+        <fileSet>
+            <directory>${project.parent.basedir}/youtube-dl-exec</directory>
+            <outputDirectory>/Contents/MacOS/youtube-dl-exec</outputDirectory>
+        </fileSet>
+
+        <!-- Using config. -->
+        <fileSet>
+            <directory>${project.parent.basedir}/config</directory>
+            <outputDirectory>/Contents/MacOS/config</outputDirectory>
+        </fileSet>
+
+    </fileSets>
+    <files>
+        <!-- Using the player-ui(with dependencies) file. -->
+        <file>
+            <source>${project.parent.basedir}/player-ui/target/ItunesMediaPlayer-jar-with-dependencies.jar</source>
+            <outputDirectory>/Contents/Java</outputDirectory>
+        </file>
+    </files>
+</assembly>

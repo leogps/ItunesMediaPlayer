@@ -3,6 +3,8 @@ package com.gps.itunes.media.player.ui;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
+import static com.gps.itunes.media.player.ui.UIFrame.resourceBundle;
+
 /**
  * Created by leogps on 11/27/14.
  */
@@ -27,62 +29,64 @@ public class UIMenuBar extends JMenuBar {
 
     private final JMenuItem vlcMenuItem;
 
+    private final JMenuItem aboutIMPMenuItem;
+
     public UIMenuBar() {
         super();
 
         // File Menu.
-        fileMenu = new JMenu("File");
-        fileMenu.getAccessibleContext().setAccessibleDescription(
-                "File operations");
+        fileMenu = new JMenu(resourceBundle.getString("menu.file"));
+        fileMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.file.description"));
 
         this.add(fileMenu);
 
-        openMenuItem = new JMenuItem("Open");
+        openMenuItem = new JMenuItem(resourceBundle.getString("menu.file.open"));
         openMenuItem.setMnemonic(KeyEvent.VK_O);
         fileMenu.add(openMenuItem);
 
-        openNetworkFileMenuItem = new JMenuItem("Open Network File");
+        openNetworkFileMenuItem = new JMenuItem(resourceBundle.getString("menu.file.network"));
         openMenuItem.setMnemonic(KeyEvent.VK_N);
         fileMenu.add(openNetworkFileMenuItem);
 
         // Actions Menu.
-        actionsMenu = new JMenu("Actions");
-        actionsMenu.getAccessibleContext().setAccessibleDescription(
-                "Library Operations");
+        actionsMenu = new JMenu(resourceBundle.getString("menu.actions"));
+        actionsMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.actions.description"));
 
         this.add(actionsMenu);
 
-        increaseVolumeMenuItem = new JMenuItem("Increase Volume");
-        decreaseVolumeMenuItem = new JMenuItem("Decrease Volume");
+        increaseVolumeMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.increase_volume"));
+        decreaseVolumeMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.decrease_volume"));
 
         actionsMenu.add(increaseVolumeMenuItem);
         actionsMenu.add(decreaseVolumeMenuItem);
 
         actionsMenu.addSeparator();
-        goToMenuItem = new JMenuItem("Go To");
+        goToMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.goto"));
         goToMenuItem.setMnemonic(KeyEvent.VK_G);
         actionsMenu.add(goToMenuItem);
 
-        reloadLibraryMenuItem = new JMenuItem("Reload Library");
+        reloadLibraryMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.reload"));
         reloadLibraryMenuItem.setMnemonic(KeyEvent.VK_R);
         actionsMenu.add(reloadLibraryMenuItem);
 
-        copyPlaylistsMenuItem = new JMenuItem("Copy Playlist(s)");
+        copyPlaylistsMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.copy_playlist"));
         copyPlaylistsMenuItem.setMnemonic(KeyEvent.VK_C);
         actionsMenu.add(copyPlaylistsMenuItem);
 
-        copyTracksMenuItem = new JMenuItem("Copy Tracks");
+        copyTracksMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.copy_track"));
         copyTracksMenuItem.setMnemonic(KeyEvent.VK_T);
         actionsMenu.add(copyTracksMenuItem);
 
         // About Menu
-        aboutMenu = new JMenu("About");
-        aboutMenu.getAccessibleContext().setAccessibleDescription(
-                "Library Operations");
+        aboutMenu = new JMenu(resourceBundle.getString("menu.about"));
+        aboutMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.about.description"));
         this.add(aboutMenu);
 
-        vlcMenuItem = new JMenuItem("VLC");
+        vlcMenuItem = new JMenuItem(resourceBundle.getString("menu.about.vlc"));
         aboutMenu.add(vlcMenuItem);
+
+        aboutIMPMenuItem = new JMenuItem(resourceBundle.getString("menu.about.imp"));
+        aboutMenu.add(aboutIMPMenuItem);
 
     }
 
@@ -128,5 +132,9 @@ public class UIMenuBar extends JMenuBar {
 
     public JMenuItem getVlcMenuItem() {
         return vlcMenuItem;
+    }
+
+    public JMenuItem getAboutIMPMenuItem() {
+        return aboutIMPMenuItem;
     }
 }

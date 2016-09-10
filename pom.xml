@@ -14,7 +14,6 @@
         <module>vlcj-adapter</module>
         <module>utils</module>
         <module>dto</module>
-        <module>youtube-dl</module>
     </modules>
 
     <dependencies>
@@ -38,5 +37,25 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <id>dev</id>
+            <modules>
+                <module>player-ui</module>
+                <module>vlcj-adapter</module>
+                <module>utils</module>
+                <module>dto</module>
+                <module>youtube-dl</module>
+                <module>archiver</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

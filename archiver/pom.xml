@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ItunesMediaPlayer</artifactId>
+        <groupId>com.gps.imp</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>archiver</artifactId>
+    <description>Archives the ItunesMediaPlayer project as Mac OSX native App using the app template.</description>
+
+    <build>
+        <plugins>
+
+            <!-- Cleaning archive directory. -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/archive</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- Building MacOSX native App using the template. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>${project.parent.basedir}/MacOSX-App-Template/assembly.xml</descriptor>
+                    <finalName>ItunesMediaPlayer.app</finalName>
+                    <outputDirectory>${project.basedir}/archive/${os.name}-${os.version}-${os.arch}/</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Copy JDK1.6. This has circular simlinks and the maven does not work well with simlinks in general. -->
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>copy-jdk</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>/bin/cp</executable>
+                            <arguments>
+                                <argument>-Rv</argument>
+                                <argument>../1.6.0.jdk</argument>
+                                <argument>archive/${os.name}-${os.version}-${os.arch}/ItunesMediaPlayer.app/Contents/MacOS/</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>

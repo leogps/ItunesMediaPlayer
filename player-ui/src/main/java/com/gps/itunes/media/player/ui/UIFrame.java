@@ -593,6 +593,27 @@ public class UIFrame extends JFrame {
             }
         });
 
+        uiMenuBar.getAboutIMPMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                StringBuffer message = new StringBuffer();
+                message.append(resourceBundle.getString("name"));
+                message.append(" ");
+                message.append(resourceBundle.getString("version"));
+
+                message.append("\n");
+                message.append("\n");
+
+                message.append("Author: " + resourceBundle.getString("author"));
+
+                message.append("\n");
+
+                message.append("Github: " + resourceBundle.getString("github"));
+
+                JOptionPane.showMessageDialog(null, message, "About Itunes Media Player", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
 
         this.setExtendedState(MAXIMIZED_BOTH);
 
