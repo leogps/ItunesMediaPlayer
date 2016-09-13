@@ -645,32 +645,44 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         nowPlaylingList.clear();
 
         String urlStr = url.toString();
-        String youtubeDLExecutable = fetchYoutubeDLExecutable();
-        try {
-            AsyncProcess asyncProcess =
-                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
-            final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
 
-            asyncProcess.registerListener(new AsyncTaskListener() {
-                public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
-                    interruptableProcessDialog.close();
-                }
-
-                public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
-                    interruptableProcessDialog.close();
-                }
-            });
-            asyncProcess.execute();
-            interruptableProcessDialog.showDialog();
-        } catch (Exception ex) {
-            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+        boolean videoURLFetchComplete = false;
+        if(isYoutubeVideo(urlStr)) {
+            videoURLFetchComplete = attemptYoutubeVideoUrlFetch(urlStr);
         }
+
+        if(!videoURLFetchComplete) {
+
+            String youtubeDLExecutable = fetchYoutubeDLExecutable();
+            try {
+                AsyncProcess asyncProcess =
+                        YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
+                final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
+
+                asyncProcess.registerListener(new AsyncTaskListener() {
+                    public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
+                        interruptableProcessDialog.close();
+                    }
+
+                    public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
+                        interruptableProcessDialog.close();
+                    }
+                });
+                asyncProcess.execute();
+                interruptableProcessDialog.showDialog();
+            } catch (Exception ex) {
+                handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+            }
+        }
+    }
+
+    private boolean isYoutubeVideo(String urlStr) {
+        return (urlStr.toLowerCase().contains("youtube.com") || urlStr.toLowerCase().contains("youtu.be"));
     }
 
     private void handleYoutubeDLFailure(String message, Exception ex, String urlStr) {
         JOptionPane.showMessageDialog(null, message, "Failed", JOptionPane.ERROR_MESSAGE);
         log.error(message, ex);
-        attemptFallbackUrlFetch(urlStr);
     }
 
     private List<AsyncTaskListener> fetchDefaultFetchProcessListeners(final String urlStr) {
@@ -715,9 +727,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         return list;
     }
 
-    private void attemptFallbackUrlFetch(String urlStr) {
+    private boolean attemptYoutubeVideoUrlFetch(String urlStr) {
         try {
-            if(urlStr.toLowerCase().contains("youtube.com") || urlStr.toLowerCase().contains("youtu.be")) {
+            if(isYoutubeVideo(urlStr)) {
                 YoutubeLink youtubeLink = YoutubeUrlFetcher.getBest(YoutubeUrlFetcher.fetch(urlStr));
 
                 urlStr = youtubeLink.getUrl();
@@ -730,6 +742,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             }
 
             addToNowPlayinglistAndStartPlaying();
+            return true;
 
         } catch (URLFetchException ex) {
             log.error("Could not recognize URL.", ex);
@@ -741,6 +754,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             JOptionPane.showMessageDialog(null, "Could not recognize URL. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
             log.error("Could not recognize URL.", ex);
         }
+        return false;
     }
 
     private String fetchYoutubeDLExecutable() {
