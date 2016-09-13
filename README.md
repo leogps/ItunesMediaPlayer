@@ -32,7 +32,16 @@ However, in order to update youtube-dl or to create the Mac OS X native app prog
     Java
         Maven (3.3.x is tested to work)
         Please see installing dependent library ItunesLibraryParser below.
+    
+YoutubeDL    
+    YoutubeDL project builds an executable for Linux/Mac OSX and also for Windows.
+    
+    Building on Mac OSX or Linux requires `CURL` to be available. The last few OSX comes with curl, some linux distributions may require this to be installed. 
         
+OR
+    
+    Freezing Youtube-DL scripts currently seem to be broken and needs fixing. However, to freeze the youtube-dl, the following tools are required and also the corresponding freeze setup.py needs to be fixed. 
+    
     git (Optional)
         To download and build youtube-dl.
                 
@@ -47,6 +56,7 @@ However, in order to update youtube-dl or to create the Mac OS X native app prog
         The project however makes the media player completely portable by removing python dependency on the final executable. This is achieved by the youtube-dl maven module. With the help of cx_Freeze the said module will try to remove the python dependency altogether.
         While cx_Freeze can be installed in several ways depending on the OS, general installation involves python and pip. 
         More info: http://cx-freeze.sourceforge.net
+
         
 ####Dependent libraries
 #####[ItunesLibraryParser](https://github.com/leogps/ItunesLibraryParser)
