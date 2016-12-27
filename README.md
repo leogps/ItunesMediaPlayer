@@ -69,7 +69,7 @@ OR
 
 `mvn clean install`
 
-`mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.0.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.0" -Dpackaging="jar`
+`mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.0.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.0" -Dpackaging="jar"`
 
 ---
 
