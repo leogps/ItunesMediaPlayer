@@ -11,6 +11,7 @@
 
     <modules>
         <module>player-ui</module>
+        <module>youtube-dl</module>
         <module>vlcj-adapter</module>
         <module>utils</module>
         <module>dto</module>

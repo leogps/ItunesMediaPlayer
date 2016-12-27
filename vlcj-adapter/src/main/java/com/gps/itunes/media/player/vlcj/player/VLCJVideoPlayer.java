@@ -19,10 +19,11 @@ import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VLCJVideoPlayer implements VLCJPlayer {
@@ -254,17 +255,22 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     }
 
     public void addOverlay(String message, boolean sticky) {
-        final EmbeddedMediaPlayer embeddedMediaPlayer = ((EmbeddedMediaPlayer)(player));
-        embeddedMediaPlayer.setOverlay(getOverlayWindow(message));
-        embeddedMediaPlayer.enableOverlay(true);
-        if(!sticky) {
-            singleQueuedThreadExecutor.terminateExistingAndScheduleForLater(new Runnable() {
-                public void run() {
-                    embeddedMediaPlayer.setOverlay(null);
-                    embeddedMediaPlayer.enableOverlay(false);
-                }
-            }, 3000, TimeUnit.SECONDS);
-        }
+//        final EmbeddedMediaPlayer embeddedMediaPlayer = ((EmbeddedMediaPlayer)(player));
+//        embeddedMediaPlayer.setOverlay(getOverlayWindow(message));
+//        embeddedMediaPlayer.enableOverlay(true);
+//        if(!sticky) {
+//            singleQueuedThreadExecutor.terminateExistingAndScheduleForLater(new Runnable() {
+//                public void run() {
+//                    Window window = embeddedMediaPlayer.getOverlay();
+//                    if(window != null) {
+//                        window.removeAll();
+//                        window.setVisible(false);
+//                        window.dispose();
+//                    }
+//                    embeddedMediaPlayer.setOverlay(null);
+//                }
+//            }, 500, TimeUnit.SECONDS);
+//        }
     }
 
     private static Window getOverlayWindow(String message) {
@@ -273,12 +279,29 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         // Set basic window opacity if required - the window system must support WindowTranslucency (i.e. PERPIXEL_TRANSLUCENT)!
         //transparentWindow.setOpacity(0.8f);
         // White with transparent alpha channel - WindowTranslucency is required for translucency.
-        transparentWindow.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+        transparentWindow.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.55f));
 
         final JLabel superImposedLightweigtLabel = new JLabel(message, JLabel.CENTER);
         superImposedLightweigtLabel.setOpaque(true);
 
         transparentWindow.getContentPane().add(superImposedLightweigtLabel);
+        // Determine what the default GraphicsDevice can support.
+        GraphicsEnvironment ge =
+                GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        if(gd.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.TRANSLUCENT)) {
+            transparentWindow.setOpacity(0.55f);
+        }
+        transparentWindow.setSize(200, 30);
+        transparentWindow.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowActivated(WindowEvent e) {
+                LOG.debug("Overlay window activated...");
+                transparentWindow.removeAll();
+                transparentWindow.setVisible(true);
+                transparentWindow.dispose();
+            }
+        });
         return transparentWindow;
     }
 }

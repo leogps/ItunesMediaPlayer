@@ -34,7 +34,7 @@ mkdir -p $parent_dir/$exec_dir/
 cd $parent_dir/$exec_dir/
 echo "Entered "$(pwd)
 curl -L $url -o youtube-dl
-chmod a+rx youtube-dl
+chmod a+x youtube-dl
 ./youtube-dl --help
 
 #rm -rf $source_dir/$clone_dir

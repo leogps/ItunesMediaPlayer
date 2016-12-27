@@ -118,6 +118,7 @@ public class Controller {
             } catch (LibraryParseException lpe) {
                 log.debug(lpe.getMessage(), lpe);
                 if (lpe.isLibraryFileNotFound()) {
+                    log.info("ITunes Library file not found. Reload manually by going to Library > Reload.");
                     letUserSpecifyLibrary();
                 }
             }

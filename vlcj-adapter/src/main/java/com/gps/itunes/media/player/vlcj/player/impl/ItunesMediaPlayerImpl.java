@@ -758,6 +758,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     private String fetchYoutubeDLExecutable() {
+        String youtubeDLAbsolutePath = PropertyManager.getConfigurationMap().get("youtube-dl-executable-absolute-path");
+        if(youtubeDLAbsolutePath != null) {
+            return youtubeDLAbsolutePath;
+        }
         return new File("").getAbsolutePath() + PropertyManager.getConfigurationMap().get("youtube-dl-executable");
     }
 
@@ -856,7 +860,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                             mediaPlayer.play();
                         } else {
                             log.debug("Loading and playing new media...");
-                            mediaPlayer.playMedia(this.currentTrack.getLocation());
+                            //TODO: Make options dynamic from UI.
+                            String[] options = {":file-caching=60000ms", ":disc-caching=20000ms"};
+                            mediaPlayer.playMedia(this.currentTrack.getLocation(), options);
                         }
 
                         if (startFrom != 0) {

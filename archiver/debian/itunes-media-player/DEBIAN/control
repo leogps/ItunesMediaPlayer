@@ -1,0 +1,17 @@
+Package: itunes-media-player
+Version: 1.0
+Section: Video
+Architecture: all
+Maintainer: Paul Gundarapu (leogps@gmail.com)
+Priority: optional
+Homepage: https://github.com/leogps/ItunesMediaPlayer
+Depends: java-runtime-headless, vlc
+Description: Media Player built on top of VLC, VLCJ and various other open-source projects.
+ 1. Direct integration with Itunes Library.
+ 2. Copy Itunes playlists/Tracks.
+ 3. No VLC's UI or Itunes UI dependencies. Media player UI is built from ground up.
+ 4. Full Hardware acceleration that's part of VLC libraries.
+ 5. Play media from across the web including YouTube and Vimeo. This is enabled by the
+    open-source project YouTube-DL (https://github.com/rg3/youtube-dl).
+ 6. FileSystem Tree view to pin-point the library file being played on the computer.
+ .

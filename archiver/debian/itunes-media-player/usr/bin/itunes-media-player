@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+java -DVLCJ_INITX=no -jar /usr/lib/itunes-media-player/ItunesMediaPlayer-jar-with-dependencies.jar

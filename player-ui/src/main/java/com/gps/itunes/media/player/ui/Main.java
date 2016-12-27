@@ -5,6 +5,7 @@ import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.LogInitializer;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
+import com.gps.itunes.media.player.ui.config.AppConfiguration;
 import com.gps.itunes.media.player.ui.controller.Controller;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
@@ -21,7 +22,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 
 /**
@@ -40,12 +40,14 @@ public class Main {
     }
 
     private static ItunesMediaPlayer itunesMediaPlayer;
+    private static final AppConfiguration appConfiguration = new AppConfiguration();
 
     static {
         LogInitializer.getInstance();
     }
 
     public static void main(String[] args) throws IOException {
+        appConfiguration.configure();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override

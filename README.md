@@ -91,6 +91,9 @@ OR
     Mac OSX: Latest VLC runtime for Mac OSX is already including in the commits.
     For Linux, it is best to install the VLC which sets the LibVLC path automatically.  
 
+#####Debian Archiver -- .deb file build
+    Run `dpkg --build itunes-media-player` from archiver/debian folder.
+
 ---
        
 ###Credits

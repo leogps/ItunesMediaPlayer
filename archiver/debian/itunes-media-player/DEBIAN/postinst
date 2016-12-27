@@ -1,0 +1,21 @@
+#!/bin/sh
+
+case "$1" in
+
+  configure)
+    echo "Running post installation script..."
+    chmod +x /usr/lib/itunes-media-player/youtube-dl
+  ;;
+
+  abort-upgrade|abort-remove|abort-deconfigure)
+    exit 0
+  ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+
+esac
+
+exit 0

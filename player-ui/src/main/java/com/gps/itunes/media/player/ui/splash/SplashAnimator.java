@@ -22,7 +22,7 @@ public class SplashAnimator {
      * @param progress: from 1 to 100.
      * @param message: Message to be shown on the splash screen.
      */
-    public void renderSplashFrame(int progress, String message) {
+    public synchronized void renderSplashFrame(int progress, String message) {
         if(isSplashAvailable()) {
             Rectangle splashImageBounds = splash.getBounds();
             // Clearing previous text...
@@ -59,7 +59,7 @@ public class SplashAnimator {
         return splash != null && splash.isVisible() && graphics2D != null;
     }
 
-    public void update() {
+    public synchronized void update() {
         if(splash != null && splash.isVisible()) {
             synchronized (splash) {
                 if(splash.isVisible()) {
@@ -69,7 +69,7 @@ public class SplashAnimator {
         }
     }
 
-    public void close() {
+    public synchronized void close() {
         if(splash != null && splash.isVisible()) {
             splash.close();
         }

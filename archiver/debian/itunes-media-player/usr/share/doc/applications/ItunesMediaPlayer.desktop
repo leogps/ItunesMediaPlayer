@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=ITunes Media Player
+Comment=Media Player built on top of VLC, VLCJ and various other open-source projects.
+Exec=/usr/bin/itunes-media-player
+Icon=/usr/share/itunes-media-player/imp.png
+Terminal=false
+Type=Application
+Categories=GNOME;Application;Network
+StartupNotify=true

@@ -181,6 +181,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-archive-debian</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target name="copy executable into archive.debian project">
+                                <copy file="${project.build.directory}/ItunesMediaPlayer-jar-with-dependencies.jar"
+                                      tofile="../archiver/debian/itunes-media-player/usr/lib/itunes-media-player/ItunesMediaPlayer-jar-with-dependencies.jar"
+                                overwrite="true"/>
+                                <copy file="../youtube-dl-exec/youtube-dl" tofile="../archiver/debian/itunes-media-player/usr/lib/itunes-media-player/youtube-dl"
+                                      overwrite="true"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!--<plugin>-->
                 <!--<artifactId>maven-resources-plugin</artifactId>-->
