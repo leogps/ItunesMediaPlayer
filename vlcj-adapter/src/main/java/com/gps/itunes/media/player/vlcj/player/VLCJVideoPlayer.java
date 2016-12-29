@@ -202,6 +202,12 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         fxPlayerFrame.getBasicPlayerControlPanel().setPlayerControlEventListener(playerControlEventListener);
     }
 
+    public void setBufferingValue(float bufferingValue) {
+        vFrame.setBufferingValue(bufferingValue);
+        fullscreenFrame.setBufferingValue(bufferingValue);
+        fxPlayerFrame.setBufferingValue(bufferingValue);
+    }
+
     public void exitFullscreen() {
         if(isFullscreen()) {
             toggleFullScreen();
@@ -271,6 +277,21 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 //                }
 //            }, 500, TimeUnit.SECONDS);
 //        }
+
+        final EmbeddedMediaPlayer embeddedMediaPlayer = ((EmbeddedMediaPlayer)(player));
+        final Window overlay = getOverlayWindow(message);
+        embeddedMediaPlayer.setOverlay(overlay);
+        embeddedMediaPlayer.enableOverlay(true);
+        if(!sticky) {
+            singleQueuedThreadExecutor.terminateExistingAndScheduleForLater(new Runnable() {
+                public void run() {
+                    overlay.setVisible(false);
+                    overlay.dispose();
+                    embeddedMediaPlayer.setOverlay(null);
+                    embeddedMediaPlayer.enableOverlay(false);
+                }
+            }, 3000, TimeUnit.SECONDS);
+        }
     }
 
     private static Window getOverlayWindow(String message) {

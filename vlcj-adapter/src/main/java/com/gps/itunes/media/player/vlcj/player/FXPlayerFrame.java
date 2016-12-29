@@ -31,4 +31,6 @@ public interface FXPlayerFrame {
     void play(String location);
 
     void setTitle(String title);
+
+    void setBufferingValue(float bufferringValue);
 }

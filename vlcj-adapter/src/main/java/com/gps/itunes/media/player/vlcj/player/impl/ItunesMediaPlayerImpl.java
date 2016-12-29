@@ -166,7 +166,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         }
     };
 
-    private final AtomicBoolean playCurrentlyLoadedMedia = new AtomicBoolean();
+    private final AtomicBoolean isTogglingFullscreen = new AtomicBoolean();
 
     public ItunesMediaPlayerImpl(final PlayerControlPanel playerControlPanel) {
         mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : Constants.EMPTY;
@@ -225,14 +225,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
             @Override
             public void onExitFullscreenCommand() {
-                //TODO: get correct players position.
+                float currentMediaPosition = getPlayer().getPosition();
                 if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer() ) {
                     VLCJVideoPlayer videoPlayer = ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER);
                     if(videoPlayer.isFullscreen()) {
-                        pause();
                         videoPlayer.toggleFullScreen();
-                        playCurrentlyLoadedMedia.set(true);
-                        playFrom(getPlayer().getPosition());
+                        isTogglingFullscreen.set(true);
+                        playFrom(currentMediaPosition);
                     }
                 }
             }
@@ -405,18 +404,18 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     public void onSubmit(TrackTime seekTo) {
                         long seekToTime = TrackTime.valueOf(seekTo);
                         float percentage = (float) seekToTime / mediaLength;
-                        playFrom(percentage);
+                        getPlayer().setPosition(percentage);
                     }
                 });
     }
 
     private void handleFullScreenToggle() {
+        float currentMediaPosition = getPlayer().getPosition();
         if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer()) {
             log.debug("Fullscreen toggle requested.");
-            pause();
             ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).toggleFullScreen();
-            playCurrentlyLoadedMedia.set(true);
-            playFrom(getPlayer().getPosition());
+            isTogglingFullscreen.set(true);
+            playFrom(currentMediaPosition);
         }
     }
 
@@ -584,6 +583,15 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         }
 
         @Override
+        public void buffering(MediaPlayer mediaPlayer, float newCache) {
+            super.buffering(mediaPlayer, newCache);
+            log.debug("Buffering percentage: " + newCache);
+            for(VLCJPlayer vlcjPlayer : VLCJ_PLAYERS) {
+                vlcjPlayer.setBufferingValue(newCache);
+            }
+        }
+
+        @Override
         public void playing(MediaPlayer mediaPlayer) {
             for(MediaPlayerEventListener eventListener : eventListenerList) {
                 eventListener.playing(instance, currentTrack);
@@ -644,7 +652,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         this.stopPlay();
         nowPlaylingList.clear();
 
-        String urlStr = url.toString();
+        final String urlStr = url.toString();
 
         boolean videoURLFetchComplete = false;
         if(isYoutubeVideo(urlStr)) {
@@ -658,21 +666,29 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                 InterruptableAsyncTask asyncProcess =
                         YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
                 final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
+        String youtubeDLExecutable = fetchYoutubeDLExecutable();
+        try {
+            AsyncProcess asyncProcess =
+                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
+            final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
 
-                asyncProcess.registerListener(new AsyncTaskListener() {
-                    public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
-                        interruptableProcessDialog.close();
-                    }
 
-                    public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
-                        interruptableProcessDialog.close();
+            asyncProcess.registerListener(new AsyncTaskListener() {
+                public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
+                    interruptableProcessDialog.close();
+                }
+
+                public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
+                    if(isYoutubeVideo(urlStr)) {
+                        attemptYoutubeVideoUrlFetch(urlStr);
                     }
-                });
-                asyncProcess.execute();
-                interruptableProcessDialog.showDialog();
-            } catch (Exception ex) {
-                handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
-            }
+                    interruptableProcessDialog.close();
+                }
+            });
+            asyncProcess.execute();
+            interruptableProcessDialog.showDialog();
+        } catch (Exception ex) {
+            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
         }
     }
 
@@ -763,7 +779,6 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     private void playFrom(float time) {
-        stopPlay();
         log.debug("Playing from: " + time);
         startFrom = time;
         new Thread(this).start();
@@ -814,6 +829,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
                 log.debug("Signal count" + playSignal.getCount());
 
+                boolean togglingFullscreen = isTogglingFullscreen.getAndSet(false);
+                if(togglingFullscreen) {
+                    stopPlay();
+                }
                 // Before playing the requested track, the previous one needs to be stopped; Aiming for single instance media player.
                 waitToBeReady();
 
@@ -847,17 +866,22 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
                     try {
                         mediaPlayer.setPlaySubItems(true);
-                        if(playCurrentlyLoadedMedia.getAndSet(false)) {
-                            log.debug("Playing the currently loaded media...");
+                        if(togglingFullscreen) {
+                            log.debug("Playing already loaded media: " + this.currentTrack.getLocation());
                             mediaPlayer.play();
                         } else {
                             log.debug("Loading and playing new media...");
                             //TODO: Make options dynamic from UI.
                             String[] options = {":file-caching=60000ms", ":disc-caching=20000ms"};
                             mediaPlayer.playMedia(this.currentTrack.getLocation(), options);
+
+                            log.debug("Starting media: " + this.currentTrack.getLocation());
+                            mediaPlayer.startMedia(this.currentTrack.getLocation());
+
                         }
 
                         if (startFrom != 0) {
+                            log.debug("Setting media position to: " + startFrom);
                             mediaPlayer.setPosition(startFrom);
                             startFrom = 0;
                         }

@@ -1,9 +1,8 @@
 package com.gps.itunes.media.player.vlcj.ui.player;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
-
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,6 +27,7 @@ public class VideoPlayerFrame extends JFrame {
     protected JPanel headerPanel;
     private JPanel videoPanel;
     protected JPanel footerPanel;
+    private JProgressBar bufferingProgressBar;
 
     public VideoPlayerFrame() {
         super("Video Screen");
@@ -67,7 +67,6 @@ public class VideoPlayerFrame extends JFrame {
         videoPanel.setLayout(new BorderLayout());
         videoPanel.add(canvas, BorderLayout.CENTER);
 
-        footerPanel.setLayout(new BorderLayout());
         seekbar.setSnapToTicks(true);
         Dictionary labelTable = new Hashtable();
         labelTable.put(0, startTimeLabel);
@@ -75,7 +74,6 @@ public class VideoPlayerFrame extends JFrame {
         seekbar.setPaintLabels(true);
         seekbar.setLabelTable(labelTable);
         seekbar.setValue(0);
-        footerPanel.add(seekbar, BorderLayout.CENTER);
 
         bodyPanel.add(headerPanel, BorderLayout.NORTH);
         bodyPanel.add(videoPanel, BorderLayout.CENTER, 0);
@@ -85,6 +83,17 @@ public class VideoPlayerFrame extends JFrame {
 
         setSize(600, 480);
         setVisible(false);
+        bufferingProgressBar.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent) {
+                if(bufferingProgressBar.getValue() == 100) {
+                    bufferingProgressBar.setString("Buffering complete.");
+                    bufferingProgressBar.setStringPainted(false);
+                } else {
+                    bufferingProgressBar.setStringPainted(true);
+                    bufferingProgressBar.setString("Buffering... " + bufferingProgressBar.getValue() + "%");
+                }
+            }
+        });
     }
 
     public Canvas getFrameCanvas() {
@@ -131,5 +140,9 @@ public class VideoPlayerFrame extends JFrame {
     public void enableVideo(Canvas frameCanvas) {
         getVideoPanel().add(frameCanvas, BorderLayout.CENTER);
         setVisible(true);
+    }
+
+    public void setBufferingValue(Float bufferingValue) {
+        bufferingProgressBar.setValue(bufferingValue.intValue());
     }
 }

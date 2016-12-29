@@ -151,6 +151,10 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 //        }, 60, 60, TimeUnit.SECONDS);
     }
 
+    public void setBufferingValue(float bufferringValue) {
+        super.setBufferingValue(bufferringValue);
+    }
+
     private void bringToFront() {
 //        getVideoPanel().removeAll();
 //        getVideoPanel().add(fxPanel, BorderLayout.CENTER);

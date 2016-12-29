@@ -99,6 +99,10 @@ public class VLCJAudioPlayer implements VLCJPlayer {
         playerControlPanel.setPlayerControlEventListener(playerControlEventListener);
     }
 
+    public void setBufferingValue(float bufferingValue) {
+        //TODO: Use Buffering Value.
+    }
+
     public void exitFullscreen() {
         // NOOP
     }

@@ -801,4 +801,8 @@ public class DummyFXPlayerFrame implements FXPlayerFrame {
     public void setTitle(String title) {
 
     }
+
+    public void setBufferingValue(float bufferringValue) {
+        //NO-OP
+    }
 }

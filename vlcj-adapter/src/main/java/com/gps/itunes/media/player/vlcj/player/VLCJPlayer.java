@@ -32,5 +32,7 @@ public interface VLCJPlayer {
 
     void registerPlayerControlEventListener(PlayerControlEventListener playerControlEventListener);
 
+    void setBufferingValue(float bufferingValue);
+
     void exitFullscreen();
 }
