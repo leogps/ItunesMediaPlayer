@@ -15,6 +15,7 @@
         <module>vlcj-adapter</module>
         <module>utils</module>
         <module>dto</module>
+        <module>updater</module>
     </modules>
 
     <dependencies>

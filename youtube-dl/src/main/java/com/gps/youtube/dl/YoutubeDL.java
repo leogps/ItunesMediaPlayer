@@ -1,8 +1,8 @@
 package com.gps.youtube.dl;
 
+import com.gps.imp.utils.process.AsyncProcess;
+import com.gps.imp.utils.process.AsyncProcessImpl;
 import com.gps.youtube.dl.exception.YoutubeDLException;
-import com.gps.youtube.dl.process.AsyncProcess;
-import com.gps.youtube.dl.process.AsyncProcessImpl;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 
 import java.io.*;
@@ -18,7 +18,7 @@ public class YoutubeDL {
     }
 
     public static AsyncProcess fetchBestAsyncProcess(String youtubeDlExecutable, String input,
-                                              List<AsyncTaskListener> asyncTaskListenerList) throws IOException {
+                                                     List<AsyncTaskListener> asyncTaskListenerList) throws IOException {
         String[] retrievalCommand = buildRetrievalCommand(youtubeDlExecutable, "best", input);
         AsyncProcess asyncProcess = new AsyncProcessImpl(retrievalCommand);
         asyncProcess.registerListeners(asyncTaskListenerList);

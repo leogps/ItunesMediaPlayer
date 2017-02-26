@@ -25,6 +25,10 @@ public class UIMenuBar extends JMenuBar {
     private final JMenuItem copyPlaylistsMenuItem;
     private final JMenuItem copyTracksMenuItem;
 
+    private final JMenu toolsMenu;
+
+    private final JMenuItem updatesMenuItem;
+
     private final JMenu aboutMenu;
 
     private final JMenuItem vlcMenuItem;
@@ -76,6 +80,15 @@ public class UIMenuBar extends JMenuBar {
         copyTracksMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.copy_track"));
         copyTracksMenuItem.setMnemonic(KeyEvent.VK_T);
         actionsMenu.add(copyTracksMenuItem);
+
+        // Tools Menu
+        toolsMenu = new JMenu(resourceBundle.getString("menu.tools"));
+        toolsMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.tools.description"));
+        this.add(toolsMenu);
+
+        updatesMenuItem = new JMenuItem(resourceBundle.getString("menu.tools.update"));
+        updatesMenuItem.setMnemonic(KeyEvent.VK_U);
+        toolsMenu.add(updatesMenuItem);
 
         // About Menu
         aboutMenu = new JMenu(resourceBundle.getString("menu.about"));
@@ -132,6 +145,10 @@ public class UIMenuBar extends JMenuBar {
 
     public JMenuItem getVlcMenuItem() {
         return vlcMenuItem;
+    }
+
+    public JMenuItem getUpdatesMenuItem() {
+        return updatesMenuItem;
     }
 
     public JMenuItem getAboutIMPMenuItem() {

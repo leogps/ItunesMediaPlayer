@@ -1,4 +1,4 @@
-package com.gps.youtube.dl.process;
+package com.gps.imp.utils.process;
 
 import com.gps.imp.utils.ui.AsyncTaskListener;
 
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by leogps on 12/18/15.
  */
-public class AsyncProcessImpl implements AsyncProcess {
+public class AsyncProcessImpl implements AsyncProcess<Void> {
 
     private final String[] command;
     private Process process;
@@ -63,6 +63,10 @@ public class AsyncProcessImpl implements AsyncProcess {
 
     public boolean isInterrupted() {
         return interrupted;
+    }
+
+    public Void getResult() {
+        return null;
     }
 
     public void registerListener(AsyncTaskListener asyncTaskListener) {

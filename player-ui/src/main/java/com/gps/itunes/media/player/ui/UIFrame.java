@@ -2,12 +2,14 @@ package com.gps.itunes.media.player.ui;
 
 import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.JavaVersionUtils;
+import com.gps.imp.utils.process.AsyncProcess;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.imp.utils.ui.InterruptableProcessDialog;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
+import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.ui.components.TracksContextMenu;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.imp.utils.ui.fileutils.FileBrowserTree;
@@ -18,9 +20,12 @@ import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
+import com.gps.itunes.media.player.updater.UpdateResult;
 import com.gps.itunes.media.player.vlcj.VLCJUtils;
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerKeyEventListener;
+import com.gps.itunes.media.player.vlcj.utils.YoutubeDLUtils;
+import com.gps.youtube.dl.update.YoutubeDLUpdater;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -274,7 +279,7 @@ public class UIFrame extends JFrame {
         });
     }
 
-    protected class FileSystemRefreshTask implements InterruptableAsyncTask {
+    protected class FileSystemRefreshTask implements InterruptableAsyncTask<Void, Void> {
 
         private final InterruptableAsyncTask _this;
 
@@ -314,12 +319,13 @@ public class UIFrame extends JFrame {
         private Thread executableThread;
         private final List<AsyncTaskListener> asyncTaskListenerList = new ArrayList<AsyncTaskListener>();
 
-        public void execute() {
+        public Void execute() {
             if(executableThread != null && executableThread.isAlive()) {
                 throw new IllegalStateException("A previously submitted task is still getting executed.");
             }
             executableThread = new Thread(refreshTask);
             executableThread.start();
+            return null;
         }
 
         @Override
@@ -337,6 +343,11 @@ public class UIFrame extends JFrame {
         @Override
         public boolean isInterrupted() {
             return executableThread.isInterrupted();
+        }
+
+        @Override
+        public Void getResult() {
+            return null;
         }
     }
 
@@ -590,6 +601,55 @@ public class UIFrame extends JFrame {
                     message.append("VLC failed to initialize.");
                 }
                 JOptionPane.showMessageDialog(null, message, "About VLC Engine", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        uiMenuBar.getUpdatesMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                YoutubeDLUpdater youtubeDLUpdater = new YoutubeDLUpdater();
+                try {
+                    InterruptableAsyncTask<Void, UpdateResult> asyncProcess = youtubeDLUpdater.update(YoutubeDLUtils.fetchYoutubeDLExecutable(),
+                            PropertyManager.getConfigurationMap().get("youtube-dl.repository"),
+                            PropertyManager.getConfigurationMap().get("youtube-dl.repository.asset.name"),
+                            PropertyManager.getConfigurationMap().get("youtube-dl.repository.md5sums.name"));
+
+                    if(asyncProcess == null) {
+                        JOptionPane.showMessageDialog(null, "Update failed. Error code: " + 1001,
+                                "Failed", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
+                    asyncProcess.registerListener(new AsyncTaskListener<Void, UpdateResult>() {
+                        public void onSuccess(InterruptableAsyncTask<Void, UpdateResult> interruptableAsyncTask) {
+
+                            interruptableProcessDialog.close();
+                            UpdateResult updateResult = interruptableAsyncTask.getResult();
+                            if(updateResult.getReason() == UpdateResult.Reason.UPDATE_NOT_AVAILABLE) {
+                                JOptionPane.showMessageDialog(null, "No new updates available for Youtube-DL component.",
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Youtube-DL component updated successfully.",
+                                        "Success", JOptionPane.INFORMATION_MESSAGE);
+                            }
+                        }
+
+                        public void onFailure(InterruptableAsyncTask<Void, UpdateResult> interruptableAsyncTask) {
+                            interruptableProcessDialog.close();
+                            UpdateResult updateResult = interruptableAsyncTask.getResult();
+                            JOptionPane.showMessageDialog(null, "Youtube-DL component failed to update: \n"
+                                    + updateResult.getReason().getReason(), "Failed", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    });
+                    asyncProcess.execute();
+                    interruptableProcessDialog.showDialog();
+                } catch (Exception ex) {
+                    String message = ex.getMessage();
+                    JOptionPane.showMessageDialog(null, message, "Failed", JOptionPane.ERROR_MESSAGE);
+                    LOG.error(message, ex);
+                }
             }
         });
 
