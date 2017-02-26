@@ -666,29 +666,24 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                 InterruptableAsyncTask asyncProcess =
                         YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
                 final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
-        String youtubeDLExecutable = fetchYoutubeDLExecutable();
-        try {
-            AsyncProcess asyncProcess =
-                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
-            final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
 
-
-            asyncProcess.registerListener(new AsyncTaskListener() {
-                public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
-                    interruptableProcessDialog.close();
-                }
-
-                public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
-                    if(isYoutubeVideo(urlStr)) {
-                        attemptYoutubeVideoUrlFetch(urlStr);
+                asyncProcess.registerListener(new AsyncTaskListener() {
+                    public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
+                        interruptableProcessDialog.close();
                     }
-                    interruptableProcessDialog.close();
-                }
-            });
-            asyncProcess.execute();
-            interruptableProcessDialog.showDialog();
-        } catch (Exception ex) {
-            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+
+                    public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
+                        if(isYoutubeVideo(urlStr)) {
+                            attemptYoutubeVideoUrlFetch(urlStr);
+                        }
+                        interruptableProcessDialog.close();
+                    }
+                });
+                asyncProcess.execute();
+                interruptableProcessDialog.showDialog();
+            } catch (Exception ex) {
+                handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+            }
         }
     }
 

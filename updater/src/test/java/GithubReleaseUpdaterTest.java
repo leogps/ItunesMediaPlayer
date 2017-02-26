@@ -41,7 +41,7 @@ public class GithubReleaseUpdaterTest {
 
     @Test
     public void testMD5Checkum() throws IOException, NoSuchAlgorithmException {
-        File file = File.createTempFile("target/tempFile", ".tmp");
+        File file = File.createTempFile("tempFile", ".tmp");
         Assert.assertNotNull(file);
 
         String md5Checksum = GithubReleaseUpdater.getMD5Checksum(file);
