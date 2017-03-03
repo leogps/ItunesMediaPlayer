@@ -24,6 +24,10 @@ import com.gps.itunes.media.player.vlcj.ui.player.utils.TrackTime;
 import com.gps.itunes.media.player.vlcj.utils.YoutubeDLUtils;
 import com.gps.youtube.dl.YoutubeDL;
 import com.gps.youtube.dl.YoutubeDLResult;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -575,6 +579,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             super.error(mediaPlayer);
             log.debug("Error occurred!!");
             reportPlayCompletion();
+            JOptionPane.showMessageDialog(null, "Error!", "Error Occurred!", JOptionPane.ERROR_MESSAGE);
         }
 
         @Override
@@ -742,8 +747,11 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         try {
             if(isYoutubeVideo(urlStr)) {
                 YoutubeLink youtubeLink = YoutubeUrlFetcher.getBest(YoutubeUrlFetcher.fetch(urlStr));
-
                 urlStr = youtubeLink.getUrl();
+
+                if(!testURL(urlStr)) {
+                    return false;
+                }
 
                 this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, youtubeLink.getFileName(), urlStr, urlStr,
                         urlStr, true);
@@ -757,15 +765,28 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
         } catch (URLFetchException ex) {
             log.error("Could not recognize URL.", ex);
-            this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, urlStr, urlStr, urlStr,
-                    urlStr, true);
-            addToNowPlayinglistAndStartPlaying();
-
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Could not recognize URL. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
             log.error("Could not recognize URL.", ex);
         }
         return false;
+    }
+
+    private boolean testURL(String urlStr) {
+        try {
+            HttpClient client = new HttpClient();
+            HttpMethod method = new GetMethod(urlStr);
+
+            int response = client.executeMethod(method);
+            if (response != HttpStatus.SC_OK) {
+                log.error(String.format("URL could not be connected correctly: %s | Response code: %s", urlStr, response));
+                return false;
+            }
+        } catch (Exception e) {
+            log.error(String.format("Exception occurred when fetching URL: %s", urlStr), e);
+            return false;
+        }
+        return true;
     }
 
     private void addToNowPlayinglistAndStartPlaying() {
