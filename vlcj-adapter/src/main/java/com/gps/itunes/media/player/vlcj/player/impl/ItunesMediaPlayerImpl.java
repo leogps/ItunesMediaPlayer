@@ -10,6 +10,7 @@ import com.gps.imp.utils.ui.fileutils.FileBrowserDialog;
 import com.gps.imp.utils.ui.fileutils.FileBrowserDialogListener;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
+import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.vlcj.player.*;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
@@ -359,9 +360,15 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     private void notifyOnVideoSurface(String message) {
-        if(currentTrack.isMovie()) {
+        if(currentTrack.isMovie()
+                && !checkIfDisableOverlays()) {
             ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).addOverlay(message, false);
         }
+    }
+
+    private boolean checkIfDisableOverlays() {
+        String option = PropertyManager.getConfigurationMap().get("disable.video.overlay.messages");
+        return option != null && Boolean.parseBoolean(option);
     }
 
     private int getEmbeddedSubtitleFile(List<TrackInfo> trackInfoList) {
