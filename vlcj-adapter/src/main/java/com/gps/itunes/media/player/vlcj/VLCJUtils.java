@@ -28,7 +28,9 @@ public class VLCJUtils {
                 ? PropertyManager.getConfigurationMap().get("vlc-intel-64-plugins")
                 : PropertyManager.getConfigurationMap().get("vlc-intel-32-plugins"));
 
-        uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
+	if(!OSInfo.isOSWin()) {
+        	uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
+	}
         NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
         Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 
