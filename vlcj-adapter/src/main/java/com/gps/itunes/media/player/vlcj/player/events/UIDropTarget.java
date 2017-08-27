@@ -8,6 +8,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,26 +23,34 @@ public abstract class UIDropTarget extends DropTarget {
         try {
             Transferable tr = dropTargetDropEvent.getTransferable();
             DataFlavor[] flavors = tr.getTransferDataFlavors();
+            List<File> mediaFiles = new ArrayList<File>();
             for (int i = 0; i < flavors.length; i++) {
                 LOG.debug("Possible flavor: " + flavors[i].getMimeType());
                 if (flavors[i].isFlavorJavaFileListType()) {
                     dropTargetDropEvent.acceptDrop(DnDConstants.ACTION_COPY);
                     LOG.debug("Successful file list drop.");
 
-                    java.util.List<File> list = (java.util.List<File>) tr.getTransferData(flavors[i]);
-                    for (int j = 0; j < list.size(); j++) {
-                        LOG.debug(list.get(j) + "\n");
+                    java.util.List<File> list = (List<File>) tr.getTransferData(flavors[i]);
+                    if(list != null) {
+                        for (int j = 0; j < list.size(); j++) {
+                            LOG.debug(list.get(j) + "\n");
+                        }
+                        mediaFiles.addAll(list);
                     }
-                    dropTargetDropEvent.dropComplete(true);
-                    onFilesDroppedEvent(list, dropTargetDropEvent);
-                    return;
                 }
             }
+            dropTargetDropEvent.dropComplete(true);
+            if(!mediaFiles.isEmpty()) {
+                onFilesDroppedEvent(mediaFiles, dropTargetDropEvent);
+                return;
+            }
+
+
             LOG.debug("Drop failed: " + dropTargetDropEvent);
             dropTargetDropEvent.rejectDrop();
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            dropTargetDropEvent.rejectDrop();
+            onException(e, dropTargetDropEvent);
         }
     }
 
@@ -49,4 +58,12 @@ public abstract class UIDropTarget extends DropTarget {
      * On Files DroppedEvent
      */
     public abstract void onFilesDroppedEvent(List<File> fileList, DropTargetDropEvent dropTargetDropEvent);
+
+    /**
+     * On Exception, this method is called. By default the drop operation is rejected.
+     *
+     * @param e
+     * @param dropTargetDropEvent
+     */
+    public abstract void onException(Exception e, DropTargetDropEvent dropTargetDropEvent);
 }

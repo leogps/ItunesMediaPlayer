@@ -130,6 +130,11 @@ public class Main {
                         public void onFilesDroppedEvent(List<File> fileList, DropTargetDropEvent dropTargetDropEvent) {
                             getItunesMediaPlayer().playFiles(fileList);
                         }
+
+                        @Override
+                        public void onException(Exception e, DropTargetDropEvent dropTargetDropEvent) {
+                            JOptionPane.showMessageDialog(uiFrame, "Action could not be performed at the moment, please see logs for more info.");
+                        }
                     });
                     uiFrame.setState(Frame.MAXIMIZED_BOTH);
                     if(OSInfo.isOSMac()) {

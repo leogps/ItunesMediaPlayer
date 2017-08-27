@@ -314,6 +314,11 @@ public class Controller {
             public void onFilesDroppedEvent(List<File> fileList, DropTargetDropEvent dropTargetDropEvent) {
                 getPlayer().playFiles(fileList);
             }
+
+            @Override
+            public void onException(Exception e, DropTargetDropEvent dropTargetDropEvent) {
+                JOptionPane.showMessageDialog(uiFrame, "Action could not be performed at the moment, please see logs for more info.");
+            }
         });
     }
 
