@@ -73,6 +73,9 @@ OR
 
 ---
 
+#####Apple JavaExtension
+`mvn install:install-file -Dfile="lib-runtime/ui.jar" -DgroupId="com.apple" -DartifactId="AppleJavaExtensions" -Dversion="1.6" -Dpackaging="jar"`
+
 #####[javafx](http://www.oracle.com/technetwork/java/javafx2-archive-download-1939373.html)
 
     This is only required for the project to compile and is only used at runtime when running under Mac OSX with JDK 7/8.
@@ -91,12 +94,27 @@ OR
     Mac OSX: Latest VLC runtime for Mac OSX is already including in the commits.
     For Linux, it is best to install the VLC which sets the LibVLC path automatically.  
 
-#####Debian Archiver -- .deb file build
-    Run `dpkg --build itunes-media-player` from archiver/debian folder.
+#####Debian Archiver -- .deb file build (Optional)
+Builds dpkg file that can be used with Debian systems. `dpkg` needs to be available for this to work. 
+
+    cd archiver
+    mvn clean install
+    cd debian
+    dpkg --build itunes-media-player
+
+
+#####Build
+After seeing that all non-optional requirements have been met, the project can be built using maven.
+ 
+    mvn clean install
+    
+Or build without running tests.
+    
+    mvn clean install -DskipTests
 
 ---
        
-###Credits
+Credits
 ---
 
 #####VLC and its license can be found here:

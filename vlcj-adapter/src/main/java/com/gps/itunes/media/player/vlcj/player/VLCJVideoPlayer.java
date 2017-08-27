@@ -19,6 +19,7 @@ import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -81,7 +82,14 @@ public class VLCJVideoPlayer implements VLCJPlayer {
                 new SeekChangeListener(ignoreSeekbarChange,
                         fxPlayerFrame.getSeekbar(),
                         seekEventListenerList));
+    }
 
+    public void registerDragAndDropEvent(DropTarget dropTarget) {
+        if(vFrame == null) {
+            LOG.error("Video Frame not initialized, cannot register drag and drop event.");
+            return;
+        }
+        vFrame.setDropTarget(dropTarget);
     }
 
     public MediaPlayer getPlayer() {

@@ -7,6 +7,7 @@ import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.ui.config.AppConfiguration;
 import com.gps.itunes.media.player.ui.controller.Controller;
+import com.gps.itunes.media.player.vlcj.player.events.UIDropTarget;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
 import com.gps.itunes.media.player.ui.splash.SplashAnimator;
@@ -19,6 +20,8 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +50,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
+        if(args != null && args.length > 0) {
+            LOG.debug("Arguments passed...");
+            for(String arg : args) {
+                LOG.debug(arg);
+            }
+            LOG.debug("End of args.");
+        }
         appConfiguration.configure();
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -62,15 +72,22 @@ public class Main {
             }
         }));
 
-        final SplashAnimator splashAnimator = new SplashAnimator();
-
         if(OSInfo.isOSMac()) {
             // take the menu bar off the jframe
             System.setProperty("apple.laf.useScreenMenuBar", "true");
 
             // set the name of the application menu item
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "iTunes Media Player");
+            ImageIcon imageIcon = new ImageIcon(Main.class.getClassLoader().getResource("images/imp.png"));
+            com.apple.eawt.Application.getApplication().setDockIconImage(imageIcon.getImage());
+            try {
+                Main.class.forName("com.gps.itunes.media.player.OSXUtils");
+            } catch (ClassNotFoundException e) {
+                LOG.debug(e.getMessage(), e);
+            }
         }
+
+        final SplashAnimator splashAnimator = new SplashAnimator();
 
         /*
          * Create and display the form
@@ -105,7 +122,19 @@ public class Main {
 
                     splashAnimator.renderSplashFrame(20, "Initializing UI Frames...");
                     final UIFrame uiFrame = new UIFrame();
+                    if(OSInfo.isOSMac()) {
+                        com.apple.eawt.Application.getApplication().requestUserAttention(true);
+                    }
+                    uiFrame.setDropTarget(new UIDropTarget() {
+                        @Override
+                        public void onFilesDroppedEvent(List<File> fileList, DropTargetDropEvent dropTargetDropEvent) {
+                            getItunesMediaPlayer().playFiles(fileList);
+                        }
+                    });
                     uiFrame.setState(Frame.MAXIMIZED_BOTH);
+                    if(OSInfo.isOSMac()) {
+                        com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(uiFrame, true);
+                    }
 
                     splashAnimator.renderSplashFrame(25, "Initializing Controller...");
                     final Controller controller = new Controller(uiFrame);

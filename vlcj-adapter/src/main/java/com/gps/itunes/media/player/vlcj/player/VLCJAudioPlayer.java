@@ -7,6 +7,7 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
+import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -104,6 +105,10 @@ public class VLCJAudioPlayer implements VLCJPlayer {
     }
 
     public void exitFullscreen() {
+        // NOOP
+    }
+
+    public void registerDragAndDropEvent(DropTarget dropTarget) {
         // NOOP
     }
 

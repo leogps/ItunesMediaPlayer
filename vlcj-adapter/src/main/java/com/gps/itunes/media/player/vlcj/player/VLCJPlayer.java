@@ -3,6 +3,8 @@ package com.gps.itunes.media.player.vlcj.player;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 
+import java.awt.dnd.DropTarget;
+
 /**
  * Created by leogps on 10/4/14.
  */
@@ -35,4 +37,6 @@ public interface VLCJPlayer {
     void setBufferingValue(float bufferingValue);
 
     void exitFullscreen();
+
+    void registerDragAndDropEvent(DropTarget dropTarget);
 }

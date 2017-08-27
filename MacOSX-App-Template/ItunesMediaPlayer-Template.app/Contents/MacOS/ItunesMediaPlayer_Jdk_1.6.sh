@@ -30,10 +30,11 @@ echo "$progdir"
 #       com.gps.itunes.media.player.ui.Main
 
 exec "$JAVACMD" -Duser.dir="$progdir" -jar "$progdir/../Java/ItunesMediaPlayer-jar-with-dependencies.jar" \
-      -Dapple.laf.useScreenMenuBar=true \
-      -Dcom.apple.mrj.application.growbox.intrudes=true \
-      -Dapple.awt.antialiasing=true \
-      -Dcom.apple.mrj.application.live-resize=true \
-      -Dsun.java2d.opengl=true \
-      -Xdock:name=Itunes Media Player \
-      -Xdock:icon="$progdir/../Resources/imp.icns"
+      "-Dapple.laf.useScreenMenuBar=true" \
+      "-Dcom.apple.mrj.application.growbox.intrudes=true" \
+      "-Dapple.awt.antialiasing=true" \
+      "-Dcom.apple.mrj.application.live-resize=true" \
+      "-Dsun.java2d.opengl=true" \
+      "-Xdock:name=Itunes Media Player" \
+      "-Xdock:icon=\"$progdir/../Resources/imp.icns\"" \
+      "$@"

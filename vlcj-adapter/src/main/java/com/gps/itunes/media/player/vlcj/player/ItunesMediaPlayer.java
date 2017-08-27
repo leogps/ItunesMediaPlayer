@@ -5,6 +5,7 @@ import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.player.impl.TraversableLinkedList;
 import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
+import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerMediaFilesDroppedEventListener;
 
 import java.io.File;
 import java.net.URL;
@@ -14,6 +15,8 @@ import javax.swing.JPanel;
 public interface ItunesMediaPlayer extends Runnable {
 
     void play();
+
+    void playFiles(List<File> files);
 
     void play(File file);
 
@@ -68,4 +71,6 @@ public interface ItunesMediaPlayer extends Runnable {
     boolean isCurrentTrack(long trackId);
 
     void releaseResources();
+
+    void registerDragAndDropEventListener(PlayerMediaFilesDroppedEventListener playerMediaFilesDroppedEventListener);
 }

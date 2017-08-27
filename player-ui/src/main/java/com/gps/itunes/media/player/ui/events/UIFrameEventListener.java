@@ -8,19 +8,19 @@ import java.util.List;
 /**
  * Created by leogps on 10/5/14.
  */
-public abstract class UIFrameEventListener {
+public interface UIFrameEventListener {
 
-    public abstract void onPlaylistSelectedEvent(UIFrame uiFrame);
+    void onPlaylistSelectedEvent(UIFrame uiFrame);
 
-    public abstract void onTracksPlayRequested(List<Track> trackList);
+    void onTracksPlayRequested(List<Track> trackList);
 
-    public abstract void onReloadLibraryRequested(UIFrame uiFrame);
+    void onReloadLibraryRequested(UIFrame uiFrame);
 
-    public abstract void onCopyPlaylistRequested(UIFrame uiFrame);
+    void onCopyPlaylistRequested(UIFrame uiFrame);
 
-    public abstract void onSearch(String searchQuery, UIFrame uiFrame);
+    void onSearch(String searchQuery, UIFrame uiFrame);
 
-    public abstract void onFileOpenRequested();
+    void onFileOpenRequested();
 
-    public abstract void onNetworkFileOpenRequested();
+    void onNetworkFileOpenRequested();
 }

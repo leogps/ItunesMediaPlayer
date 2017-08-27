@@ -29,6 +29,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -43,6 +44,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.*;
@@ -650,6 +652,43 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         new Thread(this).start();
     }
 
+    public void playFiles(final List<File> files) {
+
+        clearNowPlayingList();
+
+        /*
+         * If more than one track passed, play the first track readily, process the rest of the tracks asynchronously.
+         * */
+
+        if(!files.isEmpty()) {
+            File file = files.get(0);
+            NowPlayingListData nowPlayingListData = new NowPlayingListData(Long.MAX_VALUE, file.getName(), file.getName(), file.getName(),
+                    file.getAbsolutePath(), true);
+            addTrack(nowPlayingListData);
+        }
+
+        //resetIteratorPos();
+        log.debug("Playable item available? " + listTraverser.hasNext());
+        if(listTraverser.hasNext()){
+            currentTrack = listTraverser.next();
+            log(currentTrack);
+        }
+        play();
+
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (int i = 1; i < files.size(); i++) {
+                    File file = files.get(i);
+                    NowPlayingListData nowPlayingListData = new NowPlayingListData(Long.MAX_VALUE, file.getName(), file.getName(), file.getName(),
+                            file.getAbsolutePath(), true);
+                    addTrack(nowPlayingListData);
+                }
+            }
+        });
+
+    }
+
     public void play(File file) {
         this.stopPlay();
         nowPlaylingList.clear();
@@ -895,7 +934,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                         } else {
                             log.debug("Loading and playing new media...");
                             //TODO: Make options dynamic from UI.
-                            String[] options = {":file-caching=60000ms", ":disc-caching=20000ms"};
+                            String[] options = loadMediaPlayerOptions();
+                            log.debug("Media Player Options loaded: " + StringUtils.join(options, " "));
                             mediaPlayer.playMedia(this.currentTrack.getLocation(), options);
 
                             log.debug("Starting media: " + this.currentTrack.getLocation());
@@ -930,6 +970,19 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             JOptionPane.showMessageDialog(null, "Could not play the file. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
             log.debug("Could not play the file. Error: ", ex);
         }
+    }
+
+    private String[] loadMediaPlayerOptions() {
+        List<String> optionsList = new ArrayList<String>();
+        Iterator<String> it = PropertyManager.getConfigurationMap().keySet().iterator();
+        while(it.hasNext()) {
+            String key = it.next();
+            if(StringUtils.contains(key, "media.player.options.")) {
+                String option = PropertyManager.getConfigurationMap().get(key);
+                optionsList.add(option);
+            }
+        }
+        return optionsList.toArray(new String[optionsList.size()]);
     }
 
     private void registerPlayProgressHandler(MediaPlayer mediaPlayer) {
@@ -1212,6 +1265,12 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             mediaPlayer.release();
         }
         mediaPlayerFactory.release();
+    }
+
+    public void registerDragAndDropEventListener(PlayerMediaFilesDroppedEventListener playerMediaFilesDroppedEventListener) {
+        for(final VLCJPlayer vlcjPlayer : VLCJ_PLAYERS) {
+            vlcjPlayer.registerDragAndDropEvent(playerMediaFilesDroppedEventListener);
+        }
     }
 
 }

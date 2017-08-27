@@ -22,8 +22,10 @@ import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
 import com.gps.itunes.media.player.ui.tasks.*;
 import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
+import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerMediaFilesDroppedEventListener;
 
 import javax.swing.*;
+import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -304,6 +306,13 @@ public class Controller {
             @Override
             public void previousClicked() {
                 getPlayer().previous();
+            }
+        });
+
+        getPlayer().registerDragAndDropEventListener(new PlayerMediaFilesDroppedEventListener() {
+            @Override
+            public void onFilesDroppedEvent(List<File> fileList, DropTargetDropEvent dropTargetDropEvent) {
+                getPlayer().playFiles(fileList);
             }
         });
     }

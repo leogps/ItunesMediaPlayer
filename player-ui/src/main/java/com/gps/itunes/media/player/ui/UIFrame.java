@@ -126,7 +126,11 @@ public class UIFrame extends JFrame {
         instance = this;
 
         if (OSInfo.isOSMac()) {
-            //enableOSXFullscreen(this);
+//            try {
+//                UIFrame.class.forName("com.gps.itunes.media.player.OSXUtils");
+//            } catch (ClassNotFoundException e) {
+//                LOG.debug(e.getMessage(), e);
+//            }
         }
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
