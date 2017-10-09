@@ -10,7 +10,7 @@ import java.awt.*;
 public class PlayerControlPanelTest {
 
 
-    @Test
+    @Test(enabled = false)
     public void test() throws InterruptedException {
         JFrame frame = new JFrame();
         JPanel jPanel = new JPanel(new BorderLayout());
