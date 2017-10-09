@@ -7,7 +7,6 @@ jdk:
   - openjdk7
 language: java
 before_install:
-  - mvn install:install-file -Dfile="lib-runtime/ui.jar" -DgroupId="com.apple" -DartifactId="AppleJavaExtensions" -Dversion="1.6" -Dpackaging="jar"
   - sudo apt-get update -q
   - sudo apt-get install git -y
   - git clone https://github.com/leogps/ItunesLibraryParser.git
@@ -15,3 +14,4 @@ before_install:
   - mvn clean install
   - mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.0.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.0" -Dpackaging="jar"
   - cd ..
+  - mvn install:install-file -Dfile="lib-runtime/ui.jar" -DgroupId="com.apple" -DartifactId="AppleJavaExtensions" -Dversion="1.6" -Dpackaging="jar"
