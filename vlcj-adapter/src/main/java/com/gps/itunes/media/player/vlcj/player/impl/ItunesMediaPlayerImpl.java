@@ -24,7 +24,10 @@ import com.gps.itunes.media.player.vlcj.ui.player.utils.GotoValueSubmissionEvent
 import com.gps.itunes.media.player.vlcj.ui.player.utils.TrackTime;
 import com.gps.itunes.media.player.vlcj.utils.YoutubeDLUtils;
 import com.gps.youtube.dl.YoutubeDL;
+import com.gps.youtube.dl.YoutubeDLProcessor;
 import com.gps.youtube.dl.YoutubeDLResult;
+import com.gps.youtube.dl.event.YoutubeDLResultEvent;
+import com.gps.youtube.dl.event.YoutubeDLResultEventListener;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -49,6 +52,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by leogps on 10/4/14.
@@ -359,6 +363,18 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             public void finished(ItunesMediaPlayer player, String location) {}
             public void onPlayProgressed() {}
         });
+
+        nowPlayingListFrame.addNowPlayingListTrackSelectedEventListener(new NowPlayingListTrackSelectedEventListener() {
+            @Override
+            public void onNowPlayingListTrackSelectedEvent(NowPlayingListData nowPlayingListData) {
+                synchronized (currentTrack) {
+                    stopPlay();
+                    nowPlaylingList.traverseTo(nowPlayingListData);
+                    currentTrack = nowPlayingListData;
+                    play();
+                }
+            }
+        });
     }
 
     private void notifyOnVideoSurface(String message) {
@@ -662,7 +678,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
         if(!files.isEmpty()) {
             File file = files.get(0);
-            NowPlayingListData nowPlayingListData = new NowPlayingListData(Long.MAX_VALUE, file.getName(), file.getName(), file.getName(),
+            NowPlayingListData nowPlayingListData = new NowPlayingListData(nowPlaylingList.size(), file.getName(), file.getName(), file.getName(),
                     file.getAbsolutePath(), true);
             addTrack(nowPlayingListData);
         }
@@ -680,7 +696,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             public void run() {
                 for (int i = 1; i < files.size(); i++) {
                     File file = files.get(i);
-                    NowPlayingListData nowPlayingListData = new NowPlayingListData(Long.MAX_VALUE, file.getName(), file.getName(), file.getName(),
+                    NowPlayingListData nowPlayingListData = new NowPlayingListData(nowPlaylingList.size(), file.getName(), file.getName(), file.getName(),
                             file.getAbsolutePath(), true);
                     addTrack(nowPlayingListData);
                 }
@@ -693,7 +709,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         this.stopPlay();
         nowPlaylingList.clear();
 
-        this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, file.getName(), file.getName(), file.getName(),
+        this.currentTrack = new NowPlayingListData(nowPlaylingList.size(), file.getName(), file.getName(), file.getName(),
                 file.getAbsolutePath(), true);
         nowPlaylingList.add(currentTrack);
         new Thread(this).start();
@@ -711,31 +727,87 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         }
 
         if(!videoURLFetchComplete) {
-
-            String youtubeDLExecutable = YoutubeDLUtils.fetchYoutubeDLExecutable();
-            try {
-                InterruptableAsyncTask asyncProcess =
-                        YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
-                final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
-
-                asyncProcess.registerListener(new AsyncTaskListener() {
-                    public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
-                        interruptableProcessDialog.close();
-                    }
-
-                    public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
-                        if(isYoutubeVideo(urlStr)) {
-                            attemptYoutubeVideoUrlFetch(urlStr);
-                        }
-                        interruptableProcessDialog.close();
-                    }
-                });
-                asyncProcess.execute();
-                interruptableProcessDialog.showDialog();
-            } catch (Exception ex) {
-                handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
-            }
+            fallbackToYoutubeDL(urlStr);
         }
+    }
+
+    private void fallbackToYoutubeDL(final String urlStr) {
+        String youtubeDLExecutable = YoutubeDLUtils.fetchYoutubeDLExecutable();
+        try {
+            final InterruptableAsyncTask asyncProcess;
+            final InterruptableProcessDialog interruptableProcessDialog;
+
+            boolean watchURLProcessed = false;
+            if(YoutubeDL.hasPlaylist(urlStr)) {
+
+                // Fetch watch video first and then fetch playlist urls.
+                String effectiveURL = urlStr;
+                if(YoutubeDL.isWatchURL(urlStr)) {
+                    String watchURL = YoutubeDL.normalizeWatchURL(urlStr);
+                    fallbackToYoutubeDL(watchURL);
+                    watchURLProcessed = true;
+                    effectiveURL = YoutubeDL.normalizePlaylistURL(urlStr);
+                }
+
+                asyncProcess = YoutubeDL.fetchPlaylistAsync(youtubeDLExecutable, effectiveURL);
+                interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess, false);
+                YoutubeDLResultEventListener youtubeDLResultEventListener = fetchDefaultPlaylistFetchProcessListener(effectiveURL, watchURLProcessed);
+                ((YoutubeDLProcessor) asyncProcess).addYoutubeDLResultEventListener(youtubeDLResultEventListener);
+
+            } else {
+                asyncProcess =
+                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
+                interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess, true);
+            }
+            
+            asyncProcess.registerListener(new AsyncTaskListener() {
+                public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
+                    if(interruptableProcessDialog.isVisible()) {
+                        interruptableProcessDialog.close();
+                    }
+                }
+
+                public void onFailure(InterruptableAsyncTask interruptableAsyncTask) {
+                    if(isYoutubeVideo(urlStr)) {
+                        attemptYoutubeVideoUrlFetch(urlStr);
+                    }
+                    if(interruptableProcessDialog.isVisible()) {
+                        interruptableProcessDialog.close();
+                    }
+                }
+            });
+
+            asyncProcess.execute();
+            interruptableProcessDialog.showDialog();
+
+        } catch (Exception ex) {
+            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+        }
+    }
+
+    private YoutubeDLResultEventListener fetchDefaultPlaylistFetchProcessListener(final String urlStr, final boolean watchURLProcessed) {
+        final AtomicInteger counter = new AtomicInteger(0);
+        return new YoutubeDLResultEventListener() {
+            @Override
+            public void onYoutubeDLResultEvent(YoutubeDLResultEvent youtubeDLResultEvent) {
+                YoutubeDLResult youtubeDLResult = youtubeDLResultEvent.getYoutubeDLResult();
+                if(counter.incrementAndGet() == 1 && !watchURLProcessed) {
+
+                    doHandleYoutubeDLCompletion(youtubeDLResult, urlStr);
+
+                } else {
+                    // Adding to now playing list.
+                    String retrievedTitle = youtubeDLResult.getTitle();
+                    String retrievedUrl = youtubeDLResult.getUrl();
+                    String retrievedFilename = youtubeDLResult.getFilename();
+
+                    NowPlayingListData nowPlayingListData = new NowPlayingListData(nowPlaylingList.size(), retrievedTitle, retrievedTitle, retrievedFilename,
+                            retrievedUrl, true);
+                    addTrack(nowPlayingListData);
+                    log.debug(String.format("Added %s to playlist at position %s", retrievedFilename, nowPlaylingList.size()));
+                }
+            }
+        };
     }
 
     private boolean isYoutubeVideo(String urlStr) {
@@ -768,11 +840,20 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     private void handleYoutubeDLCompletion(Process process, String urlStr) {
         try {
             YoutubeDLResult youtubeDLResult = YoutubeDL.retrieveYoutubeDLResult(process);
+            doHandleYoutubeDLCompletion(youtubeDLResult, urlStr);
+        } catch (Exception ex) {
+            handleYoutubeDLFailure(ex.getMessage(), ex, urlStr);
+        }
+    }
+
+    private void doHandleYoutubeDLCompletion(YoutubeDLResult youtubeDLResult, String urlStr) {
+        try {
+            clearNowPlayingList();
 
             String retrievedTitle = youtubeDLResult.getTitle();
             String retrievedUrl = youtubeDLResult.getUrl();
             String retrievedFilename = youtubeDLResult.getFilename();
-            this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, retrievedTitle, retrievedTitle, retrievedFilename,
+            this.currentTrack = new NowPlayingListData(nowPlaylingList.size(), retrievedTitle, retrievedTitle, retrievedFilename,
                     retrievedUrl, true);
 
             log.debug(youtubeDLResult);
@@ -799,10 +880,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     return false;
                 }
 
-                this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, youtubeLink.getFileName(), urlStr, urlStr,
+                this.currentTrack = new NowPlayingListData(nowPlaylingList.size(), youtubeLink.getFileName(), urlStr, urlStr,
                         urlStr, true);
             } else {
-                this.currentTrack = new NowPlayingListData(Long.MAX_VALUE, urlStr, urlStr, urlStr,
+                this.currentTrack = new NowPlayingListData(nowPlaylingList.size(), urlStr, urlStr, urlStr,
                         urlStr, true);
             }
 
@@ -1274,4 +1355,3 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
 }
-

@@ -1,7 +1,5 @@
 package com.gps.itunes.media.player.vlcj.ui.player;
 
-import com.gps.imp.utils.Constants;
-
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -11,7 +9,7 @@ import java.util.Set;
  * Created by leogps on 10/18/15.
  */
 public enum NowPlayingListTableColumn {
-    STATUS(Constants.EMPTY, 5),
+    STATUS("Status", 5),
     NAME("Name", 25),
     ARTIST("Artist", 20),
     ALBUM("Album", 20);

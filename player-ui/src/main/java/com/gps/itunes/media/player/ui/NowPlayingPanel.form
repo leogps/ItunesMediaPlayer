@@ -27,7 +27,7 @@
           <component id="70444" class="javax.swing.JLabel" binding="trackAlbumNameLabel">
             <constraints border-constraint="Center"/>
             <properties>
-              <font name="Bookshelf Symbol 7" size="12"/>
+              <font/>
               <foreground color="-16777216"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
@@ -37,7 +37,7 @@
           <component id="a949e" class="javax.swing.JLabel" binding="trackNameLabel">
             <constraints border-constraint="North"/>
             <properties>
-              <font name="Bookshelf Symbol 7" size="14" style="1"/>
+              <font/>
               <foreground color="-16777216"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
@@ -47,7 +47,7 @@
           <component id="c0761" class="javax.swing.JLabel" binding="trackArtistNameLabel">
             <constraints border-constraint="South"/>
             <properties>
-              <font name="Bookshelf Symbol 7" size="12"/>
+              <font/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="0"/>
               <text value="trackArtistNameHere"/>

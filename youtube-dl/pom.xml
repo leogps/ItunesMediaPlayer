@@ -30,6 +30,11 @@
             <artifactId>updater</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${http.components.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

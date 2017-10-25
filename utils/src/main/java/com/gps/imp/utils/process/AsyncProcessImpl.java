@@ -12,7 +12,7 @@ import java.util.List;
 public class AsyncProcessImpl implements AsyncProcess<Void> {
 
     private final String[] command;
-    private Process process;
+    protected Process process;
     private final List<AsyncTaskListener> asyncTaskListeners = new ArrayList<AsyncTaskListener>();
     private boolean interrupted;
 
@@ -20,13 +20,19 @@ public class AsyncProcessImpl implements AsyncProcess<Void> {
         this.command = command;
     }
 
-    public Process execute() throws IOException {
+    public synchronized Process execute() throws IOException {
         if(isExecuting()) {
             throw new IllegalStateException("Previously submitted process is still executing. Only one process is permitted.");
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         process = processBuilder.start();
+        waitForAsync();
+
+        return process;
+    }
+
+    protected void waitForAsync() {
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -38,17 +44,19 @@ public class AsyncProcessImpl implements AsyncProcess<Void> {
                 }
             }
         }).start();
-
-        return process;
     }
 
-    private void informFailure() {
+    public void waitFor() throws InterruptedException {
+        process.waitFor();
+    }
+
+    protected void informFailure() {
         for(AsyncTaskListener asyncTaskListener : asyncTaskListeners) {
             asyncTaskListener.onFailure(this);
         }
     }
 
-    private void informSuccess() {
+    protected void informSuccess() {
         for(AsyncTaskListener asyncTaskListener : asyncTaskListeners) {
             asyncTaskListener.onSuccess(this);
         }

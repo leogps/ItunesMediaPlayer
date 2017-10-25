@@ -247,7 +247,7 @@ public class UIFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 FileSystemRefreshTask fileSystemRefreshTask = new FileSystemRefreshTask();
-                final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(fileSystemRefreshTask);
+                final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(fileSystemRefreshTask, true);
 
                 fileSystemRefreshTask.registerListener(new AsyncTaskListener() {
                     @Override
@@ -624,7 +624,7 @@ public class UIFrame extends JFrame {
                         return;
                     }
 
-                    final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess);
+                    final InterruptableProcessDialog interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess, true);
                     asyncProcess.registerListener(new AsyncTaskListener<Void, UpdateResult>() {
                         public void onSuccess(InterruptableAsyncTask<Void, UpdateResult> interruptableAsyncTask) {
 

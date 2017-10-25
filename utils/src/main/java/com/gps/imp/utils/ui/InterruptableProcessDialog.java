@@ -11,10 +11,10 @@ public class InterruptableProcessDialog extends JDialog {
 
     private final InterruptableAsyncTask asyncTask;
 
-    public InterruptableProcessDialog(final InterruptableAsyncTask asyncTask) {
+    public InterruptableProcessDialog(final InterruptableAsyncTask asyncTask, boolean blocking) {
         this.asyncTask = asyncTask;
         setContentPane(contentPane);
-        setModal(true);
+        setModal(blocking);
 
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -55,7 +55,7 @@ public class InterruptableProcessDialog extends JDialog {
     }
 
     public static void main(String[] args) {
-        InterruptableProcessDialog dialog = new InterruptableProcessDialog(null);
+        InterruptableProcessDialog dialog = new InterruptableProcessDialog(null, false);
         dialog.pack();
         dialog.setVisible(true);
         System.exit(0);

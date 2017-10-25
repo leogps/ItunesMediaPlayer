@@ -153,6 +153,22 @@ public class TraversableLinkedList<T> {
         return initialIndexValue;
     }
 
+    /**
+     * Traverses to a specific node.
+     *
+     * @param t
+     */
+    public void traverseTo(T t) {
+        TraversableLinkedList<T>.Node<T> tNode = findElementNode(t, new AtomicInteger(-1));
+        try {
+            acquireReadLock(this);
+            listTraverser.intermediateElementPointer.previous = tNode.previous;
+            listTraverser.intermediateElementPointer.next = tNode.next;
+        } finally {
+            releaseReadLock(this);
+        }
+    }
+
     private TraversableLinkedList<T>.Node<T> findElementNode(Object t, AtomicInteger index) {
         try {
             acquireReadLock(this);
