@@ -162,6 +162,7 @@ https://www.jetbrains.com/idea/
     VLC media player comes with plugin based on LUA to resolve web based video files, example YouTube videos and YouTube periodically changes the signatures to resolve the video file locations. YouTube-DL suffers from the same issue.
 ##### Workaround:
     YouTube-DL project is pretty up-to-date in fixing the signatures and any issues, simply recompile the youtube-dl maven module and replace the resulting executable.
+    The installed version of the ItunesMediaPlayer can update Youtube-DL using Tools > Check for Updates. This will automatically update the underlying youtube-dl executable.
 
 ---
 
