@@ -1,11 +1,11 @@
 ItunesMediaPlayer
 ===================
 
-###Description
+### Description
 
     Media Player built on top of VLC, VLCJ and various other open-source projects.
 
-###Features
+### Features
 
     1. Direct integration with Itunes Library.
     2. Copy Itunes playlists/Tracks.
@@ -15,14 +15,14 @@ ItunesMediaPlayer
        open-source project YouTube-DL (https://github.com/rg3/youtube-dl).
     6. FileSystem Tree view to pin-point the library file being played on the computer.
 
-###Executable
+### Executable
     1. While this can run on any machine with Java and VLC runtimes, this is primarily developed for Mac OSX and executables are compiled as Mac native app.
     2. Linux executable can be run using the java command.            
     3. Windows executable: TBA 
 
-###Development
+### Development
 
-####Tools:    
+#### Tools:    
 
 *Note: Most developmental changes require simply running `mvn clean install`.    
 Replacing the ItunesMediaPlayer-jar-with-dependencies.jar file from player-ui/target under the pre-built ItunesMediaPlayer.app/Contents/Java folder will suffice.
@@ -58,8 +58,8 @@ OR
         More info: http://cx-freeze.sourceforge.net
 
         
-####Dependent libraries
-#####[ItunesLibraryParser](https://github.com/leogps/ItunesLibraryParser)
+#### Dependent libraries
+##### [ItunesLibraryParser](https://github.com/leogps/ItunesLibraryParser)
         
     This is required to parse the Itunes Library XML file. The following script will clone, build and install the ItunesLibraryParser library in the local maven repository. 
 
@@ -73,10 +73,10 @@ OR
 
 ---
 
-#####Apple JavaExtension
+##### Apple JavaExtension
 `mvn install:install-file -Dfile="lib-runtime/ui.jar" -DgroupId="com.apple" -DartifactId="AppleJavaExtensions" -Dversion="1.6" -Dpackaging="jar"`
 
-#####[javafx](http://www.oracle.com/technetwork/java/javafx2-archive-download-1939373.html)
+##### [javafx](http://www.oracle.com/technetwork/java/javafx2-archive-download-1939373.html)
 
     This is only required for the project to compile and is only used at runtime when running under Mac OSX with JDK 7/8.
 
@@ -90,11 +90,11 @@ OR
 
     Download javafx from http://www.oracle.com/technetwork/java/javafx2-archive-download-1939373.html and install in local repository.
 
-#####VLC
+##### VLC
     Mac OSX: Latest VLC runtime for Mac OSX is already including in the commits.
     For Linux, it is best to install the VLC which sets the LibVLC path automatically.  
 
-#####Debian Archiver -- .deb file build (Optional)
+##### Debian Archiver -- .deb file build (Optional)
 Builds dpkg file that can be used with Debian systems. `dpkg` needs to be available for this to work. 
 
     cd archiver
@@ -103,7 +103,7 @@ Builds dpkg file that can be used with Debian systems. `dpkg` needs to be availa
     dpkg --build itunes-media-player
 
 
-#####Build
+##### Build
 After seeing that all non-optional requirements have been met, the project can be built using maven.
  
     mvn clean install
@@ -117,55 +117,55 @@ Or build without running tests.
 Credits
 ---
 
-#####VLC and its license can be found here:
+##### VLC and its license can be found here:
 http://www.videolan.org/legal.html
 
 ---
 
-#####VLCJ library and its license can be found here:
+##### VLCJ library and its license can be found here:
 https://github.com/caprica/vlcj
 
 ---
 
-#####JavaFX Runtime license can be found here:
+##### JavaFX Runtime license can be found here:
 http://www.oracle.com/technetwork/java/javase/downloads/java-se-archive-license-1382604.html
 
 ---
 
-#####JDK 6 for Mac OSX by Apple can be found here:
+##### JDK 6 for Mac OSX by Apple can be found here:
 https://support.apple.com/kb/dl1572?locale=en_US
 
 ---
 
-#####UI Designer, UI compilation, UI jar bundling powered by IntelliJ IDEA:
+##### UI Designer, UI compilation, UI jar bundling powered by IntelliJ IDEA:
 https://www.jetbrains.com/idea/
  
 ---
 
-###Known Limitations and Workarounds
+### Known Limitations and Workarounds
 
 ---
 
-#####Issue:
+##### Issue:
     On Ubuntu, Splash screen interferes with vlcj initialization.
-#####Workaround: 
+##### Workaround: 
     Start jvm with -DVLCJ_INITX=no 
 
 ---
 
-#####Issue: 
+##### Issue: 
     On Mac OSX, Hardware Acceleration is available only in JDK 6.
-#####Workaround: 
+##### Workaround: 
     Either use JDK 6 for better video performance or switch to JDK 6+ for Software Acceleration.
 
-#####Issue: 
+##### Issue: 
     VLC media player comes with plugin based on LUA to resolve web based video files, example YouTube videos and YouTube periodically changes the signatures to resolve the video file locations. YouTube-DL suffers from the same issue.
-#####Workaround:
+##### Workaround:
     YouTube-DL project is pretty up-to-date in fixing the signatures and any issues, simply recompile the youtube-dl maven module and replace the resulting executable.
 
 ---
 
-###Licensing
+### Licensing
 
 [License](http://creativecommons.org/licenses/by/4.0/legalcode)
 
