@@ -9,6 +9,7 @@ import java.util.Set;
  * Created by leogps on 10/18/15.
  */
 public enum NowPlayingListTableColumn {
+    SNO("SNO.", 5),
     STATUS("Status", 5),
     NAME("Name", 25),
     ARTIST("Artist", 20),

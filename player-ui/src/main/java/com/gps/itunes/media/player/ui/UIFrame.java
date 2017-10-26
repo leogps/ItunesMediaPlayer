@@ -433,22 +433,27 @@ public class UIFrame extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent me) {
-
-                if (!me.isPopupTrigger() && !SwingUtilities.isRightMouseButton(me) && me.getClickCount() == doubleClickValue && !me.isConsumed()) {
-                    me.consume();
-
-                    final List<Track> trackList = getSelectedTracks();
-
-                    for (UIFrameEventListener uiFrameEventListener : uiFrameEventListenerList) {
-                        uiFrameEventListener.onTracksPlayRequested(trackList);
-                    }
-                }
-
             }
 
             @Override
             public void mousePressed(MouseEvent me) {
-                //
+                if (!me.isPopupTrigger() && !SwingUtilities.isRightMouseButton(me) && me.getClickCount() == doubleClickValue && !me.isConsumed()) {
+                    JTable table = (JTable) me.getSource();
+                    Point p = me.getPoint();
+                    int row = table.rowAtPoint(p);
+                    if (me.getClickCount() == 2 && row >= 0) {
+
+                        final TrackHolder holder = (TrackHolder) tracksTable.getValueAt(row, TracksTableModel.getHolderIndex());
+                        if(holder != null) {
+                            final List<Track> trackList = getSelectedTracks();
+                            if(trackList != null && !trackList.isEmpty()) {
+                                for (UIFrameEventListener uiFrameEventListener : uiFrameEventListenerList) {
+                                    uiFrameEventListener.onTracksPlayRequested(trackList);
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             @Override

@@ -109,20 +109,6 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      */
     private final NowPlayingListFrame nowPlayingListFrame = new NowPlayingListFrame();
 
-    private final ImageIcon currentlyPlayingIcon = new ImageIcon(ItunesMediaPlayerImpl.class.getClassLoader().getResource("images/play_20x20.png")) {
-        @Override
-        public String toString() {
-            return "Playing";
-        }
-    };
-
-    private final ImageIcon currentlyPausedIcon = new ImageIcon(ItunesMediaPlayerImpl.class.getClassLoader().getResource("images/pause_20x20.png")) {
-        @Override
-        public String toString() {
-            return "Paused";
-        }
-    };
-
     /**
      * List iterator to traverse left and right in the playlist.
      */
@@ -329,30 +315,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         /**
          * NowPlayingList frame utils.
          */
-        JTable nowPlayingListTable = nowPlayingListFrame.getNowPlayingList();
-        final DefaultTableModel model = (DefaultTableModel) nowPlayingListTable.getModel();
-        nowPlayingListTable.getColumnModel().getColumn(0).setCellEditor(new LabelCell());
-        nowPlayingListTable.getColumnModel().getColumn(0).setCellRenderer(new LabelCell());
         addMediaPlayerListener(new MediaPlayerEventListener() {
             public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
                 updateStatusCells(true);
             }
 
             private void updateStatusCells(final boolean isPlaying) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        for (int i = 0; i < model.getDataVector().size(); i++) {
-                            Vector objectVector = (Vector) model.getDataVector().get(i);
-                            NowPlayingListData nowPlayingListData = (NowPlayingListData) objectVector.get(1);
-                            if (isCurrentTrack(nowPlayingListData.getTrackId())) {
-                                objectVector.set(0, (isPlaying) ? currentlyPlayingIcon : currentlyPausedIcon);
-                            } else {
-                                objectVector.set(0, Constants.EMPTY);
-                            }
-                            model.fireTableCellUpdated(i, 0); // first column, every row
-                        }
-                    }
-                });
+                nowPlayingListFrame.updateCellStatus(isPlaying, currentTrack.getTrackId());
             }
 
             public void paused(ItunesMediaPlayer player, String location) {
