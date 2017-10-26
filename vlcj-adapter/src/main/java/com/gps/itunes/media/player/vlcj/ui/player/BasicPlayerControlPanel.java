@@ -24,7 +24,8 @@ public class BasicPlayerControlPanel extends JPanel {
             Logger.getLogger(BasicPlayerControlPanel.class);
 
     //    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("vlcjAdapterUi.properties");
-    private static final ImageIcon previousImg, previousPressedImg, playImage, playPressedImg, forwardImage, forwardPressedImg, pauseImage, pausePressedImage;
+    private static final ImageIcon previousImg, previousPressedImg, playImage, playPressedImg, forwardImage, forwardPressedImg, pauseImage, pausePressedImage,
+            nowPlayingListImage, nowPlayingListPressedImage;
 
     static {
         previousImg = new ImageIcon(BasicPlayerControlPanel.class.getClassLoader().getResource("icons/previous.png"));
@@ -42,6 +43,10 @@ public class BasicPlayerControlPanel extends JPanel {
         pauseImage = new ImageIcon(BasicPlayerControlPanel.class.getClassLoader().getResource("icons/pause.png"));
 
         pausePressedImage = new ImageIcon(BasicPlayerControlPanel.class.getClassLoader().getResource("icons/pause-pressed.png"));
+
+        nowPlayingListImage = new ImageIcon(BasicPlayerControlPanel.class.getClassLoader().getResource("icons/now-playing-list.png"));
+
+        nowPlayingListPressedImage = new ImageIcon(BasicPlayerControlPanel.class.getClassLoader().getResource("icons/now-playing-list-clicked.png"));
     }
 
     public static final int VOL_MIN = 0;
@@ -57,6 +62,8 @@ public class BasicPlayerControlPanel extends JPanel {
     private JPanel iconsPanel;
     private JPanel volumePanel;
     private JLabel volumeValueLabel;
+    private JPanel nowPlayingListTogglerPanel;
+    private JLabel nowPlayingListTogglerIcon;
 
     public BasicPlayerControlPanel() {
 
@@ -115,6 +122,20 @@ public class BasicPlayerControlPanel extends JPanel {
                 forwardIcon.setIcon(forwardImage);
             }
         });
+        nowPlayingListTogglerPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                nowPlayingListTogglerIcon.setIcon(getNowPlayingListPressedImage());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (listener != null) {
+                    listener.nowPlayingListToggled();
+                }
+                nowPlayingListTogglerIcon.setIcon(getNowPlayingListImage());
+            }
+        });
     }
 
     private static ImageIcon getPreviousIcon() {
@@ -139,6 +160,14 @@ public class BasicPlayerControlPanel extends JPanel {
 
     private static ImageIcon getPausePressedIcon() {
         return pausePressedImage;
+    }
+
+    public static ImageIcon getNowPlayingListImage() {
+        return nowPlayingListImage;
+    }
+
+    public static ImageIcon getNowPlayingListPressedImage() {
+        return nowPlayingListPressedImage;
     }
 
     public void setPaused() {

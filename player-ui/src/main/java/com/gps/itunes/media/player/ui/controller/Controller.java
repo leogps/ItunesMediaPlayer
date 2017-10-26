@@ -307,6 +307,11 @@ public class Controller {
             public void previousClicked() {
                 getPlayer().previous();
             }
+
+            @Override
+            public void nowPlayingListToggled() {
+                getPlayer().toggleNowPlayingList();
+            }
         });
 
         getPlayer().registerDragAndDropEventListener(new PlayerMediaFilesDroppedEventListener() {

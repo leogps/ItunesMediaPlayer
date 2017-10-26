@@ -1354,4 +1354,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         }
     }
 
+    @Override
+    public void toggleNowPlayingList() {
+        nowPlayingListFrame.setVisible(!nowPlayingListFrame.isVisible());
+    }
 }

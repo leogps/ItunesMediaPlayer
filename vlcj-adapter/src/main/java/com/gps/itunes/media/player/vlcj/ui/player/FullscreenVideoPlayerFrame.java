@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FullscreenVideoPlayerFrame extends VideoPlayerFrame {
 
-    private static Logger log = Logger.getLogger(FullscreenVideoPlayerFrame.class);
+    private static final Logger LOGGER = Logger.getLogger(FullscreenVideoPlayerFrame.class);
 
     private static Future future;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -49,9 +49,9 @@ public class FullscreenVideoPlayerFrame extends VideoPlayerFrame {
 
     private void handleUserAttentionRequest() {
 
-        log.debug("User attention requested.");
+        LOGGER.debug("User attention requested.");
         if(!getFooterPanel().isVisible()) {
-            log.debug("Showing footer panel");
+            LOGGER.debug("Showing footer panel");
             getFooterPanel().setVisible(true);
         }
         reinitAutoHideLater();
@@ -76,7 +76,7 @@ public class FullscreenVideoPlayerFrame extends VideoPlayerFrame {
             public void run() {
                 if(!getSeekbar().getValueIsAdjusting()
                         && !basicPlayerControlPanel.getVolumeSlider().getValueIsAdjusting()) {
-                    log.debug("Autohiding... at " + Calendar.getInstance().getTime());
+                    LOGGER.debug("Autohiding... at " + Calendar.getInstance().getTime());
                     headerPanel.setVisible(false);
                     getFooterPanel().setVisible(false);
                 }
@@ -126,10 +126,12 @@ public class FullscreenVideoPlayerFrame extends VideoPlayerFrame {
         super.enableVideo(frameCanvas);
         getFrameCanvas().requestFocus();
         showSliderAndHideLater();
+        LOGGER.debug("Enabled Fullscreen frame");
     }
 
     public void disableVideo() {
         super.disableVideo();
         cancelAutoHideLaterTask();
+        LOGGER.debug("Disabled Fullscreen frame");
     }
 }

@@ -101,11 +101,17 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     }
 
     public void setVisible(boolean visible) {
-        vFrame.setVisible(visible);
+        VideoPlayerFrame playerFrame;
+        if(isFullscreen()) {
+            playerFrame = getFullscreenFrame();
+        } else {
+            playerFrame = getVideoPlayerFrame();
+        }
+        playerFrame.setVisible(visible);
         if(visible) {
-            vFrame.toFront();
-            vFrame.getVideoPanel().requestFocus();
-            vFrame.getVideoPanel().requestFocusInWindow();
+            playerFrame.toFront();
+            playerFrame.getVideoPanel().requestFocus();
+            playerFrame.getVideoPanel().requestFocusInWindow();
         }
     }
 
@@ -229,6 +235,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         if(isFullScreen.get()) {
             vFrame.disableVideo();
             fullscreenFrame.enableVideo(vFrame.getFrameCanvas());
+            fullscreenFrame.setTitle(vFrame.getTitle());
         } else {
             fullscreenFrame.disableVideo();
             vFrame.enableVideo(vFrame.getFrameCanvas());

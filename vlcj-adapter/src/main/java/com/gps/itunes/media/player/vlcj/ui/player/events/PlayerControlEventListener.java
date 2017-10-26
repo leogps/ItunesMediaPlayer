@@ -15,4 +15,6 @@ public abstract class PlayerControlEventListener {
     public abstract void forwardClicked();
 
     public abstract void previousClicked();
+
+    public abstract void nowPlayingListToggled();
 }

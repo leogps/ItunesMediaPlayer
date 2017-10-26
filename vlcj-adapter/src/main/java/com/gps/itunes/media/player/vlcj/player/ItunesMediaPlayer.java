@@ -73,4 +73,6 @@ public interface ItunesMediaPlayer extends Runnable {
     void releaseResources();
 
     void registerDragAndDropEventListener(PlayerMediaFilesDroppedEventListener playerMediaFilesDroppedEventListener);
+
+    void toggleNowPlayingList();
 }

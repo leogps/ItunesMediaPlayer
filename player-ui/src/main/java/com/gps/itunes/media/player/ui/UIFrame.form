@@ -12,7 +12,9 @@
     <children>
       <splitpane id="9f804">
         <constraints border-constraint="Center"/>
-        <properties/>
+        <properties>
+          <dividerLocation value="880"/>
+        </properties>
         <border type="none"/>
         <children>
           <grid id="e1e58" binding="contentPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
@@ -20,8 +22,8 @@
               <splitpane position="left"/>
             </constraints>
             <properties>
-              <minimumSize width="830" height="403"/>
-              <preferredSize width="830" height="403"/>
+              <minimumSize width="880" height="403"/>
+              <preferredSize width="880" height="403"/>
             </properties>
             <border type="none"/>
             <children>
@@ -283,8 +285,8 @@
               <splitpane position="right"/>
             </constraints>
             <properties>
-              <minimumSize width="330" height="80"/>
-              <preferredSize width="330" height="80"/>
+              <minimumSize width="280" height="80"/>
+              <preferredSize width="280" height="80"/>
             </properties>
             <border type="none"/>
             <children>

@@ -1,5 +1,7 @@
 package com.gps.itunes.media.player.vlcj.ui.player;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -15,6 +17,8 @@ public class VideoPlayerFrame extends JFrame {
      *
      */
     private static final long serialVersionUID = 8230628555951169075L;
+
+    private static final Logger LOGGER = Logger.getLogger(VideoPlayerFrame.class);
 
     protected final Canvas canvas;
     protected BasicPlayerControlPanel basicPlayerControlPanel;
