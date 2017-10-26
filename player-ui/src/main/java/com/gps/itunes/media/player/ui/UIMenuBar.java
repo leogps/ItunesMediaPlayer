@@ -3,7 +3,7 @@ package com.gps.itunes.media.player.ui;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-import static com.gps.itunes.media.player.ui.UIFrame.resourceBundle;
+import static com.gps.itunes.media.player.ui.UIFrame.RESOURCE_BUNDLE;
 
 /**
  * Created by leogps on 11/27/14.
@@ -39,66 +39,66 @@ public class UIMenuBar extends JMenuBar {
         super();
 
         // File Menu.
-        fileMenu = new JMenu(resourceBundle.getString("menu.file"));
-        fileMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.file.description"));
+        fileMenu = new JMenu(RESOURCE_BUNDLE.getString("menu.file"));
+        fileMenu.getAccessibleContext().setAccessibleDescription(RESOURCE_BUNDLE.getString("menu.file.description"));
 
         this.add(fileMenu);
 
-        openMenuItem = new JMenuItem(resourceBundle.getString("menu.file.open"));
+        openMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.file.open"));
         openMenuItem.setMnemonic(KeyEvent.VK_O);
         fileMenu.add(openMenuItem);
 
-        openNetworkFileMenuItem = new JMenuItem(resourceBundle.getString("menu.file.network"));
+        openNetworkFileMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.file.network"));
         openMenuItem.setMnemonic(KeyEvent.VK_N);
         fileMenu.add(openNetworkFileMenuItem);
 
         // Actions Menu.
-        actionsMenu = new JMenu(resourceBundle.getString("menu.actions"));
-        actionsMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.actions.description"));
+        actionsMenu = new JMenu(RESOURCE_BUNDLE.getString("menu.actions"));
+        actionsMenu.getAccessibleContext().setAccessibleDescription(RESOURCE_BUNDLE.getString("menu.actions.description"));
 
         this.add(actionsMenu);
 
-        increaseVolumeMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.increase_volume"));
-        decreaseVolumeMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.decrease_volume"));
+        increaseVolumeMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.actions.increase_volume"));
+        decreaseVolumeMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.actions.decrease_volume"));
 
         actionsMenu.add(increaseVolumeMenuItem);
         actionsMenu.add(decreaseVolumeMenuItem);
 
         actionsMenu.addSeparator();
-        goToMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.goto"));
+        goToMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.actions.goto"));
         goToMenuItem.setMnemonic(KeyEvent.VK_G);
         actionsMenu.add(goToMenuItem);
 
-        reloadLibraryMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.reload"));
+        reloadLibraryMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.actions.reload"));
         reloadLibraryMenuItem.setMnemonic(KeyEvent.VK_R);
         actionsMenu.add(reloadLibraryMenuItem);
 
-        copyPlaylistsMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.copy_playlist"));
+        copyPlaylistsMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.actions.copy_playlist"));
         copyPlaylistsMenuItem.setMnemonic(KeyEvent.VK_C);
         actionsMenu.add(copyPlaylistsMenuItem);
 
-        copyTracksMenuItem = new JMenuItem(resourceBundle.getString("menu.actions.copy_track"));
+        copyTracksMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.actions.copy_track"));
         copyTracksMenuItem.setMnemonic(KeyEvent.VK_T);
         actionsMenu.add(copyTracksMenuItem);
 
         // Tools Menu
-        toolsMenu = new JMenu(resourceBundle.getString("menu.tools"));
-        toolsMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.tools.description"));
+        toolsMenu = new JMenu(RESOURCE_BUNDLE.getString("menu.tools"));
+        toolsMenu.getAccessibleContext().setAccessibleDescription(RESOURCE_BUNDLE.getString("menu.tools.description"));
         this.add(toolsMenu);
 
-        updatesMenuItem = new JMenuItem(resourceBundle.getString("menu.tools.update"));
+        updatesMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.tools.update"));
         updatesMenuItem.setMnemonic(KeyEvent.VK_U);
         toolsMenu.add(updatesMenuItem);
 
         // About Menu
-        aboutMenu = new JMenu(resourceBundle.getString("menu.about"));
-        aboutMenu.getAccessibleContext().setAccessibleDescription(resourceBundle.getString("menu.about.description"));
+        aboutMenu = new JMenu(RESOURCE_BUNDLE.getString("menu.about"));
+        aboutMenu.getAccessibleContext().setAccessibleDescription(RESOURCE_BUNDLE.getString("menu.about.description"));
         this.add(aboutMenu);
 
-        vlcMenuItem = new JMenuItem(resourceBundle.getString("menu.about.vlc"));
+        vlcMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.about.vlc"));
         aboutMenu.add(vlcMenuItem);
 
-        aboutIMPMenuItem = new JMenuItem(resourceBundle.getString("menu.about.imp"));
+        aboutIMPMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.about.imp"));
         aboutMenu.add(aboutIMPMenuItem);
 
     }

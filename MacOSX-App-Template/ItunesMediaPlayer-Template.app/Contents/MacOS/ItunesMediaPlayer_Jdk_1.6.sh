@@ -15,6 +15,7 @@ done
 progdir=`dirname "$PRG"`
 
 JAVACMD="$progdir/1.6.0.jdk/Contents/Home/bin/java"
+#JAVACMD=java
 
 #if [ -n "$JAVA_HOME" ]; then
 #  JAVACMD="$JAVA_HOME/bin/java"

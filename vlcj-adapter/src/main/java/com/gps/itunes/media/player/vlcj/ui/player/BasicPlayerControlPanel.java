@@ -9,6 +9,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ResourceBundle;
 
 /**
  * Created by leogps on 10/6/14.
@@ -23,7 +24,7 @@ public class BasicPlayerControlPanel extends JPanel {
     private static Logger log =
             Logger.getLogger(BasicPlayerControlPanel.class);
 
-    //    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("vlcjAdapterUi.properties");
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("vlcjAdapterUi");
     private static final ImageIcon previousImg, previousPressedImg, playImage, playPressedImg, forwardImage, forwardPressedImg, pauseImage, pausePressedImage,
             nowPlayingListImage, nowPlayingListPressedImage;
 
@@ -136,6 +137,10 @@ public class BasicPlayerControlPanel extends JPanel {
                 nowPlayingListTogglerIcon.setIcon(getNowPlayingListImage());
             }
         });
+
+        // Setting Tooltips
+        volumePanel.setToolTipText(RESOURCE_BUNDLE.getString("volume.label.tooltip"));
+        nowPlayingListTogglerPanel.setToolTipText(RESOURCE_BUNDLE.getString("now.playing.list.toggler.text"));
     }
 
     private static ImageIcon getPreviousIcon() {

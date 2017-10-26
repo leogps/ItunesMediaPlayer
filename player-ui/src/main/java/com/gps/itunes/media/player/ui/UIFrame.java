@@ -2,7 +2,6 @@ package com.gps.itunes.media.player.ui;
 
 import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.JavaVersionUtils;
-import com.gps.imp.utils.process.AsyncProcess;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.imp.utils.ui.InterruptableProcessDialog;
@@ -106,7 +105,7 @@ public class UIFrame extends JFrame {
 
     private List<UIFrameEventListener> uiFrameEventListenerList = new ArrayList<UIFrameEventListener>();
 
-    protected static final ResourceBundle resourceBundle =
+    protected static final ResourceBundle RESOURCE_BUNDLE =
             ResourceBundle.getBundle("ui");
 
     private UIMenuBar uiMenuBar;
@@ -119,7 +118,7 @@ public class UIFrame extends JFrame {
     private static final Icon refreshIconRed = new ImageIcon(UIFrame.class.getClassLoader().getResource("images/refresh-icon-red.png"));
 
     public UIFrame() {
-        super(resourceBundle.getString("title"));
+        super(RESOURCE_BUNDLE.getString("title"));
 
 
         pack();
@@ -141,16 +140,16 @@ public class UIFrame extends JFrame {
         //setPreferredSize(new Dimension(1024, 660));
 
         titleLabel.setFont(new Font("Lucida Grande", 1, 14)); // NOI18N
-        titleLabel.setText(resourceBundle.getString("name"));
+        titleLabel.setText(RESOURCE_BUNDLE.getString("name"));
 
-        versionLabel.setText(resourceBundle.getString("version"));
+        versionLabel.setText(RESOURCE_BUNDLE.getString("version"));
 
         nowPlayingPanel.getTrackNameLabel().setText(Constants.EMPTY);
         nowPlayingPanel.getTrackAlbumNameLabel().setText(Constants.EMPTY);
         nowPlayingPanel.getTrackArtistNameLabel().setText(Constants.EMPTY);
 
         // emailLabel.setForeground(new Color(0, 0, 255));
-//        emailLabel.setText(resourceBundle.getString("email"));
+//        emailLabel.setText(RESOURCE_BUNDLE.getString("email"));
 //        emailLabel.setToolTipText("Click to email the author");
 //        emailLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
@@ -598,7 +597,7 @@ public class UIFrame extends JFrame {
 
                     message.append("VLC initialized successfully.");
                     message.append(String.format("\nVLC Version: %s", VLCJUtils.getVlcVersion()));
-                    message.append("\n" + resourceBundle.getString("vlc.link"));
+                    message.append("\n" + RESOURCE_BUNDLE.getString("vlc.link"));
                     //TODO: JEditorPane for hyperlink.
 
                 } else {
@@ -661,18 +660,18 @@ public class UIFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 StringBuffer message = new StringBuffer();
-                message.append(resourceBundle.getString("name"));
+                message.append(RESOURCE_BUNDLE.getString("name"));
                 message.append(" ");
-                message.append(resourceBundle.getString("version"));
+                message.append(RESOURCE_BUNDLE.getString("version"));
 
                 message.append("\n");
                 message.append("\n");
 
-                message.append("Author: " + resourceBundle.getString("author"));
+                message.append("Author: " + RESOURCE_BUNDLE.getString("author"));
 
                 message.append("\n");
 
-                message.append("Github: " + resourceBundle.getString("github"));
+                message.append("Github: " + RESOURCE_BUNDLE.getString("github"));
 
                 JOptionPane.showMessageDialog(null, message, "About Itunes Media Player", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -690,11 +689,11 @@ public class UIFrame extends JFrame {
      * @return
      */
     private static Image fetchIconImage() {
-        return new ImageIcon(resourceBundle.getString("imp")).getImage();
+        return new ImageIcon(RESOURCE_BUNDLE.getString("imp")).getImage();
     }
 
     private void emailLinkHandler(MouseEvent evt) {
-        openThis(resourceBundle.getString("mailto"));
+        openThis(RESOURCE_BUNDLE.getString("mailto"));
     }
 
     private void openThis(final String location) {
