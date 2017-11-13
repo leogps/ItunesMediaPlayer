@@ -4,7 +4,9 @@ import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
@@ -15,7 +17,7 @@ public class VLCJUtils {
 
     private static boolean vlcInitSucceeded = false;
 
-    private static Logger log = Logger.getLogger(VLCJUtils.class);
+    private static Logger LOGGER = Logger.getLogger(VLCJUtils.class.getName());
 
     static {
         //TODO: Use Bitness-checker to determine underlying OS architecture.
@@ -28,31 +30,37 @@ public class VLCJUtils {
                 ? PropertyManager.getConfigurationMap().get("vlc-intel-64-plugins")
                 : PropertyManager.getConfigurationMap().get("vlc-intel-32-plugins"));
 
-	if(!OSInfo.isOSWin()) {
-        	uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
-	}
-        NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
-        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-
-        log.debug("vlc native library path set to:" + path);
-
         try {
+
+            uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
+            NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
+            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+
+            LOGGER.info("vlc native library path set to:" + path);
+
             if (LibVlc.INSTANCE != null) {
                 vlcInitSucceeded = true;
             }
+        } catch (UnsatisfiedLinkError ex) {
+            triggerNativeDiscovery(ex);
         } catch (Exception ex) {
-            log.error(ex);
-            log.debug("Switching to Automatic Discovery.");
-            vlcInitSucceeded = new NativeDiscovery().discover();
-            if(vlcInitSucceeded) {
-                log.debug("Auto discovery of VLC libraries succeeded.");
-            }
+            triggerNativeDiscovery(ex);
         } finally {
             if(vlcInitSucceeded) {
-                log.debug(String.format("VLC Engine version %s", getVlcVersion()));
+                LOGGER.info(String.format("VLC Engine version %s", getVlcVersion()));
             }
         }
 
+    }
+
+    private static void triggerNativeDiscovery(Throwable ex) {
+        LOGGER.log(Level.WARNING, "Failed to load VLC from provided path.", ex);
+        LOGGER.info("Switching to Automatic Discovery.");
+        vlcInitSucceeded = new NativeDiscovery().discover();
+        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+        if(vlcInitSucceeded) {
+            LOGGER.info("Auto discovery of VLC libraries succeeded.");
+        }
     }
 
     public static boolean isVlcInitSucceeded() {

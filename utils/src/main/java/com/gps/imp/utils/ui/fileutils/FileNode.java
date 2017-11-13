@@ -1,5 +1,7 @@
 package com.gps.imp.utils.ui.fileutils;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -178,7 +180,7 @@ public class FileNode extends DefaultMutableTreeNode {
         treePathList.add(this);
 
         if(pathTo != null) {
-            String[] pathTokenArray = pathTo.getCanonicalPath().split(File.separator);
+            String[] pathTokenArray = pathTo.getCanonicalPath().split(StringEscapeUtils.escapeJava(File.separator));
             FileNode parentNode = this;
             for (int i = 0; i < pathTokenArray.length; i++) {
                 boolean found = false;
