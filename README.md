@@ -14,6 +14,10 @@ ItunesMediaPlayer
     5. Play media from across the web including YouTube and Vimeo. This is enabled by the
        open-source project YouTube-DL (https://github.com/rg3/youtube-dl).
     6. FileSystem Tree view to pin-point the library file being played on the computer.
+    
+### Releases
+   Download the media player here:
+   [releases](https://github.com/leogps/ItunesMediaPlayer/releases)
 
 ### Executable
     1. While this can run on any machine with Java and VLC runtimes, this is primarily developed for Mac OSX and executables are compiled as Mac native app.
