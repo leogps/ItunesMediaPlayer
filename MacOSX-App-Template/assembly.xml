@@ -16,8 +16,8 @@
 
         <!-- Using latest LibVLC. -->
         <fileSet>
-            <directory>${project.parent.basedir}/LibVLC/macOs/intel-64_2.2.6</directory>
-            <outputDirectory>/Contents/MacOS/LibVLC/macOs/intel-64_2.2.6</outputDirectory>
+            <directory>${project.parent.basedir}/LibVLC/macOs/intel-64_3.0.1</directory>
+            <outputDirectory>/Contents/MacOS/LibVLC/macOs/intel-64_3.0.1</outputDirectory>
         </fileSet>
 
         <!-- Using YouTube-DL. -->
@@ -32,11 +32,17 @@
             <outputDirectory>/Contents/MacOS/config</outputDirectory>
         </fileSet>
 
+        <!-- Using all libraries. -->
+        <fileSet>
+            <directory>${project.parent.basedir}/player-ui/target/lib</directory>
+            <outputDirectory>/Contents/Java/lib</outputDirectory>
+        </fileSet>
+
     </fileSets>
     <files>
-        <!-- Using the player-ui(with dependencies) file. -->
+        <!-- Using the player-ui jar file. -->
         <file>
-            <source>${project.parent.basedir}/player-ui/target/ItunesMediaPlayer-jar-with-dependencies.jar</source>
+            <source>${project.parent.basedir}/player-ui/target/ItunesMediaPlayer.jar</source>
             <outputDirectory>/Contents/Java</outputDirectory>
         </file>
     </files>

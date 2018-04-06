@@ -1,18 +1,17 @@
 package com.gps.itunes.media.player.updater;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.itunes.media.player.updater.github.Asset;
 import com.gps.itunes.media.player.updater.github.Release;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -37,13 +36,13 @@ public class GithubReleaseUpdater {
         return updateProcess(filePath, repositoryUrl, assetName, md5SumsAssetName);
     }
 
-    public static String getContent(String url) throws IOException {
-        HttpClient client = new HttpClient();
-        HttpMethod method = new GetMethod(url);
-
-        int response = client.executeMethod(method);
-        if(response == HttpStatus.SC_OK) {
-            return method.getResponseBodyAsString();
+    public static String getContent(String url) {
+        Client client = HttpClientUtils.getNewClient();
+        Response response = client.target(url)
+                .request()
+                .get();
+        if(response != null && response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(String.class);
         }
         return null;
     }

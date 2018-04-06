@@ -20,6 +20,7 @@
         <module>utils</module>
         <module>dto</module>
         <module>updater</module>
+        <module>archiver</module>
     </modules>
 
     <dependencies>

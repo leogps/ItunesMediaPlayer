@@ -1,5 +1,7 @@
 package com.gps.itunes.media.player.ui;
 
+import com.gps.imp.utils.JavaVersionUtils;
+import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.itunes.lib.exceptions.NoChildrenException;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.LogInitializer;
@@ -71,6 +73,18 @@ public class Main {
                 BASIC_LOGGER.log(Level.INFO, "Shutting down the application...");
             }
         }));
+
+
+        if(!JavaVersionUtils.isGreaterThan6()) {
+            LOG.debug("Java Version 6 found.");
+            try {
+                LOG.debug("Loading custom SSL Factory Provider for TLSV2 support.");
+                HttpClientUtils.initBouncyCastle();
+                LOG.debug("Loading custom SSL Factory Provider for TLSV2 support success.");
+            } catch (Exception e) {
+                LOG.debug("Loading custom SSL Factory Provider for TLSV2 support failed.", e);
+            }
+        }
 
         if(OSInfo.isOSMac()) {
             // take the menu bar off the jframe

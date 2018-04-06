@@ -31,6 +31,7 @@ public class VLCJUtils {
                 : PropertyManager.getConfigurationMap().get("vlc-intel-32-plugins"));
 
         try {
+            System.setProperty("jna.debug_load", "true");
 
             uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
             NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
@@ -42,8 +43,10 @@ public class VLCJUtils {
                 vlcInitSucceeded = true;
             }
         } catch (UnsatisfiedLinkError ex) {
+            LOGGER.log(Level.WARNING, "Failed to link binaries.", ex);
             triggerNativeDiscovery(ex);
         } catch (Exception ex) {
+            LOGGER.log(Level.WARNING, "Failed to link binaries.", ex);
             triggerNativeDiscovery(ex);
         } finally {
             if(vlcInitSucceeded) {

@@ -2,10 +2,10 @@ package com.gps.itunes.media.player.vlcj.player.impl;
 
 import com.gps.imp.utils.*;
 import com.gps.imp.utils.process.AsyncProcess;
+import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.imp.utils.ui.InterruptableProcessDialog;
-import com.gps.imp.utils.ui.LabelCell;
 import com.gps.imp.utils.ui.fileutils.FileBrowserDialog;
 import com.gps.imp.utils.ui.fileutils.FileBrowserDialogListener;
 import com.gps.itunes.lib.items.tracks.Track;
@@ -28,10 +28,6 @@ import com.gps.youtube.dl.YoutubeDLProcessor;
 import com.gps.youtube.dl.YoutubeDLResult;
 import com.gps.youtube.dl.event.YoutubeDLResultEvent;
 import com.gps.youtube.dl.event.YoutubeDLResultEventListener;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
@@ -43,13 +39,13 @@ import uk.co.caprica.vlcj.player.TrackInfo;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.DefaultTableModel;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.core.Response;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -870,11 +866,12 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     private boolean testURL(String urlStr) {
         try {
-            HttpClient client = new HttpClient();
-            HttpMethod method = new GetMethod(urlStr);
+            Client client = HttpClientUtils.getNewClient();
 
-            int response = client.executeMethod(method);
-            if (response != HttpStatus.SC_OK) {
+            Response response = client.target(urlStr).
+                    request()
+                    .get();
+            if (response == null || response.getStatus() != Response.Status.OK.getStatusCode()) {
                 log.error(String.format("URL could not be connected correctly: %s | Response code: %s", urlStr, response));
                 return false;
             }
