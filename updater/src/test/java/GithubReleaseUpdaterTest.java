@@ -1,7 +1,9 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.itunes.media.player.updater.GithubReleaseUpdater;
 import com.gps.itunes.media.player.updater.github.Release;
 import junit.framework.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -13,6 +15,11 @@ import java.security.NoSuchAlgorithmException;
  */
 @Test
 public class GithubReleaseUpdaterTest {
+
+    @BeforeClass
+    public void setup() {
+        HttpClientUtils.initBouncyCastle();
+    }
 
     @Test
     public Release testGithubReleaseJsonMapper() throws IOException {
