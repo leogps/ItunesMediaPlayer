@@ -37,14 +37,21 @@ public class GithubReleaseUpdater {
     }
 
     public static String getContent(String url) {
-        Client client = HttpClientUtils.getNewClient();
-        Response response = client.target(url)
-                .request()
-                .get();
-        if(response != null && response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(String.class);
+        Client client = null;
+        try {
+            client = HttpClientUtils.getNewClient();
+            Response response = client.target(url)
+                    .request()
+                    .get();
+            if (response != null && response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(String.class);
+            }
+            return null;
+        } finally {
+            if(client != null) {
+                client.close();
+            }
         }
-        return null;
     }
 
     private InterruptableAsyncTask<Void, UpdateResult> updateProcess(final String filePath, final String repositoryUrl, final String assetName, final String md5SumsAssetName) {

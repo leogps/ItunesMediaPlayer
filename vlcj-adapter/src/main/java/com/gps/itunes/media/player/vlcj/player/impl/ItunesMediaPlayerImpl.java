@@ -865,8 +865,9 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     private boolean testURL(String urlStr) {
+        Client client = null;
         try {
-            Client client = HttpClientUtils.getNewClient();
+             client = HttpClientUtils.getNewClient();
 
             Response response = client.target(urlStr).
                     request()
@@ -878,6 +879,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         } catch (Exception e) {
             log.error(String.format("Exception occurred when fetching URL: %s", urlStr), e);
             return false;
+        } finally {
+            if(client != null) {
+                client.close();
+            }
         }
         return true;
     }
