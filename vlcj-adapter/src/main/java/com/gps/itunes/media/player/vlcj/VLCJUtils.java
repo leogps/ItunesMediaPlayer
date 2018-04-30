@@ -39,7 +39,7 @@ public class VLCJUtils {
 
             LOGGER.info("vlc native library path set to:" + path);
 
-            if (LibVlc.INSTANCE != null) {
+            if (LibVlc.SYNC_INSTANCE != null) {
                 vlcInitSucceeded = true;
             }
         } catch (UnsatisfiedLinkError ex) {
@@ -51,6 +51,7 @@ public class VLCJUtils {
         } finally {
             if(vlcInitSucceeded) {
                 LOGGER.info(String.format("VLC Engine version %s", getVlcVersion()));
+                LOGGER.info(String.format("VLCJ version %s", getVlcJVersion()));
             }
         }
 
@@ -71,6 +72,10 @@ public class VLCJUtils {
     }
 
     public static String getVlcVersion() {
-        return LibVlc.INSTANCE.libvlc_get_version();
+        return LibVlc.SYNC_INSTANCE.libvlc_get_version();
+    }
+
+    public static String getVlcJVersion() {
+        return LibVlc.INFO.version().toString();
     }
 }

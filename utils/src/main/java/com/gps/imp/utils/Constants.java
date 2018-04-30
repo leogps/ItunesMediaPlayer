@@ -7,6 +7,8 @@ public interface Constants {
 
     String EMPTY = "";
 
+    String SPACE = " ";
+
     String PERCENTILE = "%";
 
     int DEFAULT_VOLUME_CHANGE = 10;

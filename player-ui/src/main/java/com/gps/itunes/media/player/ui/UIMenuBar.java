@@ -33,6 +33,8 @@ public class UIMenuBar extends JMenuBar {
 
     private final JMenuItem vlcMenuItem;
 
+    private final JMenuItem vlcjMenuItem;
+
     private final JMenuItem aboutIMPMenuItem;
 
     public UIMenuBar() {
@@ -98,6 +100,10 @@ public class UIMenuBar extends JMenuBar {
         vlcMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.about.vlc"));
         aboutMenu.add(vlcMenuItem);
 
+        vlcjMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.about.vlcj"));
+        aboutMenu.add(vlcjMenuItem);
+
+
         aboutIMPMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.about.imp"));
         aboutMenu.add(aboutIMPMenuItem);
 
@@ -145,6 +151,10 @@ public class UIMenuBar extends JMenuBar {
 
     public JMenuItem getVlcMenuItem() {
         return vlcMenuItem;
+    }
+
+    public JMenuItem getVlcjMenuItem() {
+        return vlcjMenuItem;
     }
 
     public JMenuItem getUpdatesMenuItem() {

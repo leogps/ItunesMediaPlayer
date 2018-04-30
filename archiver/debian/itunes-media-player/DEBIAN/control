@@ -1,11 +1,11 @@
 Package: itunes-media-player
-Version: 1.0.4
+Version: 1.0.52
 Section: Video
 Architecture: all
 Maintainer: Paul Gundarapu (leogps@gmail.com)
 Priority: optional
 Homepage: https://github.com/leogps/ItunesMediaPlayer
-Depends: java-runtime-headless, vlc
+Depends: java8-runtime, vlc
 Description: Media Player built on top of VLC, VLCJ and various other open-source projects.
  1. Direct integration with Itunes Library.
  2. Copy Itunes playlists/Tracks.

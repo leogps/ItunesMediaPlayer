@@ -50,6 +50,9 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.gps.imp.utils.Constants.EMPTY;
+import static com.gps.imp.utils.Constants.SPACE;
+
 /**
  * Created by leogps on 10/4/14.
  */
@@ -79,7 +82,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      */
     private NowPlayingListData currentTrack;
 
-    private final String mediaFactoryArgs;
+    private final String[] mediaFactoryArgs;
     private final MediaPlayerFactory mediaPlayerFactory;
 
     /**
@@ -162,8 +165,10 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     private final AtomicBoolean isTogglingFullscreen = new AtomicBoolean();
 
     public ItunesMediaPlayerImpl(final PlayerControlPanel playerControlPanel) {
-        mediaFactoryArgs = OSInfo.isOSMac() ? "--vout=macosx" : Constants.EMPTY;
+        mediaFactoryArgs = parseMediaFactoryArgs(PropertyManager.getConfigurationMap().get("vlc.media.factory.args"));
         mediaPlayerFactory = new MediaPlayerFactory(mediaFactoryArgs);
+        mediaPlayerFactory.setUserAgent(PropertyManager.getConfigurationMap().get("vlc.user.agent"));
+
         VLCJ_VIDEO_PLAYER = new VLCJVideoPlayer(mediaPlayerFactory);
 
 
@@ -340,6 +345,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                 }
             }
         });
+    }
+
+    private String[] parseMediaFactoryArgs(String argsString) {
+        if(StringUtils.isBlank(argsString)) {
+            return new String[]{EMPTY};
+        }
+        return argsString.split(SPACE);
     }
 
     private void notifyOnVideoSurface(String message) {

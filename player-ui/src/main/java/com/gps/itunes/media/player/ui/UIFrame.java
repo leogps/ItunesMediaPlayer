@@ -612,6 +612,25 @@ public class UIFrame extends JFrame {
             }
         });
 
+        uiMenuBar.getVlcjMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                StringBuffer message = new StringBuffer();
+                if(VLCJUtils.isVlcInitSucceeded()) {
+
+                    message.append(String.format("VLCJ version %s", VLCJUtils.getVlcJVersion()));
+                    message.append("\n" + RESOURCE_BUNDLE.getString("vlcj.link") + "\n");
+
+                    message.append("\nVLC initialized successfully.");
+                    message.append(String.format("\nVLC Version: %s", VLCJUtils.getVlcVersion()));
+
+                } else {
+                    message.append("VLC failed to initialize.");
+                }
+                JOptionPane.showMessageDialog(null, message, "About VLCJ", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
         uiMenuBar.getUpdatesMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

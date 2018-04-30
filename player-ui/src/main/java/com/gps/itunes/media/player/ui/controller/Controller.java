@@ -23,6 +23,7 @@ import com.gps.itunes.media.player.ui.tasks.*;
 import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerMediaFilesDroppedEventListener;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.dnd.DropTargetDropEvent;
@@ -121,11 +122,18 @@ public class Controller {
                 log.debug(lpe.getMessage(), lpe);
                 if (lpe.isLibraryFileNotFound()) {
                     log.info("ITunes Library file not found. Reload manually by going to Library > Reload.");
-                    letUserSpecifyLibrary();
+                    if(promptLibraryFileBrowse()) {
+                        letUserSpecifyLibrary();
+                    }
                 }
             }
         }
 
+    }
+
+    private boolean promptLibraryFileBrowse() {
+        String promptLibraryFileBrowseString = PropertyManager.getConfigurationMap().get("prompt.library.file.browse");
+        return StringUtils.isNotBlank(promptLibraryFileBrowseString) && Boolean.valueOf(promptLibraryFileBrowseString);
     }
 
     private void letUserSpecifyLibrary() throws NoChildrenException, TaskExecutionException {
