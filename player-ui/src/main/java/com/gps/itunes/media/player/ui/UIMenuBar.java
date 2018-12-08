@@ -27,6 +27,8 @@ public class UIMenuBar extends JMenuBar {
 
     private final JMenu toolsMenu;
 
+    private final JMenuItem fontMenuItem;
+
     private final JMenuItem updatesMenuItem;
 
     private final JMenu aboutMenu;
@@ -87,6 +89,10 @@ public class UIMenuBar extends JMenuBar {
         toolsMenu = new JMenu(RESOURCE_BUNDLE.getString("menu.tools"));
         toolsMenu.getAccessibleContext().setAccessibleDescription(RESOURCE_BUNDLE.getString("menu.tools.description"));
         this.add(toolsMenu);
+
+        fontMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.tools.font"));
+        fontMenuItem.setMnemonic(KeyEvent.VK_F);
+        toolsMenu.add(fontMenuItem);
 
         updatesMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.tools.update"));
         updatesMenuItem.setMnemonic(KeyEvent.VK_U);
@@ -155,6 +161,10 @@ public class UIMenuBar extends JMenuBar {
 
     public JMenuItem getVlcjMenuItem() {
         return vlcjMenuItem;
+    }
+
+    public JMenuItem getFontMenuItem() {
+        return fontMenuItem;
     }
 
     public JMenuItem getUpdatesMenuItem() {

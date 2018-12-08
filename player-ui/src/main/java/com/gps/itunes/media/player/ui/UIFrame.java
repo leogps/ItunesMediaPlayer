@@ -139,7 +139,6 @@ public class UIFrame extends JFrame {
         setMinimumSize(new Dimension(850, 450));
         //setPreferredSize(new Dimension(1024, 660));
 
-        titleLabel.setFont(new Font("Lucida Grande", 1, 14)); // NOI18N
         titleLabel.setText(RESOURCE_BUNDLE.getString("name"));
 
         versionLabel.setText(RESOURCE_BUNDLE.getString("version"));
@@ -628,6 +627,14 @@ public class UIFrame extends JFrame {
                     message.append("VLC failed to initialize.");
                 }
                 JOptionPane.showMessageDialog(null, message, "About VLCJ", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        uiMenuBar.getFontMenuItem().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.SHIFT_MASK));
+        uiMenuBar.getFontMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new FontDialog(instance).showNow();
             }
         });
 

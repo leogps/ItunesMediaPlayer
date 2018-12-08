@@ -59,6 +59,12 @@
             <version>1.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.gps.imp</groupId>
+            <artifactId>db</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

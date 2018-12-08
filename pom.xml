@@ -21,6 +21,7 @@
         <module>dto</module>
         <module>updater</module>
         <module>archiver</module>
+        <module>db</module>
     </modules>
 
     <dependencies>

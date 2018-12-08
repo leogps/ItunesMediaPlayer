@@ -7,6 +7,10 @@ import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.LogInitializer;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
+import com.gps.itunes.media.player.db.ConfigPropertyDao;
+import com.gps.itunes.media.player.db.DbManager;
+import com.gps.itunes.media.player.db.DbManagerImpl;
+import com.gps.itunes.media.player.db.model.ConfigProperty;
 import com.gps.itunes.media.player.ui.config.AppConfiguration;
 import com.gps.itunes.media.player.ui.controller.Controller;
 import com.gps.itunes.media.player.vlcj.player.events.UIDropTarget;
@@ -25,8 +29,10 @@ import java.awt.*;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -47,11 +53,13 @@ public class Main {
     private static ItunesMediaPlayer itunesMediaPlayer;
     private static final AppConfiguration appConfiguration = new AppConfiguration();
 
+    private static DbManager dbManager = DbManagerImpl.getInstance();
+
     static {
         LogInitializer.getInstance();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         if(args != null && args.length > 0) {
             LOG.debug("Arguments passed...");
             for(String arg : args) {
@@ -61,6 +69,12 @@ public class Main {
         }
         appConfiguration.configure();
 
+        try {
+            dbManager.initialize();
+        } catch (Exception e) {
+            LOG.warn("Failed to initialize DB.", e);
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
@@ -69,6 +83,12 @@ public class Main {
                     LOG.debug("Releasing Media Player resources...");
                     itunesMediaPlayer.releaseResources();
                 }
+                try {
+                    dbManager.shutdown();
+                } catch (SQLException e) {
+                    BASIC_LOGGER.log(Level.INFO, e.getMessage());
+                }
+
                 LOG.debug("Shutting down the application...");
                 BASIC_LOGGER.log(Level.INFO, "Shutting down the application...");
             }
@@ -100,6 +120,8 @@ public class Main {
                 LOG.debug(e.getMessage(), e);
             }
         }
+
+        configureSystemFont();
 
         final SplashAnimator splashAnimator = new SplashAnimator();
 
@@ -312,6 +334,62 @@ public class Main {
                 }
             }
         });
+    }
+
+    private static void configureSystemFont() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        final Integer fontSize = retrieveFontSize();
+        if(fontSize != null) {
+            setDefaultSize(fontSize);
+        }
+    }
+
+    private static Integer retrieveFontSize() {
+        if(!dbManager.isInitiated()) {
+            return null;
+        }
+        try {
+            ConfigPropertyDao configPropertyDao = new ConfigPropertyDao(dbManager.getConnection());
+            ConfigProperty configProperty = configPropertyDao.findByKey("font_size");
+            if(configProperty == null) {
+                LOG.debug("Font size property not found.");
+                return null;
+            }
+
+            try {
+                return Integer.parseInt(configProperty.getValue());
+            } catch (NumberFormatException e) {
+                LOG.error("font_size is not valid.", e);
+            }
+        } catch (Exception ex) {
+            LOG.debug("Could not retrieve font_size", ex);
+        }
+        return null;
+    }
+
+    public static void setDefaultSize(int size) {
+        Set<Object> keySet = UIManager.getLookAndFeelDefaults().keySet();
+        Object[] keys = keySet.toArray(new Object[keySet.size()]);
+
+        for (Object key : keys) {
+
+            if (key != null && key.toString().toLowerCase().contains("font")) {
+
+                LOG.info("Updating font: " + key);
+                Font font = UIManager.getDefaults().getFont(key);
+                if (font != null) {
+                    font = font.deriveFont((float)size);
+                    UIManager.put(key, font);
+                }
+
+            }
+
+        }
+
     }
 
     public static ItunesMediaPlayer getItunesMediaPlayer() {
