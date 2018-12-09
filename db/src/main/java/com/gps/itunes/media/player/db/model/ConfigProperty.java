@@ -40,14 +40,20 @@ public class ConfigProperty implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         ConfigProperty that = (ConfigProperty) o;
-        return getId() == that.getId() &&
-                Objects.equals(getProperty(), that.getProperty()) &&
-                Objects.equals(getValue(), that.getValue());
+
+        if (getId() != that.getId()) return false;
+        if (getProperty() != null ? !getProperty().equals(that.getProperty()) : that.getProperty() != null)
+            return false;
+        return getValue() != null ? getValue().equals(that.getValue()) : that.getValue() == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getProperty(), getValue());
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (getProperty() != null ? getProperty().hashCode() : 0);
+        result = 31 * result + (getValue() != null ? getValue().hashCode() : 0);
+        return result;
     }
 }

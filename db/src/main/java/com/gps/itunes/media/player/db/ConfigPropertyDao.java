@@ -1,9 +1,9 @@
 package com.gps.itunes.media.player.db;
 
 import com.gps.itunes.media.player.db.model.ConfigProperty;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,20 +39,24 @@ public class ConfigPropertyDao implements Dao<ConfigProperty> {
     private ConfigProperty retrieveProperty(ResultSet resultSet) throws SQLException {
         try {
             if (resultSet.next()) {
-                long id = resultSet.getLong("id");
-                String property = resultSet.getString("property");
-                String value = resultSet.getString("value");
-
-                ConfigProperty configProperty = new ConfigProperty();
-                configProperty.setId(id);
-                configProperty.setProperty(property);
-                configProperty.setValue(value);
-                return configProperty;
+                return retrieve(resultSet);
             }
         } finally {
             resultSet.close();
         }
         return null;
+    }
+
+    private ConfigProperty retrieve(ResultSet resultSet) throws SQLException {
+        long id = resultSet.getLong("id");
+        String property = resultSet.getString("property");
+        String value = resultSet.getString("value");
+
+        ConfigProperty configProperty = new ConfigProperty();
+        configProperty.setId(id);
+        configProperty.setProperty(property);
+        configProperty.setValue(value);
+        return configProperty;
     }
 
     public ConfigProperty findByKey(final String key) throws SQLException {
@@ -70,8 +74,34 @@ public class ConfigPropertyDao implements Dao<ConfigProperty> {
     }
 
     @Override
-    public List<ConfigProperty> list() {
-        throw new NotImplementedException();
+    public List<ConfigProperty> list() throws SQLException {
+        final String sql = String.format("SELECT * FROM %s.%s", schema, table);
+        return QueryExecutorUtils.executeStatement(connection, new QueryExecutor<List<ConfigProperty>>() {
+
+            @Override
+            public List<ConfigProperty> executeUsingAutoCloseableStatement(Statement statement) throws SQLException {
+                ResultSet resultSet = null;
+                try {
+                    resultSet = statement.executeQuery(sql);
+                    return retrieveProperties(resultSet);
+                } finally {
+                    if(resultSet != null) {
+                        resultSet.close();
+                    }
+                }
+            }
+        });
+    }
+
+    private List<ConfigProperty> retrieveProperties(ResultSet resultSet) throws SQLException {
+        List<ConfigProperty> configProperties = new ArrayList<ConfigProperty>();
+        while(resultSet.next()) {
+            ConfigProperty configProperty = retrieve(resultSet);
+            if(configProperty != null) {
+                configProperties.add(configProperty);
+            }
+        }
+        return configProperties;
     }
 
     @Override

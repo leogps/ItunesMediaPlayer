@@ -11,7 +11,7 @@ public interface Dao<K extends Serializable> {
 
     K findById(long id) throws SQLException;
 
-    List<K> list();
+    List<K> list() throws SQLException;
 
     K insert(K k) throws SQLException;
 
