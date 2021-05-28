@@ -35,6 +35,7 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.TrackInfo;
+import uk.co.caprica.vlcj.runtime.x.LibXUtil;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -84,6 +85,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     private final String[] mediaFactoryArgs;
     private final MediaPlayerFactory mediaPlayerFactory;
+
+    private final AtomicBoolean libXInitialized = new AtomicBoolean(false);
 
     /**
      * Now Playing list.
@@ -736,7 +739,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
                 interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess, true);
             }
-            
+
             asyncProcess.registerListener(new AsyncTaskListener() {
                 public void onSuccess(InterruptableAsyncTask interruptableAsyncTask) {
                     if(interruptableProcessDialog.isVisible()) {
@@ -950,6 +953,14 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      * This class's main thread run implies media play.
      */
     public void run() {
+        synchronized (libXInitialized) {
+            if (!libXInitialized.get()) {
+                log.info("libX not initialized. Initializing...");
+                LibXUtil.initialise();
+                libXInitialized.set(true);
+                log.info("libX initialization successful.");
+            }
+        }
         try {
             if (this.currentTrack != null && this.currentTrack.getLocation() != null) {
 

@@ -75,6 +75,11 @@ public class DummyFXPlayerFrame implements FXPlayerFrame {
             return false;
         }
 
+        @Override
+        public boolean requestParseMediaWithOptions(int i, libvlc_media_parse_flag_t... libvlc_media_parse_flag_ts) {
+            return false;
+        }
+
         public boolean isMediaParsed() {
             return false;
         }
@@ -443,6 +448,11 @@ public class DummyFXPlayerFrame implements FXPlayerFrame {
 
         }
 
+        @Override
+        public void setTeletextKey(libvlc_teletext_key_e libvlc_teletext_key_e) {
+
+        }
+
         public void toggleTeletext() {
 
         }
@@ -676,6 +686,16 @@ public class DummyFXPlayerFrame implements FXPlayerFrame {
         }
 
         public void setEqualizer(Equalizer equalizer) {
+
+        }
+
+        @Override
+        public libvlc_media_player_role_e getRole() {
+            return null;
+        }
+
+        @Override
+        public void setRole(libvlc_media_player_role_e libvlc_media_player_role_e) {
 
         }
 
