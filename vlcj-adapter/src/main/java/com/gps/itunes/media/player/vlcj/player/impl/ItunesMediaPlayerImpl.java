@@ -225,6 +225,16 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             }
 
             @Override
+            public void onSkipForwardCommand() {
+                getCurrentPlayer().setTime(getCurrentPlayer().getTime() + 3000);
+            }
+
+            @Override
+            public void onSkipReverseCommand() {
+                getCurrentPlayer().setTime(getCurrentPlayer().getTime() - 3000);
+            }
+
+            @Override
             public void onExitFullscreenCommand() {
                 float currentMediaPosition = getPlayer().getPosition();
                 if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer() ) {

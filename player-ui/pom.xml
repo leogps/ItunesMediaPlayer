@@ -11,6 +11,11 @@
 
     <artifactId>player-ui</artifactId>
 
+    <properties>
+        <flatlaf.version>1.2</flatlaf.version>
+        <jackson.version>2.9.10.8</jackson.version>
+    </properties>
+
     <dependencies>
 
         <!-- local dependencies -->
@@ -64,6 +69,26 @@
             <groupId>com.gps.imp</groupId>
             <artifactId>db</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-intellij-themes</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
 

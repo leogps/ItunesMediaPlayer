@@ -100,7 +100,7 @@ public class DbManagerImpl implements DbManager {
                 connection.close();
                 connection = null;
             }
-            DriverManager.getConnection("%sdatabaseName=%s;shutdown=true", protocol, dbName);
+            //DriverManager.getConnection("%sdatabaseName=%s;shutdown=true", protocol, dbName);
         } catch (SQLException e) {
             LOGGER.debug("Shutdown completed.", e);
         }

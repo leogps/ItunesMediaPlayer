@@ -1,5 +1,7 @@
 package com.gps.itunes.media.player.ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.itunes.lib.exceptions.NoChildrenException;
@@ -13,6 +15,7 @@ import com.gps.itunes.media.player.db.DbManagerImpl;
 import com.gps.itunes.media.player.db.model.ConfigProperty;
 import com.gps.itunes.media.player.ui.config.AppConfiguration;
 import com.gps.itunes.media.player.ui.controller.Controller;
+import com.gps.itunes.media.player.ui.theme.UITheme;
 import com.gps.itunes.media.player.vlcj.player.events.UIDropTarget;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
@@ -29,6 +32,7 @@ import java.awt.*;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -120,9 +124,7 @@ public class Main {
                 LOG.debug(e.getMessage(), e);
             }
         }
-
-        configureSystemFont();
-
+        enableTheming();
         final SplashAnimator splashAnimator = new SplashAnimator();
 
         /*
@@ -312,8 +314,6 @@ public class Main {
                     controller.takeControl();
 
                     splashAnimator.renderSplashFrame(95, "Showing UI...");
-                    uiFrame.setVisible(true);
-                    uiFrame.toFront();
                     if(!isVlcjInitSucceeded()) {
                         uiFrame.getPlayerControlPanel().setVisible(false);
                     } else {
@@ -322,6 +322,9 @@ public class Main {
 
                     splashAnimator.renderSplashFrame(100, "Done.");
                     splashAnimator.close();
+
+                    uiFrame.setVisible(true);
+                    uiFrame.toFront();
 
                 } catch (final NoChildrenException ex) {
                     LOG.error(ex);
@@ -336,16 +339,54 @@ public class Main {
         });
     }
 
-    private static void configureSystemFont() {
+    private static void enableTheming() {
+        UITheme savedTheme = null;
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            savedTheme = retrieveSavedUIThemeProperty();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOG.warn("Could not retrieve saved theme", ex);
         }
-        final Integer fontSize = retrieveFontSize();
-        if(fontSize != null) {
-            setDefaultSize(fontSize);
+        if (savedTheme != null) {
+            LOG.info("Found saved theme: " + savedTheme.getName());
+        } else {
+            LOG.info("No saved theme found. Using default theme.");
+            savedTheme = new UITheme();
+            savedTheme.setName("Light Flat");
+            savedTheme.setClassName("com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme");
         }
+        try {
+            UIManager.setLookAndFeel( new FlatLightLaf() );
+            Method method = Class.forName(savedTheme.getClassName()).getDeclaredMethod("setup");
+            method.invoke(null);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            try {
+                LOG.info("Falling back to system default look and feel...");
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
+        }
+    }
+
+    private static UITheme retrieveSavedUIThemeProperty() throws SQLException, IOException {
+        ConfigPropertyDao configPropertyDao = fetchConfigPropertyDao();
+        if(configPropertyDao == null) {
+            return null;
+        }
+
+        ConfigProperty configProperty = configPropertyDao.findByKey("ui_theme");
+        if (configProperty == null) {
+            return null;
+        }
+        return new ObjectMapper().readValue(configProperty.getValue(), UITheme.class);
+    }
+
+    private static ConfigPropertyDao fetchConfigPropertyDao() {
+        if(!DbManagerImpl.getInstance().isInitiated()) {
+            return null;
+        }
+        return new ConfigPropertyDao(DbManagerImpl.getInstance().getConnection());
     }
 
     private static Integer retrieveFontSize() {

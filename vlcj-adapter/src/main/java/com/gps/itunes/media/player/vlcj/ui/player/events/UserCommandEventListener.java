@@ -23,6 +23,10 @@ public abstract class UserCommandEventListener {
 
     public abstract void onFastReverseCommand();
 
+    public abstract void onSkipForwardCommand();
+
+    public abstract void onSkipReverseCommand();
+
     public abstract void onExitFullscreenCommand();
 
     public abstract void onAttentionRequested();

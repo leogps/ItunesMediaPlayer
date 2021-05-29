@@ -1,5 +1,9 @@
 package com.gps.itunes.media.player.ui;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.imp.utils.ui.AsyncTaskListener;
@@ -9,6 +13,9 @@ import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
+import com.gps.itunes.media.player.db.ConfigPropertyDao;
+import com.gps.itunes.media.player.db.DbManagerImpl;
+import com.gps.itunes.media.player.db.model.ConfigProperty;
 import com.gps.itunes.media.player.ui.components.TracksContextMenu;
 import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.imp.utils.ui.fileutils.FileBrowserTree;
@@ -19,6 +26,8 @@ import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
+import com.gps.itunes.media.player.ui.theme.UITheme;
+import com.gps.itunes.media.player.ui.theme.UIThemeMenuButtonModel;
 import com.gps.itunes.media.player.updater.UpdateResult;
 import com.gps.itunes.media.player.vlcj.VLCJUtils;
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
@@ -46,6 +55,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -135,7 +145,9 @@ public class UIFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(new Rectangle(0, 0, 860, 640));
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        //setIconImage(fetchIconImage());
+        if (!OSInfo.isOSMac()) {
+            setIconImage(fetchIconImage());
+        }
         setMinimumSize(new Dimension(850, 450));
         //setPreferredSize(new Dimension(1024, 660));
 
@@ -630,13 +642,8 @@ public class UIFrame extends JFrame {
             }
         });
 
-        uiMenuBar.getFontMenuItem().setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.SHIFT_MASK));
-        uiMenuBar.getFontMenuItem().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new FontDialog(instance).showNow();
-            }
-        });
+        //Themes
+        loadThemesSubMenu();
 
         uiMenuBar.getUpdatesMenuItem().addActionListener(new ActionListener() {
             @Override
@@ -708,10 +715,114 @@ public class UIFrame extends JFrame {
             }
         });
 
+        uiMenuBar.getExitMenuItem().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                int result = JOptionPane.showConfirmDialog(instance,"Exit the application?", "Are you sure?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION){
+                    System.exit(0);
+                } else if (result == JOptionPane.NO_OPTION){
+                    LOG.info("Not exiting...");
+                }
+            }
+        });
 
         this.setExtendedState(MAXIMIZED_BOTH);
 
         StatusMessageWriter.setStatusLabel(statusTextArea);
+    }
+
+    private void loadThemesSubMenu() {
+        try {
+            final List<JRadioButtonMenuItem> themesSubMenuList = uiMenuBar.getThemesSubMenuList();
+            final JMenuItem themesMenuItem = uiMenuBar.getThemesMenuItem();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            URL themesList = UIMenuBar.class.getClassLoader().getResource("themes.json");
+            List<UITheme> uiThemes = objectMapper.readValue(themesList, new TypeReference<List<UITheme>>(){});
+            LOG.info(String.format("Loaded %s themes from themes.json", uiThemes.size()));
+            for (final UITheme uiTheme : uiThemes) {
+                final JRadioButtonMenuItem themeSubMenuItem = new JRadioButtonMenuItem(uiTheme.getName());
+                themeSubMenuItem.setModel(new UIThemeMenuButtonModel(uiTheme));
+                themeSubMenuItem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        LOG.info("Theme selection made: " + uiTheme.getName());
+                        for (JRadioButtonMenuItem jMenuItem : themesSubMenuList) {
+                            jMenuItem.setSelected(false);
+                        }
+                        boolean success = setUITheme(uiTheme);
+                        if (success) {
+                            themeSubMenuItem.setSelected(true);
+                            saveUITheme(uiTheme);
+                        }
+                    }
+                });
+                if (uiTheme.getClassName().equals( UIManager.getLookAndFeel().getClass().getName())) {
+                    themeSubMenuItem.setSelected(true);
+                }
+                themesMenuItem.add(themeSubMenuItem);
+                themesSubMenuList.add(themeSubMenuItem);
+            }
+
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+
+    private void saveUITheme(UITheme uiTheme) {
+        ConfigPropertyDao configPropertyDao;
+        try {
+             configPropertyDao = fetchConfigPropertyDao();
+             if (configPropertyDao == null) {
+                 return;
+             }
+        } catch (Exception ex) {
+            LOG.error("Failed to retrieve configPropertyDao", ex);
+            return;
+        }
+
+        try {
+            ConfigProperty configProperty = configPropertyDao.findByKey("ui_theme");
+            if (configProperty != null) {
+                configPropertyDao.delete(configProperty.getId());
+            }
+        } catch (Exception ex) {
+            LOG.error("Failed to clear ui_theme in db", ex);
+        }
+
+        try {
+            ConfigProperty configProperty = new ConfigProperty();
+            configProperty.setProperty("ui_theme");
+            String value = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(uiTheme);
+            configProperty.setValue(value);
+            configPropertyDao.insert(configProperty);
+        } catch (Exception ex) {
+            LOG.error("Failed to save selected theme to db.", ex);
+        }
+    }
+
+    private ConfigPropertyDao fetchConfigPropertyDao() {
+        if(!DbManagerImpl.getInstance().isInitiated()) {
+            return null;
+        }
+        return new ConfigPropertyDao(DbManagerImpl.getInstance().getConnection());
+    }
+
+    public boolean setUITheme(UITheme uiTheme) {
+        try {
+            FlatAnimatedLafChange.showSnapshot();
+            Method method = Class.forName(uiTheme.getClassName()).getDeclaredMethod("setup");
+            method.invoke(null);
+            FlatLaf.updateUI();
+            FlatAnimatedLafChange.hideSnapshotWithAnimation();
+            return true;
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+        return false;
     }
 
     /**
@@ -720,7 +831,7 @@ public class UIFrame extends JFrame {
      * @return
      */
     private static Image fetchIconImage() {
-        return new ImageIcon(RESOURCE_BUNDLE.getString("imp")).getImage();
+        return new ImageIcon(UIFrame.class.getClassLoader().getResource("images/imp.png")).getImage();
     }
 
     private void emailLinkHandler(MouseEvent evt) {

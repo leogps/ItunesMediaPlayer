@@ -1,0 +1,186 @@
+[
+  {
+    "name": "Arc",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme"
+  },
+  {
+    "name": "Arc - Orange",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme"
+  },
+  {
+    "name": "Arc Dark",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme"
+  },
+  {
+    "name": "Arc Dark - Orange",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme"
+  },
+  {
+    "name": "Carbon",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme"
+  },
+  {
+    "name": "Cobalt 2",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme"
+  },
+  {
+    "name": "Cyan light",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme"
+  },
+  {
+    "name": "Dark Flat",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme"
+  },
+  {
+    "name": "Dark purple",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme"
+  },
+  {
+    "name": "Dracula",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme"
+  },
+  {
+    "name": "Gradianto Dark Fuchsia",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme"
+  },
+  {
+    "name": "Gradianto Deep Ocean",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme"
+  },
+  {
+    "name": "Gradianto Midnight Blue",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme"
+  },
+  {
+    "name": "Gradianto Nature Green",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme"
+  },
+  {
+    "name": "Gray",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme"
+  },
+  {
+    "name": "Gruvbox Dark Hard",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme"
+  },
+  {
+    "name": "Gruvbox Dark Medium",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme"
+  },
+  {
+    "name": "Gruvbox Dark Soft",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme"
+  },
+  {
+    "name": "Hiberbee Dark",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme"
+  },
+  {
+    "name": "High contrast",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme"
+  },
+  {
+    "name": "Light Flat",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme"
+  },
+  {
+    "name": "Material Design Dark",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme"
+  },
+  {
+    "name": "Monocai",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme"
+  },
+  {
+    "name": "Nord",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatNordIJTheme"
+  },
+  {
+    "name": "One Dark",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme"
+  },
+  {
+    "name": "Solarized Dark",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme"
+  },
+  {
+    "name": "Solarized Light",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme"
+  },
+  {
+    "name": "Spacegray",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme"
+  },
+  {
+    "name": "Vuesion",
+    "className": "com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme"
+  },
+  {
+    "name": "Material Deep Ocean Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanContrastIJTheme"
+  },
+  {
+    "name": "Material Lighter (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme"
+  },
+  {
+    "name": "Material Lighter Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterContrastIJTheme"
+  },
+  {
+    "name": "Material Oceanic (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicIJTheme"
+  },
+  {
+    "name": "Material Oceanic Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme"
+  },
+  {
+    "name": "Material Palenight (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightIJTheme"
+  },
+  {
+    "name": "Material Palenight Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightContrastIJTheme"
+  },
+  {
+    "name": "Monokai Pro (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme"
+  },
+  {
+    "name": "Monokai Pro Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme"
+  },
+  {
+    "name": "Moonlight (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightIJTheme"
+  },
+  {
+    "name": "Moonlight Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightContrastIJTheme"
+  },
+  {
+    "name": "Night Owl (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlIJTheme"
+  },
+  {
+    "name": "Night Owl Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme"
+  },
+  {
+    "name": "Solarized Dark (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkIJTheme"
+  },
+  {
+    "name": "Solarized Dark Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkContrastIJTheme"
+  },
+  {
+    "name": "Solarized Light (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme"
+  },
+  {
+    "name": "Solarized Light Contrast (Material)",
+    "className": "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightContrastIJTheme"
+  }
+]

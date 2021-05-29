@@ -90,12 +90,30 @@ public class VideoPlayerKeyListener extends PlayerKeyEventListener {
         }
 
         /**
+         * Right => Skip Forward by 3sec.
+         */
+        if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT || keyEvent.getKeyCode() == KeyEvent.VK_KP_RIGHT) {
+            for(UserCommandEventListener userCommandEventListener : userCommandEventListenerList) {
+                userCommandEventListener.onSkipForwardCommand();
+            }
+        }
+
+        /**
          * Shift + Left => Fast Reverse by 10.
          */
         if ((keyEvent.getKeyCode() == KeyEvent.VK_LEFT || keyEvent.getKeyCode() == KeyEvent.VK_KP_LEFT)
                 && ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0)) {
             for(UserCommandEventListener userCommandEventListener : userCommandEventListenerList) {
                 userCommandEventListener.onFastReverseCommand();
+            }
+        }
+
+        /**
+         * Left => Skip Reverse by 3sec.
+         */
+        if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT || keyEvent.getKeyCode() == KeyEvent.VK_KP_LEFT) {
+            for(UserCommandEventListener userCommandEventListener : userCommandEventListenerList) {
+                userCommandEventListener.onSkipReverseCommand();
             }
         }
     }

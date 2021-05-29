@@ -1,7 +1,10 @@
 package com.gps.itunes.media.player.ui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.gps.itunes.media.player.ui.UIFrame.RESOURCE_BUNDLE;
 
@@ -14,6 +17,7 @@ public class UIMenuBar extends JMenuBar {
     private final JMenu fileMenu;
     private final JMenuItem openMenuItem;
     private final JMenuItem openNetworkFileMenuItem;
+    private final JMenuItem exitMenuItem;
 
     private final JMenu actionsMenu;
 
@@ -27,7 +31,9 @@ public class UIMenuBar extends JMenuBar {
 
     private final JMenu toolsMenu;
 
-    private final JMenuItem fontMenuItem;
+    private final JMenuItem themesMenuItem;
+
+    private final List<JRadioButtonMenuItem> themesSubMenuList;
 
     private final JMenuItem updatesMenuItem;
 
@@ -53,8 +59,13 @@ public class UIMenuBar extends JMenuBar {
         fileMenu.add(openMenuItem);
 
         openNetworkFileMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.file.network"));
-        openMenuItem.setMnemonic(KeyEvent.VK_N);
+        openNetworkFileMenuItem.setMnemonic(KeyEvent.VK_N);
         fileMenu.add(openNetworkFileMenuItem);
+
+        exitMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.file.exit"));
+        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        exitMenuItem.setMnemonic(KeyEvent.VK_X);
+        fileMenu.add(exitMenuItem);
 
         // Actions Menu.
         actionsMenu = new JMenu(RESOURCE_BUNDLE.getString("menu.actions"));
@@ -90,9 +101,11 @@ public class UIMenuBar extends JMenuBar {
         toolsMenu.getAccessibleContext().setAccessibleDescription(RESOURCE_BUNDLE.getString("menu.tools.description"));
         this.add(toolsMenu);
 
-        fontMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.tools.font"));
-        fontMenuItem.setMnemonic(KeyEvent.VK_F);
-        toolsMenu.add(fontMenuItem);
+        themesMenuItem = new JMenu(RESOURCE_BUNDLE.getString("menu.tools.themes"));
+        themesMenuItem.setMnemonic(KeyEvent.VK_T);
+        toolsMenu.add(themesMenuItem);
+
+        themesSubMenuList = new ArrayList<JRadioButtonMenuItem>();
 
         updatesMenuItem = new JMenuItem(RESOURCE_BUNDLE.getString("menu.tools.update"));
         updatesMenuItem.setMnemonic(KeyEvent.VK_U);
@@ -163,15 +176,23 @@ public class UIMenuBar extends JMenuBar {
         return vlcjMenuItem;
     }
 
-    public JMenuItem getFontMenuItem() {
-        return fontMenuItem;
-    }
-
     public JMenuItem getUpdatesMenuItem() {
         return updatesMenuItem;
     }
 
     public JMenuItem getAboutIMPMenuItem() {
         return aboutIMPMenuItem;
+    }
+
+    public JMenuItem getThemesMenuItem() {
+        return themesMenuItem;
+    }
+
+    public List<JRadioButtonMenuItem> getThemesSubMenuList() {
+        return themesSubMenuList;
+    }
+
+    public JMenuItem getExitMenuItem() {
+        return exitMenuItem;
     }
 }

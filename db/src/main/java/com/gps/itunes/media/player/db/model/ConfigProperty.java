@@ -1,7 +1,6 @@
 package com.gps.itunes.media.player.db.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Created by leogps on 12/08/2018.
