@@ -6,6 +6,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.JavaVersionUtils;
+import com.gps.imp.utils.ui.ApplicationExitHandler;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.imp.utils.ui.InterruptableProcessDialog;
@@ -718,14 +719,7 @@ public class UIFrame extends JFrame {
         uiMenuBar.getExitMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                int result = JOptionPane.showConfirmDialog(instance,"Exit the application?", "Are you sure?",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION){
-                    System.exit(0);
-                } else if (result == JOptionPane.NO_OPTION){
-                    LOG.info("Not exiting...");
-                }
+                ApplicationExitHandler.handle(instance);
             }
         });
 
