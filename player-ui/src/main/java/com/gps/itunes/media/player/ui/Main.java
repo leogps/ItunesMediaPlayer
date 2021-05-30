@@ -117,7 +117,12 @@ public class Main {
             // set the name of the application menu item
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "iTunes Media Player");
             ImageIcon imageIcon = new ImageIcon(Main.class.getClassLoader().getResource("images/imp.png"));
-            com.apple.eawt.Application.getApplication().setDockIconImage(imageIcon.getImage());
+            try {
+                Object instance = Class.forName("com.apple.eawt.Application").getMethod("getApplication").invoke(null);
+                Class.forName("com.apple.eawt.Application").getMethod("setDockIconImage", Image.class).invoke(instance, imageIcon.getImage());
+            } catch (Exception ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
             try {
                 Main.class.forName("com.gps.itunes.media.player.OSXUtils");
             } catch (ClassNotFoundException e) {
@@ -161,7 +166,13 @@ public class Main {
                     splashAnimator.renderSplashFrame(20, "Initializing UI Frames...");
                     final UIFrame uiFrame = new UIFrame();
                     if(OSInfo.isOSMac()) {
-                        com.apple.eawt.Application.getApplication().requestUserAttention(true);
+                        try {
+
+                            Object instance = Class.forName("com.apple.eawt.Application").getMethod("getApplication").invoke(null);
+                            Class.forName("com.apple.eawt.Application").getMethod("requestUserAttention", boolean.class).invoke(instance, true);
+                        } catch (Exception ex) {
+                            LOG.error(ex.getMessage(), ex);
+                        }
                     }
                     uiFrame.setDropTarget(new UIDropTarget() {
                         @Override
@@ -175,9 +186,14 @@ public class Main {
                         }
                     });
                     uiFrame.setState(Frame.MAXIMIZED_BOTH);
-                    if(OSInfo.isOSMac()) {
-                        com.apple.eawt.FullScreenUtilities.setWindowCanFullScreen(uiFrame, true);
-                    }
+//                    if(OSInfo.isOSMac()) {
+//                        try {
+//                            Class.forName("com.apple.eawt.FullScreenUtilities").getMethod("setWindowCanFullScreen", Window.class, boolean.class)
+//                                    .invoke(null, uiFrame, true);
+//                        } catch (Exception ex) {
+//                            LOG.error(ex.getMessage(), ex);
+//                        }
+//                    }
 
                     splashAnimator.renderSplashFrame(25, "Initializing Controller...");
                     final Controller controller = new Controller(uiFrame);

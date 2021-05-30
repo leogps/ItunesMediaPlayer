@@ -340,6 +340,6 @@ public class Controller {
     }
 
     public void handleNetworkFileOpenRequest() {
-        getPlayer().handleNetworkFileOpenEvent();
+            getPlayer().handleNetworkFileOpenEvent();
     }
 }

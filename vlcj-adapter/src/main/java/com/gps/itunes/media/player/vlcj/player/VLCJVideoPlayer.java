@@ -63,10 +63,14 @@ public class VLCJVideoPlayer implements VLCJPlayer {
             // TODO: Add Linux fullscreenStrategy: XFullScreenStrategy?
             fullScreenStrategy = new DefaultFullScreenStrategy(fullscreenFrame);
         }
-        player = mediaPlayerFactory.newEmbeddedMediaPlayer(fullScreenStrategy);
 
         CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(vFrame.getFrameCanvas());
-        ((EmbeddedMediaPlayer)(player)).setVideoSurface(videoSurface);
+        if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
+            player = fxPlayerFrame.getPlayer();
+        } else {
+            player = mediaPlayerFactory.newEmbeddedMediaPlayer(fullScreenStrategy);
+            ((EmbeddedMediaPlayer)(player)).setVideoSurface(videoSurface);
+        }
 
         vFrame.getSeekbar().addChangeListener(
                 new SeekChangeListener(ignoreSeekbarChange,

@@ -78,9 +78,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>javafx</artifactId>
-            <version>2.2</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>11.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>11.0.2</version>
         </dependency>
 
     </dependencies>
@@ -90,6 +95,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>ideauidesigner-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -107,6 +113,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -134,6 +141,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -154,9 +162,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
                     <finalName>${project.groupId}-${project.artifactId}-${project.version}</finalName>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.1</version>
             </plugin>
 
         </plugins>

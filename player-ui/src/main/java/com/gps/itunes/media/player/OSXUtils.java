@@ -41,8 +41,7 @@ public class OSXUtils {
             LOG.debug(openFilesEvent.getSearchTerm());
             LOG.debug(openFilesEvent.getFiles());
             LOG.debug(openFilesEvent.getSource().getClass());
-
-            //FIXME: Invoke Later?
+            
             Main.getItunesMediaPlayer().playFiles(openFilesEvent.getFiles());
         }
 
@@ -56,8 +55,7 @@ public class OSXUtils {
             File uriFile = new File(openURIEvent.getURI());
             List<File> fileList = new ArrayList<File>();
             fileList.add(uriFile);
-
-            //FIXME: Invoke Later?
+            
             Main.getItunesMediaPlayer().playFiles(fileList);
         }
 

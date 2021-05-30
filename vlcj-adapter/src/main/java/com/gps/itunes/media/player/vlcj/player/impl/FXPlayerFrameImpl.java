@@ -9,11 +9,13 @@ import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
@@ -25,7 +27,15 @@ import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Method;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import java.util.Calendar;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by leogps on 10/1/15.
@@ -36,9 +46,12 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 
     private ImageView imageView;
 
-    private DirectMediaPlayerComponent mediaPlayerComponent;
+    private DirectMediaPlayerComponent mediaPlayerComponent = new CanvasPlayerComponent();
 
     private WritableImage writableImage;
+    
+    private AtomicReference<WritableImage> writableImageReference = new AtomicReference<>();
+    private AtomicReference<PixelWriter> pixelWriterReference = new AtomicReference<>();
 
     private Pane playerHolder;
 
@@ -47,6 +60,10 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
     private FloatProperty videoSourceRatioProperty;
 
     private JFXPanel fxPanel;
+
+    private static Future future;
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    private static final int AUTO_HIDE_HEADER_FOOTER_TIME = 5;
 
     public FXPlayerFrameImpl() {
         super();
@@ -62,17 +79,16 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
                 initFX(fxPanel);
             }
         });
-
     }
 
     private void initFX(JFXPanel fxPanel) {
         // This method is invoked on JavaFX thread
         Scene scene = createScene();
         fxPanel.setScene(scene);
+        fxPanel.setBackground(Color.BLACK);
     }
 
     private Scene createScene() {
-        mediaPlayerComponent = new CanvasPlayerComponent();
         playerHolder = new Pane();
         videoSourceRatioProperty = new SimpleFloatProperty(0.4f);
         pixelFormat = PixelFormat.getByteBgraPreInstance();
@@ -80,14 +96,31 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(playerHolder);
+        Scene scene = new Scene(borderPane, -1, -1);
+        scene.setFill(javafx.scene.paint.Color.BLACK);
 
-        Scene scene = new Scene(borderPane);
+        EventHandler handler = new EventHandler<Event>() {
+            @Override
+            public void handle(Event event) {
+                handleUserAttentionRequest();
+            }
+        };
+        borderPane.addEventFilter(MouseEvent.MOUSE_MOVED, handler);
+        borderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, handler);
+        borderPane.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
+        borderPane.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+        borderPane.addEventFilter(javafx.scene.input.KeyEvent.ANY, handler);
+        
+        scene.addEventFilter(MouseEvent.MOUSE_MOVED, handler);
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, handler);
+        scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+        scene.addEventFilter(javafx.scene.input.KeyEvent.ANY, handler);
         return scene;
     }
 
     private void initializeImageView() {
-        Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-        writableImage = new WritableImage((int) visualBounds.getWidth(), (int) visualBounds.getHeight());
+        initWritableImage();
         imageView = new ImageView(writableImage);
         playerHolder.getChildren().add(imageView);
 
@@ -109,6 +142,13 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
                 fitImageViewSize((float) playerHolder.getWidth(), (float) playerHolder.getHeight());
             }
         });
+    }
+
+    private synchronized void initWritableImage() {
+        Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+        writableImage = new WritableImage((int) visualBounds.getWidth(), (int) visualBounds.getHeight());
+        writableImageReference.set(writableImage);
+        pixelWriterReference.set(writableImageReference.get().getPixelWriter());
     }
 
     private void fitImageViewSize(final float width, final float height) {
@@ -163,13 +203,47 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         getFooterPanel().requestFocus();
-        //reinitAutoHideLater();
+        reinitAutoHideLater();
     }
 
     private void setFullScreen() {
-        //TODO: Use in fullscreenFXPlayerFrame
-//        GraphicsDevice graphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-//        graphicsDevice.setFullScreenWindow(this);
+        Window window;
+        if (this instanceof RootPaneContainer) {
+            window = this;
+        } else {
+            window = getOwner();
+            while(window != null && !(window instanceof RootPaneContainer)) {
+                window = window.getOwner();
+            }
+        }
+        requestOSXFullscreen(window);
+    }
+
+    public static void enableOSXFullscreen(Window window) {
+        try {
+            Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+            Class params[] = new Class[]{Window.class, Boolean.TYPE};
+            Method method = util.getMethod("setWindowCanFullScreen", params);
+            method.invoke(util, window, true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void requestOSXFullscreen(Window window) {
+        try {
+            enableOSXFullscreen(window);
+            Class appClass = Class.forName("com.apple.eawt.Application");
+            Class params[] = new Class[]{};
+
+            Method getApplication = appClass.getMethod("getApplication", params);
+            Object application = getApplication.invoke(appClass);
+            Method requestToggleFulLScreen = application.getClass().getMethod("requestToggleFullScreen", Window.class);
+
+            requestToggleFulLScreen.invoke(application, window);
+        } catch (Exception ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
     }
 
     private class CanvasPlayerComponent extends DirectMediaPlayerComponent {
@@ -178,13 +252,11 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
             super(new CanvasBufferFormatCallback());
         }
 
-        PixelWriter pixelWriter = null;
-
         private PixelWriter getPW() {
-            if (pixelWriter == null) {
-                pixelWriter = writableImage.getPixelWriter();
+            if (pixelWriterReference.get() == null) {
+                pixelWriterReference.set(writableImageReference.get().getPixelWriter());
             }
-            return pixelWriter;
+            return pixelWriterReference.get();
         }
 
         @Override
@@ -198,7 +270,12 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
                         Memory nativeBuffer = mediaPlayer.lock()[0];
                         try {
                             ByteBuffer byteBuffer = nativeBuffer.getByteBuffer(0, nativeBuffer.size());
-                            getPW().setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
+                            try {
+                                getPW().setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
+                            } catch (BufferOverflowException e) {
+                                LOG.error(e.getMessage(), e);
+                                reInitWritableImage();
+                            }
                         } finally {
                             mediaPlayer.unlock();
                         }
@@ -206,6 +283,10 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
                 }
             });
         }
+    }
+
+    private synchronized void reInitWritableImage() {
+        initWritableImage();
     }
 
     private class CanvasBufferFormatCallback implements BufferFormatCallback {
@@ -219,6 +300,55 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
             });
             return new RV32BufferFormat((int) visualBounds.getWidth(), (int) visualBounds.getHeight());
         }
+    }
+
+    private void handleUserAttentionRequest() {
+
+        LOG.debug("User attention requested.");
+        if (!headerPanel.isVisible()) {
+            LOG.debug("Showing header panel");
+            headerPanel.setVisible(true);
+        }
+        if(!getFooterPanel().isVisible()) {
+            LOG.debug("Showing footer panel");
+            getFooterPanel().setVisible(true);
+        }
+        reinitAutoHideLater();
+    }
+
+    protected void reinitAutoHideLater() {
+        cancelAutoHideLaterTask();
+        autoHideLater();
+    }
+
+    private void cancelAutoHideLaterTask() {
+        if(future != null && !future.isCancelled()) {
+            synchronized (future) {
+                future.cancel(true);
+            }
+        }
+    }
+
+    private void autoHideLater() {
+        future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+
+            public void run() {
+                if(!getSeekbar().getValueIsAdjusting()
+                        && !basicPlayerControlPanel.getVolumeSlider().getValueIsAdjusting()) {
+                    LOG.debug("Autohiding... at " + Calendar.getInstance().getTime());
+                    headerPanel.setVisible(false);
+                    getFooterPanel().setVisible(false);
+                }
+
+            }
+        }, AUTO_HIDE_HEADER_FOOTER_TIME, AUTO_HIDE_HEADER_FOOTER_TIME, TimeUnit.SECONDS);
+
+    }
+
+    public void showSliderAndHideLater() {
+        headerPanel.setVisible(true);
+        getFooterPanel().setVisible(true);
+        reinitAutoHideLater();
     }
 
     public MediaPlayer getPlayer() {
