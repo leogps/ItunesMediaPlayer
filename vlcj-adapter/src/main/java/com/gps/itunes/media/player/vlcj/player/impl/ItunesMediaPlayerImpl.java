@@ -439,7 +439,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     public void handleNetworkFileOpenEvent() {
-        String url = NetworkFileOpenEventHandler.handle();
+        String url = new NetworkFileOpenEventHandler().handle();
         if(url != null) {
             try {
                 play(new URL(url));
