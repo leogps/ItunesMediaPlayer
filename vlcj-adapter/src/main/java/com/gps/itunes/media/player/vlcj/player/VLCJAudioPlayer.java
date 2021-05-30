@@ -3,9 +3,9 @@ package com.gps.itunes.media.player.vlcj.player;
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
 import org.apache.log4j.Logger;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
@@ -17,14 +17,14 @@ public class VLCJAudioPlayer implements VLCJPlayer {
 
     private static Logger log = Logger.getLogger(VLCJAudioPlayer.class);
 	
-	private HeadlessMediaPlayer player;
+	private EmbeddedMediaPlayer player;
     private PlayerControlPanel playerControlPanel;
     private AtomicBoolean ignoreSeekbarChange = new AtomicBoolean(false);
 
     private final List<SeekEventListener> seekEventListenerList = new ArrayList<SeekEventListener>();
 	
 	public VLCJAudioPlayer(MediaPlayerFactory mediaPlayerFactory, final PlayerControlPanel playerControlPanel) {
-		player = mediaPlayerFactory.newHeadlessMediaPlayer();
+		player = mediaPlayerFactory.mediaPlayers().newEmbeddedMediaPlayer();
         this.playerControlPanel = playerControlPanel;
 
         playerControlPanel.getSeekbar().addChangeListener(

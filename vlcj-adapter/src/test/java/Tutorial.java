@@ -5,7 +5,7 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import org.testng.annotations.Test;
 import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+import uk.co.caprica.vlcj.binding.RuntimeUtil;
 
 public class Tutorial {
 

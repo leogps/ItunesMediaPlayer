@@ -1,7 +1,7 @@
 package com.gps.itunes.media.player.vlcj.player;
 
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
-import uk.co.caprica.vlcj.player.MediaPlayer;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
 import javax.swing.*;
 import java.awt.*;

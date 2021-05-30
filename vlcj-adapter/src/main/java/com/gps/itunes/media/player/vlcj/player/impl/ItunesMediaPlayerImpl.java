@@ -31,11 +31,16 @@ import com.gps.youtube.dl.event.YoutubeDLResultEventListener;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.TrackInfo;
-import uk.co.caprica.vlcj.runtime.x.LibXUtil;
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.media.TextTrackInfo;
+import uk.co.caprica.vlcj.media.TrackInfo;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
+//import uk.co.caprica.vlcj.player.MediaPlayer;
+//import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
+//import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+//import uk.co.caprica.vlcj.player.TrackInfo;
+//import uk.co.caprica.vlcj.runtime.x.LibXUtil;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -170,7 +175,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     public ItunesMediaPlayerImpl(final PlayerControlPanel playerControlPanel) {
         mediaFactoryArgs = parseMediaFactoryArgs(PropertyManager.getConfigurationMap().get("vlc.media.factory.args"));
         mediaPlayerFactory = new MediaPlayerFactory(mediaFactoryArgs);
-        mediaPlayerFactory.setUserAgent(PropertyManager.getConfigurationMap().get("vlc.user.agent"));
+        //mediaPlayerFactory.setUserAgent(PropertyManager.getConfigurationMap().get("vlc.user.agent"));
 
         VLCJ_VIDEO_PLAYER = new VLCJVideoPlayer(mediaPlayerFactory);
 
@@ -185,7 +190,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         MediaPlayerEventAdapter mediaPlayerEventAdapter = new ItunesMediaPlayerEventAdapter();
 
         for(MediaPlayer mediaPlayer : getAllPlayers()) {
-            mediaPlayer.addMediaPlayerEventListener(mediaPlayerEventAdapter);
+            mediaPlayer.events().addMediaPlayerEventListener(mediaPlayerEventAdapter);
         }
 
 
@@ -226,17 +231,17 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
             @Override
             public void onSkipForwardCommand() {
-                getCurrentPlayer().setTime(getCurrentPlayer().getTime() + 3000);
+                getCurrentPlayer().controls().setTime(getCurrentPlayer().status().time() + 3000);
             }
 
             @Override
             public void onSkipReverseCommand() {
-                getCurrentPlayer().setTime(getCurrentPlayer().getTime() - 3000);
+                getCurrentPlayer().controls().setTime(getCurrentPlayer().status().time() - 3000);
             }
 
             @Override
             public void onExitFullscreenCommand() {
-                float currentMediaPosition = getPlayer().getPosition();
+                float currentMediaPosition = getPlayer().status().position();
                 if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer() ) {
                     VLCJVideoPlayer videoPlayer = ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER);
                     if(videoPlayer.isFullscreen()) {
@@ -282,12 +287,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             public void onToggleSubtitles() {
                 if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer() ) {
                     VLCJVideoPlayer videoPlayer = ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER);
-                    if(videoPlayer.getPlayer().getSpu() == DISABLE_SUBTITLES) {
+                    if(videoPlayer.getPlayer().subpictures().track() == DISABLE_SUBTITLES) {
                         // Subtitles disabled, enabling subtitles.
-                        videoPlayer.getPlayer().setSpu(getEmbeddedSubtitleFile(videoPlayer.getPlayer().getTrackInfo()));
+                        int subtitleIndex = getEmbeddedSubtitleFile(videoPlayer.getPlayer().media().info().textTracks());
+                        videoPlayer.getPlayer().subpictures().setTrack(subtitleIndex);
                     } else {
                         // Subtitles enabled, disabling subtitles.
-                        videoPlayer.getPlayer().setSpu(DISABLE_SUBTITLES);
+                        videoPlayer.getPlayer().subpictures().setTrack(DISABLE_SUBTITLES);
                     }
                     notifyOnVideoSurface("Subtitles toggled");
                 }
@@ -379,7 +385,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         return option != null && Boolean.parseBoolean(option);
     }
 
-    private int getEmbeddedSubtitleFile(List<TrackInfo> trackInfoList) {
+    private int getEmbeddedSubtitleFile(List<TextTrackInfo> trackInfoList) {
         for(int index = 0; index < trackInfoList.size(); index++) {
             TrackInfo trackInfo = trackInfoList.get(index);
             if(trackInfo != null) {
@@ -408,8 +414,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     public void handleGoToEvent() {
-        long time = getCurrentPlayer().getTime();
-        final long mediaLength = getCurrentPlayer().getLength();
+        long time = getCurrentPlayer().status().time();
+        final long mediaLength = getCurrentPlayer().status().length();
 
         TrackTime trackLimit = TrackTime.get(mediaLength);
         TrackTime initTime = TrackTime.get(time);
@@ -423,13 +429,13 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     public void onSubmit(TrackTime seekTo) {
                         long seekToTime = TrackTime.valueOf(seekTo);
                         float percentage = (float) seekToTime / mediaLength;
-                        getPlayer().setPosition(percentage);
+                        getPlayer().controls().setPosition(percentage);
                     }
                 });
     }
 
     private void handleFullScreenToggle() {
-        float currentMediaPosition = getPlayer().getPosition();
+        float currentMediaPosition = getPlayer().status().position();
         if(getPlayer() == VLCJ_VIDEO_PLAYER.getPlayer()) {
             log.debug("Fullscreen toggle requested.");
             ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).toggleFullScreen();
@@ -548,7 +554,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
         @Override
         public void finished(MediaPlayer mediaPlayer) {
-            if(mediaPlayer.getSubItemMediaMeta().size() <= 1) {
+            if(mediaPlayer.subitems().list().media().count() <= 1) {
                 super.finished(mediaPlayer);
                 log.debug("Finished!!");
                 reportPlayCompletion();
@@ -558,15 +564,15 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             }
         }
 
-        @Override
-        public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
-            log.debug(mediaPlayer.getSubItemMediaMeta());
-        }
+//        @Override
+//        public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
+//            log.debug(mediaPlayer.getSubItemMediaMeta());
+//        }
 
-        @Override
-        public void mediaSubItemTreeAdded(MediaPlayer mediaPlayer, libvlc_media_t item) {
-            log.debug(mediaPlayer.getSubItemMediaMeta());
-        }
+//        @Override
+//        public void mediaSubItemTreeAdded(MediaPlayer mediaPlayer, libvlc_media_t item) {
+//            log.debug(mediaPlayer.getSubItemMediaMeta());
+//        }
 
         private void reportPlayCompletion() {
             for(MediaPlayerEventListener eventListener : eventListenerList) {
@@ -617,8 +623,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                 eventListener.playing(instance, currentTrack);
             }
 
-            //TODO: Define currentlyPlayingPlayer() and use below.
-            log.debug("Currently playing: " + getPlayer().getTrackInfo());
+            log.debug("Currently playing: " + getPlayer().media().info().mrl());
             super.playing(mediaPlayer);
             VLCJ_AUDIO_PLAYER.setPlaying();
             VLCJ_VIDEO_PLAYER.setPlaying();
@@ -925,24 +930,24 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     public void pause() {
         for(MediaPlayer mediaPlayer : getAllPlayers()) {
-            mediaPlayer.pause();
+            mediaPlayer.controls().pause();
         }
         log.debug("Playing paused");
 
-        if (!getPlayer().isPlaying()) {
+        if (!getPlayer().status().isPlaying()) {
             VLCJ_AUDIO_PLAYER.setPaused();
             VLCJ_VIDEO_PLAYER.setPaused();
         }
     }
 
     public void toggleMute() {
-        getCurrentPlayer().mute(!getCurrentPlayer().isMute());
+        getCurrentPlayer().audio().setMute(!getCurrentPlayer().audio().isMute());
     }
 
 
     public void stopPlay() {
         for(VLCJPlayer vlcjPlayer : VLCJ_PLAYERS) {
-            vlcjPlayer.getPlayer().stop();
+            vlcjPlayer.getPlayer().controls().stop();
         }
         log.debug("Playing stopped");
         VLCJ_AUDIO_PLAYER.setPaused();
@@ -950,12 +955,12 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     public int getVolume() {
-        return this.getPlayer().getVolume();
+        return this.getPlayer().audio().volume();
     }
 
     public void setVolume(int volume) {
         for(MediaPlayer mediaPlayer : this.getAllPlayers()) {
-            mediaPlayer.setVolume(volume);
+            mediaPlayer.audio().setVolume(volume);
         }
     }
 
@@ -966,7 +971,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         synchronized (libXInitialized) {
             if (!libXInitialized.get()) {
                 log.info("libX not initialized. Initializing...");
-                LibXUtil.initialise();
+//                LibXUtil.initialise();
                 libXInitialized.set(true);
                 log.info("libX initialization successful.");
             }
@@ -994,7 +999,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                             .playInFx(currentTrack.getLocation());
 
                     if (startFrom != 0) {
-                        ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).getFXPlayer().setPosition(startFrom);
+                        ((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).getFXPlayer().controls().setPosition(startFrom);
                         startFrom = 0;
                     }
 
@@ -1012,32 +1017,32 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     }
 
                     try {
-                        mediaPlayer.setPlaySubItems(true);
+//                        mediaPlayer.subitems().controls().play();
                         if(togglingFullscreen) {
                             log.debug("Playing already loaded media: " + this.currentTrack.getLocation());
-                            mediaPlayer.play();
+                            mediaPlayer.subitems().controls().play();
                         } else {
                             log.debug("Loading and playing new media...");
                             //TODO: Make options dynamic from UI.
                             String[] options = loadMediaPlayerOptions();
                             log.debug("Media Player Options loaded: " + StringUtils.join(options, " "));
-                            mediaPlayer.playMedia(this.currentTrack.getLocation(), options);
+                            mediaPlayer.media().play(this.currentTrack.getLocation(), options);
 
                             log.debug("Starting media: " + this.currentTrack.getLocation());
-                            mediaPlayer.startMedia(this.currentTrack.getLocation());
+                            mediaPlayer.media().start(this.currentTrack.getLocation());
 
                         }
 
                         if (startFrom != 0) {
                             log.debug("Setting media position to: " + startFrom);
-                            mediaPlayer.setPosition(startFrom);
+                            mediaPlayer.controls().setPosition(startFrom);
                             startFrom = 0;
                         }
 
                     } catch (Exception ex) {
                         log.error(ex.getMessage(), ex);
                         JOptionPane.showMessageDialog(null, "Could not play the file. Error: " + ex, "Error Occurred!", JOptionPane.ERROR_MESSAGE);
-                        if(!mediaPlayer.isPlaying()) {
+                        if(!mediaPlayer.status().isPlaying()) {
                             playSignal.countDown();
                             playerControlPanel.setPaused();
                         }
@@ -1198,7 +1203,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     public void seekTo(float percentage) {
         MediaPlayer player = getCurrentPlayer();
         log.debug("Setting position to: " + percentage);
-        player.setPosition(percentage);
+        player.controls().setPosition(percentage);
 
 
         if(!isPlaying() && !isSeekValueAdjusting() && hasPrevious()) {
@@ -1206,7 +1211,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             listTraverser.previous();
             play();
 
-        } else if(!player.isPlaying()) {
+        } else if(!player.status().isPlaying()) {
             // Seeked when paused.
             updateSeekPositions(player, VLCJ_PLAYERS);
         }
@@ -1320,11 +1325,11 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     }
 
     private void updateSeekPositions(MediaPlayer mediaPlayer, VLCJPlayer[] vlcjPlayers) {
-        long mediaLength = mediaPlayer.getLength();
-        int seekPosition = (int) (mediaPlayer.getPosition() * 100);
+        long mediaLength = mediaPlayer.status().length();
+        int seekPosition = (int) (mediaPlayer.status().position() * 100);
         log.debug("Updating seek position to: " + seekPosition);
 
-        SeekInfo seekInfo = new SeekInfo(mediaPlayer.getTime(), mediaLength, seekPosition);
+        SeekInfo seekInfo = new SeekInfo(mediaPlayer.status().time(), mediaLength, seekPosition);
 
         for (VLCJPlayer vlcjPlayer : vlcjPlayers) {
             vlcjPlayer.updateSeekbar(seekInfo);

@@ -9,13 +9,10 @@ import com.gps.itunes.media.player.vlcj.ui.player.FullscreenVideoPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.VideoPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
 import org.apache.log4j.Logger;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.embedded.DefaultFullScreenStrategy;
+import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
-import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
-import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
+import uk.co.caprica.vlcj.player.embedded.videosurface.ComponentVideoSurface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,20 +53,12 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     protected void init() {
 
         vFrame = new VideoPlayerFrame();
-        FullScreenStrategy fullScreenStrategy;
-        if(OSInfo.isOSWin()) {
-            fullScreenStrategy = new Win32FullScreenStrategy(fullscreenFrame);
-        } else {
-            // TODO: Add Linux fullscreenStrategy: XFullScreenStrategy?
-            fullScreenStrategy = new DefaultFullScreenStrategy(fullscreenFrame);
-        }
-
-        CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(vFrame.getFrameCanvas());
+        ComponentVideoSurface videoSurface = mediaPlayerFactory.videoSurfaces().newVideoSurface(vFrame.getFrameCanvas());
         if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
             player = fxPlayerFrame.getPlayer();
         } else {
-            player = mediaPlayerFactory.newEmbeddedMediaPlayer(fullScreenStrategy);
-            ((EmbeddedMediaPlayer)(player)).setVideoSurface(videoSurface);
+            player = mediaPlayerFactory.mediaPlayers().newEmbeddedMediaPlayer();
+            ((EmbeddedMediaPlayer)(player)).videoSurface().set(videoSurface);
         }
 
         vFrame.getSeekbar().addChangeListener(
@@ -246,7 +235,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         }
 
         if(player instanceof EmbeddedMediaPlayer) {
-            ((EmbeddedMediaPlayer) (player)).setFullScreen(isFullScreen.get());
+            ((EmbeddedMediaPlayer) (player)).fullScreen().set(isFullScreen.get());
         }
     }
 
@@ -300,15 +289,15 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 
         final EmbeddedMediaPlayer embeddedMediaPlayer = ((EmbeddedMediaPlayer)(player));
         final Window overlay = getOverlayWindow(message);
-        embeddedMediaPlayer.setOverlay(overlay);
-        embeddedMediaPlayer.enableOverlay(true);
+        embeddedMediaPlayer.overlay().set(overlay);
+        embeddedMediaPlayer.overlay().enable(true);
         if(!sticky) {
             singleQueuedThreadExecutor.terminateExistingAndScheduleForLater(new Runnable() {
                 public void run() {
                     overlay.setVisible(false);
                     overlay.dispose();
-                    embeddedMediaPlayer.setOverlay(null);
-                    embeddedMediaPlayer.enableOverlay(false);
+                    embeddedMediaPlayer.overlay().set(null);
+                    embeddedMediaPlayer.overlay().enable(false);
                 }
             }, 3000, TimeUnit.SECONDS);
         }

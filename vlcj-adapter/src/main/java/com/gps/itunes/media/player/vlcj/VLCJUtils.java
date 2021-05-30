@@ -8,8 +8,8 @@ import com.sun.jna.NativeLibrary;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.discovery.NativeDiscovery;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+import uk.co.caprica.vlcj.binding.RuntimeUtil;
+import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 
 import java.io.File;
 
@@ -39,7 +39,7 @@ public class VLCJUtils {
 
             LOGGER.info("vlc native library path set to:" + path);
 
-            if (LibVlc.SYNC_INSTANCE != null) {
+            if (LibVlc.libvlc_get_version() != null) {
                 vlcInitSucceeded = true;
             }
         } catch (UnsatisfiedLinkError ex) {
@@ -61,7 +61,6 @@ public class VLCJUtils {
         LOGGER.log(Level.WARNING, "Failed to load VLC from provided path.", ex);
         LOGGER.info("Switching to Automatic Discovery.");
         vlcInitSucceeded = new NativeDiscovery().discover();
-        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
         if(vlcInitSucceeded) {
             LOGGER.info("Auto discovery of VLC libraries succeeded.");
         }
@@ -72,10 +71,10 @@ public class VLCJUtils {
     }
 
     public static String getVlcVersion() {
-        return LibVlc.SYNC_INSTANCE.libvlc_get_version();
+        return LibVlc.libvlc_get_version();
     }
 
     public static String getVlcJVersion() {
-        return LibVlc.INFO.version().toString();
+        return "4.7.1";
     }
 }
