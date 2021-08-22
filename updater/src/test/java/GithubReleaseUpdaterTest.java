@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 public class GithubReleaseUpdaterTest {
 
     @Test
-    public Release testGithubReleaseJsonMapper() throws IOException {
+    public Release testGithubReleaseJsonMapper() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String content = GithubReleaseUpdater.getContent("https://api.github.com/repos/rg3/youtube-dl/releases/latest");
         Release release =
@@ -31,8 +31,8 @@ public class GithubReleaseUpdaterTest {
         return release;
     }
 
-    @Test
-    public void testGithubReleaseFileReplace() throws IOException {
+    @Test(enabled = false)
+    public void testGithubReleaseFileReplace() throws Exception {
         Release release = testGithubReleaseJsonMapper();
 
         GithubReleaseUpdater githubReleaseUpdater = new GithubReleaseUpdater();

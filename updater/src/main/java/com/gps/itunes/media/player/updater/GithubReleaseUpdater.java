@@ -36,17 +36,18 @@ public class GithubReleaseUpdater {
         return updateProcess(filePath, repositoryUrl, assetName, md5SumsAssetName);
     }
 
-    public static String getContent(String url) {
+    public static String getContent(String url) throws Exception {
         Client client = null;
         try {
             client = HttpClientUtils.getNewClient();
             Response response = client.target(url)
                     .request()
                     .get();
-            if (response != null && response.getStatus() == Response.Status.OK.getStatusCode()) {
-                return response.readEntity(String.class);
+            if (response == null || response.getStatus() != Response.Status.OK.getStatusCode()) {
+                String message = String.format("StatusCode: %s; Body: [%s]", response.getStatus(), response.readEntity(String.class));
+                throw new Exception("Failed to retrieve update: " + message);
             }
-            return null;
+            return response.readEntity(String.class);
         } finally {
             if(client != null) {
                 client.close();
