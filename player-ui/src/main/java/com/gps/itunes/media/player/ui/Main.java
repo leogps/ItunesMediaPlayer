@@ -98,18 +98,6 @@ public class Main {
             }
         }));
 
-
-        if(!JavaVersionUtils.isGreaterThan6()) {
-            LOG.debug("Java Version 6 found.");
-            try {
-                LOG.debug("Loading custom SSL Factory Provider for TLSV2 support.");
-                HttpClientUtils.initBouncyCastle();
-                LOG.debug("Loading custom SSL Factory Provider for TLSV2 support success.");
-            } catch (Exception e) {
-                LOG.debug("Loading custom SSL Factory Provider for TLSV2 support failed.", e);
-            }
-        }
-
         if(OSInfo.isOSMac()) {
             // take the menu bar off the jframe
             System.setProperty("apple.laf.useScreenMenuBar", "true");

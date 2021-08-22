@@ -16,11 +16,6 @@ import java.security.NoSuchAlgorithmException;
 @Test
 public class GithubReleaseUpdaterTest {
 
-    @BeforeClass
-    public void setup() {
-        HttpClientUtils.initBouncyCastle();
-    }
-
     @Test
     public Release testGithubReleaseJsonMapper() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();

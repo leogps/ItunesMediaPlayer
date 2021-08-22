@@ -5,15 +5,17 @@ import com.gps.itunes.media.player.vlcj.ui.player.VideoPlayerFrame;
 import javafx.application.Platform;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Screen;
 import org.apache.log4j.Logger;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
@@ -28,7 +30,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static uk.co.caprica.vlcj.javafx.videosurface.ImageViewVideoSurfaceFactory.videoSurfaceForImageView;
 
@@ -45,10 +46,10 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 
     private ImageView videoImageView;
     
-    private WritableImage writableImage;
-    
-    private AtomicReference<WritableImage> writableImageReference = new AtomicReference<>();
-    private AtomicReference<PixelWriter> pixelWriterReference = new AtomicReference<>();
+//    private WritableImage writableImage;
+//    
+//    private AtomicReference<WritableImage> writableImageReference = new AtomicReference<WritableImage>();
+//    private AtomicReference<PixelWriter> pixelWriterReference = new AtomicReference<PixelWriter>();
 
     private WritablePixelFormat<ByteBuffer> pixelFormat;
 
@@ -116,12 +117,18 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 
         videoImageView.fitWidthProperty().bind(root.widthProperty());
         videoImageView.fitHeightProperty().bind(root.heightProperty());
-        root.widthProperty().addListener((observableValue, oldValue, newValue) -> {
-            // If you need to know about resizes
+        root.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                // If you need to know about resizes
+            }
         });
 
-        root.heightProperty().addListener((observableValue, oldValue, newValue) -> {
-            // If you need to know about resizes
+        root.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                // If you need to know about resizes
+            }
         });
         root.setCenter(videoImageView);
 
@@ -173,12 +180,12 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 //        });
 //    }
 
-    private synchronized void initWritableImage() {
-        Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-        writableImage = new WritableImage((int) visualBounds.getWidth(), (int) visualBounds.getHeight());
-        writableImageReference.set(writableImage);
-        pixelWriterReference.set(writableImageReference.get().getPixelWriter());
-    }
+//    private synchronized void initWritableImage() {
+//        Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+//        writableImage = new WritableImage((int) visualBounds.getWidth(), (int) visualBounds.getHeight());
+//        writableImageReference.set(writableImage);
+//        pixelWriterReference.set(writableImageReference.get().getPixelWriter());
+//    }
 
 //    private void fitImageViewSize(final float width, final float height) {
 //        Platform.runLater(new Runnable() {

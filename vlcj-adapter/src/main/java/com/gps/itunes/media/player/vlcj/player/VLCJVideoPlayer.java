@@ -316,12 +316,12 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 
         transparentWindow.getContentPane().add(superImposedLightweigtLabel);
         // Determine what the default GraphicsDevice can support.
-        GraphicsEnvironment ge =
-                GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
-        if(gd.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.TRANSLUCENT)) {
-            transparentWindow.setOpacity(0.55f);
-        }
+//        GraphicsEnvironment ge =
+//                GraphicsEnvironment.getLocalGraphicsEnvironment();
+//        GraphicsDevice gd = ge.getDefaultScreenDevice();
+//        if(gd.isWindowTranslucencySupported(GraphicsDevice.WindowTranslucency.TRANSLUCENT)) {
+//            transparentWindow.setOpacity(0.55f);
+//        }
         transparentWindow.setSize(200, 30);
         transparentWindow.addWindowListener(new WindowAdapter() {
             @Override

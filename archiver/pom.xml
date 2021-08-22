@@ -36,27 +36,28 @@
             </plugin>
 
             <!-- Copy JDK1.6. This has circular simlinks and the maven does not work well with simlinks in general. -->
-            <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
-                <groupId>org.codehaus.mojo</groupId>
-                <executions>
-                    <execution>
-                        <id>copy-jdk</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>/bin/cp</executable>
-                            <arguments>
-                                <argument>-Rv</argument>
-                                <argument>${project.parent.basedir}/1.6.0.jdk</argument>
-                                <argument>target/${os.name}-${os.version}-${os.arch}/ItunesMediaPlayer.app/Contents/MacOS/</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <version>3.0.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-jdk</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <executable>/bin/cp</executable>-->
+<!--                            <arguments>-->
+<!--                                <argument>-Rv</argument>-->
+<!--                                <argument>${project.parent.basedir}/1.6.0.jdk</argument>-->
+<!--                                <argument>target/${os.name}-${os.version}-${os.arch}/ItunesMediaPlayer.app/Contents/MacOS/</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
