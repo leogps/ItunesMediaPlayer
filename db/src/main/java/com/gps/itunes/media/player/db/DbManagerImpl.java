@@ -1,7 +1,8 @@
 package com.gps.itunes.media.player.db;
 
 import com.gps.itunes.lib.parser.utils.PropertyManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.sql.*;
@@ -19,7 +20,7 @@ public class DbManagerImpl implements DbManager {
         return DB_MANAGER;
     }
 
-    private static Logger LOGGER = Logger.getLogger(DbManagerImpl.class);
+    private static Logger LOGGER = LogManager.getLogger(DbManagerImpl.class);
 
     String protocol = "jdbc:derby:;";
     private Connection connection;

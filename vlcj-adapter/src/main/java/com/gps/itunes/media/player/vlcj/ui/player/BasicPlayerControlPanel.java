@@ -2,7 +2,8 @@ package com.gps.itunes.media.player.vlcj.ui.player;
 
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -22,7 +23,7 @@ public class BasicPlayerControlPanel extends JPanel {
     private JLabel forwardIcon;
 
     private static Logger log =
-            Logger.getLogger(BasicPlayerControlPanel.class);
+            LogManager.getLogger(BasicPlayerControlPanel.class);
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("vlcjAdapterUi");
     private static final ImageIcon previousImg, previousPressedImg, playImage, playPressedImg, forwardImage, forwardPressedImg, pauseImage, pausePressedImage,

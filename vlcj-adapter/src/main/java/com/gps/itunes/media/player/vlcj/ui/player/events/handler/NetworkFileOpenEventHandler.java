@@ -2,7 +2,8 @@ package com.gps.itunes.media.player.vlcj.ui.player.events.handler;
 
 import com.gps.imp.utils.ui.NetworkFileOpenDialog;
 import com.gps.imp.utils.ui.NetworkFileOpenEventListener;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class NetworkFileOpenEventHandler implements NetworkFileOpenEventListener {
 
-    private static Logger LOG = Logger.getLogger(NetworkFileOpenEventHandler.class);
+    private static Logger LOG = LogManager.getLogger(NetworkFileOpenEventHandler.class);
 
     private static Dimension dialogDimensions = new Dimension(630, 240);
 

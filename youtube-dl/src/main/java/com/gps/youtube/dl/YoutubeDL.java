@@ -8,7 +8,8 @@ import com.gps.youtube.dl.exception.YoutubeDLException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,14 +30,14 @@ public class YoutubeDL {
     private static final String YOUTUBE_VIDEO_PARAM = "v";
     private static final String YOUTUBE_PLAYLIST_PARAM = "list";
 
-    private static final Logger LOGGER = Logger.getLogger(YoutubeDL.class);
+    private static final Logger LOGGER = LogManager.getLogger(YoutubeDL.class);
 
-    public static YoutubeDLResult fetchBest(String youtubeDlExecutable, String input) throws IOException, InterruptedException, YoutubeDLException {
-        return fetchURL(youtubeDlExecutable, "best", input);
+    public static YoutubeDLResult fetchBest(String youtubeDlExecutable, String additionalArgs, String input) throws IOException, InterruptedException, YoutubeDLException {
+        return fetchURL(youtubeDlExecutable, additionalArgs, "best", input);
     }
 
-    public static void fetchPlaylist(String youtubeDlExecutable, String input, YoutubeDLResultEventListener... observers) throws InterruptedException, YoutubeDLException, IOException {
-        String[] command = buildRetrievalCommand(youtubeDlExecutable, "best", input);
+    public static void fetchPlaylist(String youtubeDlExecutable, String additionalArgs, String input, YoutubeDLResultEventListener... observers) throws InterruptedException, YoutubeDLException, IOException {
+        String[] command = buildRetrievalCommand(youtubeDlExecutable, additionalArgs, "best", input);
         YoutubeDLProcessor youtubeDLProcessor = new YoutubeDLProcessor(command);
         if(observers != null && observers.length > 0) {
             for(YoutubeDLResultEventListener observer : observers) {
@@ -47,8 +48,8 @@ public class YoutubeDL {
         youtubeDLProcessor.waitFor();
     }
 
-    public static AsyncProcess fetchPlaylistAsync(String youtubeDlExecutable, String input, YoutubeDLResultEventListener... observers) throws InterruptedException, YoutubeDLException, IOException {
-        String[] command = buildRetrievalCommand(youtubeDlExecutable, "best", input);
+    public static AsyncProcess fetchPlaylistAsync(String youtubeDlExecutable, String additionalArgs, String input, YoutubeDLResultEventListener... observers) throws InterruptedException, YoutubeDLException, IOException {
+        String[] command = buildRetrievalCommand(youtubeDlExecutable, additionalArgs, "best", input);
         YoutubeDLProcessor youtubeDLProcessor = new YoutubeDLProcessor(command);
         if(observers != null && observers.length > 0) {
             for(YoutubeDLResultEventListener observer : observers) {
@@ -94,16 +95,16 @@ public class YoutubeDL {
         return false;
     }
 
-    public static AsyncProcess fetchBestAsyncProcess(String youtubeDlExecutable, String input,
+    public static AsyncProcess fetchBestAsyncProcess(String youtubeDlExecutable, String additionalArgs, String input,
                                                      List<AsyncTaskListener> asyncTaskListenerList) throws IOException {
-        String[] retrievalCommand = buildRetrievalCommand(youtubeDlExecutable, "best", input);
+        String[] retrievalCommand = buildRetrievalCommand(youtubeDlExecutable, additionalArgs, "best", input);
         AsyncProcess asyncProcess = new AsyncProcessImpl(retrievalCommand);
         asyncProcess.registerListeners(asyncTaskListenerList);
         return asyncProcess;
     }
 
-    private static YoutubeDLResult fetchURL(String youtubeDlExecutable, String format, String input) throws InterruptedException, IOException, YoutubeDLException {
-        String[] command = buildRetrievalCommand(youtubeDlExecutable, format, input);
+    private static YoutubeDLResult fetchURL(String youtubeDlExecutable, String additionalArgs, String format, String input) throws InterruptedException, IOException, YoutubeDLException {
+        String[] command = buildRetrievalCommand(youtubeDlExecutable, additionalArgs, format, input);
         ProcessBuilder builder = new ProcessBuilder(command);
         builder.redirectErrorStream(true);
         Process process = builder.start();
@@ -140,6 +141,7 @@ public class YoutubeDL {
         String error = retrieveErrorOutput(process);
 
         if(process.exitValue() != 0) {
+            LOGGER.error("Error: " + error);
             throw new YoutubeDLException("Failed to retrieve media. Exit value returned : " +  process.exitValue());
         }
         return new YoutubeDLProcessOutputDTO(result, error);
@@ -207,9 +209,13 @@ public class YoutubeDL {
         }
     }
 
-    private static String[] buildRetrievalCommand(String youtubeDlExecutable, String format, String input) {
+    private static String[] buildRetrievalCommand(String youtubeDlExecutable, String additionalArgs, String format, String input) {
+        if (additionalArgs == null) {
+            additionalArgs = "";
+        }
         return new String[]{
                 youtubeDlExecutable,
+                additionalArgs,
                 "--get-title",
                 "--get-url",
                 "--get-filename",

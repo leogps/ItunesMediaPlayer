@@ -22,6 +22,7 @@ public class YoutubeDLTest {
     public void testFetchBestURL() throws InterruptedException, YoutubeDLException, IOException {
         YoutubeDLResult youtubeDLResult = YoutubeDL.fetchBest(
                 new File("../youtube-dl-exec/youtube-dl").getAbsolutePath(),
+                "--no-check-certificate",
                 "https://www.youtube.com/watch?v=k4YRWT_Aldo");
 
         Assert.assertNotNull(youtubeDLResult);
@@ -34,6 +35,7 @@ public class YoutubeDLTest {
         //String playlist = "https://www.youtube.com/playlist?list=RDGMEMQ1dJ7wXfLlqCjwV0xfSNbAVMuMTGcwZxdGg";
         String playlist = "https://www.youtube.com/playlist?list=PLJiVGeJ_KPz7mC8JapyXEJDKInyYIBx7C";
         YoutubeDL.fetchPlaylist(new File("../youtube-dl-exec/youtube-dl").getAbsolutePath(),
+                "--no-check-certificate",
                 playlist, new YoutubeDLResultEventListener() {
 
                     @Override

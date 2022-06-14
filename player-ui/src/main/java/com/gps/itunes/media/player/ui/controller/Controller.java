@@ -40,7 +40,7 @@ import java.util.List;
 public class Controller {
 
     private static org.apache.log4j.Logger log =
-            org.apache.log4j.Logger.getLogger(Controller.class);
+            org.apache.log4j.LogManager.getLogger(Controller.class);
     private final UIFrame uiFrame;
     private LibraryParser parser;
     private ItunesLibraryParsedData itunesLibraryParsedData;

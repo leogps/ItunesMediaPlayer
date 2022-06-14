@@ -36,7 +36,7 @@ public class PlaylistCopier extends ProgressHandler {
     private final LibraryParser parser;
     private final ItunesLibraryParsedData itunesLibraryParsedData;
     private static org.apache.log4j.Logger log =
-            org.apache.log4j.Logger.getLogger(PlaylistCopier.class);
+            org.apache.log4j.LogManager.getLogger(PlaylistCopier.class);
 
     private final boolean analyzeDuplicates;
     

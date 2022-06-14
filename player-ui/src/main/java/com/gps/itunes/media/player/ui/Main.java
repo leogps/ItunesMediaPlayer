@@ -2,11 +2,8 @@ package com.gps.itunes.media.player.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.gps.imp.utils.JavaVersionUtils;
-import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.itunes.lib.exceptions.NoChildrenException;
 import com.gps.itunes.lib.items.tracks.Track;
-import com.gps.itunes.lib.parser.utils.LogInitializer;
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.db.ConfigPropertyDao;
@@ -25,7 +22,8 @@ import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.player.impl.ItunesMediaPlayerImpl;
 import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,7 +42,7 @@ import java.util.logging.Level;
  */
 public class Main {
 
-    private static Logger LOG = Logger.getLogger(Main.class);
+    private static Logger LOG = LogManager.getLogger(Main.class);
     private static final java.util.logging.Logger BASIC_LOGGER
             = java.util.logging.Logger.getLogger(Main.class.getName());
 
@@ -58,10 +56,6 @@ public class Main {
     private static final AppConfiguration appConfiguration = new AppConfiguration();
 
     private static DbManager dbManager = DbManagerImpl.getInstance();
-
-    static {
-        LogInitializer.getInstance();
-    }
 
     public static void main(String[] args) {
         if(args != null && args.length > 0) {
@@ -82,19 +76,19 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                LOG.debug("Shutting down initiated...");
-                if(itunesMediaPlayer != null) {
-                    LOG.debug("Releasing Media Player resources...");
-                    itunesMediaPlayer.releaseResources();
-                }
+                LOG.info("Shut down initiated...");
+//                if(itunesMediaPlayer != null) {
+//                    LOG.debug("Releasing Media Player resources...");
+//                    itunesMediaPlayer.releaseResources();
+//                }
                 try {
                     dbManager.shutdown();
                 } catch (SQLException e) {
                     BASIC_LOGGER.log(Level.INFO, e.getMessage());
                 }
 
-                LOG.debug("Shutting down the application...");
-                BASIC_LOGGER.log(Level.INFO, "Shutting down the application...");
+                LOG.info("Shutting down the application... GoodBye!");
+                BASIC_LOGGER.log(Level.INFO, "Shutting down the application... GoodBye!");
             }
         }));
 

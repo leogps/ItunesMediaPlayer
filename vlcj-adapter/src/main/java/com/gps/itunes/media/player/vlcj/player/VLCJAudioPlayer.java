@@ -2,7 +2,8 @@ package com.gps.itunes.media.player.vlcj.player;
 
 import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VLCJAudioPlayer implements VLCJPlayer {
 
-    private static Logger log = Logger.getLogger(VLCJAudioPlayer.class);
+    private static Logger log = LogManager.getLogger(VLCJAudioPlayer.class);
 	
 	private EmbeddedMediaPlayer player;
     private PlayerControlPanel playerControlPanel;

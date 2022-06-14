@@ -1,6 +1,7 @@
 package com.gps.itunes.media.player.vlcj.player.events;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public abstract class UIDropTarget extends DropTarget {
 
-    private static Logger LOG = Logger.getLogger(UIDropTarget.class);
+    private static Logger LOG = LogManager.getLogger(UIDropTarget.class);
 
     @Override
     public synchronized void drop(DropTargetDropEvent dropTargetDropEvent) {

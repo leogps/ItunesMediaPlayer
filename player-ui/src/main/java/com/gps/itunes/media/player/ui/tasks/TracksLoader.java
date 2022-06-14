@@ -30,7 +30,7 @@ import java.util.*;
 public class TracksLoader extends ProgressHandler {
 
     private static org.apache.log4j.Logger log =
-            org.apache.log4j.Logger.getLogger(TracksLoader.class);
+            org.apache.log4j.LogManager.getLogger(TracksLoader.class);
 
     private final ImageIcon currentlyPlayingIcon = new ImageIcon(TracksLoader.class.getClassLoader().getResource("images/play_20x20.png")) {
         @Override

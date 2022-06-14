@@ -31,7 +31,7 @@
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.java.dev.jna</groupId>
@@ -46,17 +46,17 @@
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj-javafx</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>5.0.0</version>
+            <version>5.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>5.0.0</version>
+            <version>5.11.0</version>
         </dependency>
 
         <dependency>
@@ -90,18 +90,18 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-commons</artifactId>
-            <version>8.0.1</version>
+            <version>9.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>14.0.2.1</version>
+            <version>18.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
-            <version>14.0.2.1</version>
+            <version>18.0.1</version>
         </dependency>
 
     </dependencies>

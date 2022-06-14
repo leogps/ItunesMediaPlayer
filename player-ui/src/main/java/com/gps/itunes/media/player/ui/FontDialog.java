@@ -3,7 +3,8 @@ package com.gps.itunes.media.player.ui;
 import com.gps.itunes.media.player.db.ConfigPropertyDao;
 import com.gps.itunes.media.player.db.DbManagerImpl;
 import com.gps.itunes.media.player.db.model.ConfigProperty;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -20,7 +21,7 @@ public class FontDialog extends JDialog {
     private JPanel fontSizeSliderPanel;
     private JTextField sliderLabel;
 
-    private static Logger LOGGER = Logger.getLogger(FontDialog.class);
+    private static Logger LOGGER = LogManager.getLogger(FontDialog.class);
 
     public FontDialog(JFrame parent) {
         super(parent, "Set Font size");

@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 public class PlaylistTableModel extends DefaultTableModel {
     
     private static org.apache.log4j.Logger log = 
-            org.apache.log4j.Logger.getLogger(PlaylistTableModel.class);
+            org.apache.log4j.LogManager.getLogger(PlaylistTableModel.class);
     
 
     public PlaylistTableModel() {

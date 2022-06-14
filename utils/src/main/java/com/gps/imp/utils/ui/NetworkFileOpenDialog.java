@@ -1,6 +1,7 @@
 package com.gps.imp.utils.ui;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +10,7 @@ import java.awt.event.*;
 
 public class NetworkFileOpenDialog extends JDialog {
 
-    private static Logger LOG = Logger.getLogger(NetworkFileOpenDialog.class);
+    private static Logger LOG = LogManager.getLogger(NetworkFileOpenDialog.class);
 
     private JPanel contentPane;
     private JButton buttonOK;

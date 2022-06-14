@@ -8,7 +8,8 @@ import com.gps.itunes.media.player.vlcj.player.impl.FXPlayerFrameImpl;
 import com.gps.itunes.media.player.vlcj.ui.player.FullscreenVideoPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.VideoPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.events.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -35,17 +36,20 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     protected final List<SeekEventListener> seekEventListenerList = new ArrayList<SeekEventListener>();
     protected FullscreenVideoPlayerFrame fullscreenFrame = new FullscreenVideoPlayerFrame();
     protected FXPlayerFrame fxPlayerFrame;
+    protected final boolean isFXPlayer;
 
     private SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
 
-    private static final Logger LOG = Logger.getLogger(VLCJVideoPlayer.class);
+    private static final Logger LOG = LogManager.getLogger(VLCJVideoPlayer.class);
 
     public VLCJVideoPlayer(MediaPlayerFactory mediaPlayerFactory) {
         this.mediaPlayerFactory = mediaPlayerFactory;
         if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
             fxPlayerFrame = new FXPlayerFrameImpl();
+            isFXPlayer = true;
         } else {
             fxPlayerFrame = DummyFXPlayerFrame.getDummyInstance();
+            isFXPlayer = false;
         }
         init();
 	}
@@ -83,6 +87,8 @@ public class VLCJVideoPlayer implements VLCJPlayer {
             return;
         }
         vFrame.setDropTarget(dropTarget);
+        fxPlayerFrame.getFrameCanvas().setDropTarget(dropTarget);
+        fxPlayerFrame.getJFXPanel().setDropTarget(dropTarget);
     }
 
     public MediaPlayer getPlayer() {
@@ -176,7 +182,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         fxPlayerFrame.requestFocus();
         fxPlayerFrame.getVideoPanel().addKeyListener(videoPlayerKeyListener);
         fxPlayerFrame.getSeekbar().addKeyListener(videoPlayerKeyListener);
-
+        fxPlayerFrame.getJFXPanel().addKeyListener(videoPlayerKeyListener);
     }
 
     public void attachCommandListener(VideoPlayerMouseAdapter videoPlayerMouseAdapter) {
@@ -225,13 +231,15 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     public void toggleFullScreen() {
         isFullScreen.set(!isFullScreen.get());
 
-        if(isFullScreen.get()) {
-            vFrame.disableVideo();
-            fullscreenFrame.enableVideo(vFrame.getFrameCanvas());
-            fullscreenFrame.setTitle(vFrame.getTitle());
-        } else {
-            fullscreenFrame.disableVideo();
-            vFrame.enableVideo(vFrame.getFrameCanvas());
+        if (!isFXPlayer) {
+            if(isFullScreen.get()) {
+                vFrame.disableVideo();
+                fullscreenFrame.enableVideo(vFrame.getFrameCanvas());
+                fullscreenFrame.setTitle(vFrame.getTitle());
+            } else {
+                fullscreenFrame.disableVideo();
+                vFrame.enableVideo(vFrame.getFrameCanvas());
+            }
         }
 
         if(player instanceof EmbeddedMediaPlayer) {

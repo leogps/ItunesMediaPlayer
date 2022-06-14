@@ -16,7 +16,7 @@ import com.gps.itunes.media.player.ui.tasks.ProgressingTask;
 public class TaskExecutionException extends Exception{
     
     private static org.apache.log4j.Logger log = 
-            org.apache.log4j.Logger.getLogger(TaskExecutionException.class);
+            org.apache.log4j.LogManager.getLogger(TaskExecutionException.class);
     
     public TaskExecutionException(final ProgressingTask task, final Exception ex){
         super(ex);

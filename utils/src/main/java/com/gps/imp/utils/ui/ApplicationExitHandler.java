@@ -1,6 +1,7 @@
 package com.gps.imp.utils.ui;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.awt.*;
  */
 public class ApplicationExitHandler {
 
-    private static final Logger LOG = Logger.getLogger(ApplicationExitHandler.class);
+    private static final Logger LOG = LogManager.getLogger(ApplicationExitHandler.class);
 
     public static void handle(Component parent) {
         int result = JOptionPane.showConfirmDialog(parent,"Exit the application?", "Are you sure?",

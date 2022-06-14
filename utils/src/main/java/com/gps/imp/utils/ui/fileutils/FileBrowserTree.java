@@ -1,7 +1,8 @@
 package com.gps.imp.utils.ui.fileutils;
 
 import com.gps.imp.utils.SingleQueuedThreadExecutor;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class FileBrowserTree extends JPanel {
 
-    private static final Logger LOG = Logger.getLogger(FileBrowserTree.class);
+    private static final Logger LOG = LogManager.getLogger(FileBrowserTree.class);
 
     private JTree fileTree;
     private JScrollPane scrollPane;

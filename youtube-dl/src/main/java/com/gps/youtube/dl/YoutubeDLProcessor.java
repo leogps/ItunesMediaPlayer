@@ -3,7 +3,8 @@ package com.gps.youtube.dl;
 import com.gps.imp.utils.process.AsyncProcessImpl;
 import com.gps.youtube.dl.event.YoutubeDLResultEvent;
 import com.gps.youtube.dl.event.YoutubeDLResultEventListener;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class YoutubeDLProcessor extends AsyncProcessImpl {
     private Thread errorStreamThread;
     private final List<YoutubeDLResultEventListener> youtubeDLResultEventListeners = new ArrayList<YoutubeDLResultEventListener>();
 
-    private static final Logger LOGGER = Logger.getLogger(YoutubeDLProcessor.class);
+    private static final Logger LOGGER = LogManager.getLogger(YoutubeDLProcessor.class);
 
     public YoutubeDLProcessor(String[] command) {
         super(command);

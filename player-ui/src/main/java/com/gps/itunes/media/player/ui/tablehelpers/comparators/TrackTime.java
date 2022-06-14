@@ -14,7 +14,7 @@ class TrackTime {
     private final int mins;
     private final int secs;
     private static org.apache.log4j.Logger log =
-            org.apache.log4j.Logger.getLogger(TrackTime.class);
+            org.apache.log4j.LogManager.getLogger(TrackTime.class);
     
     public TrackTime(final int hrs, final int mins, final int secs) {
         this.hrs = hrs;

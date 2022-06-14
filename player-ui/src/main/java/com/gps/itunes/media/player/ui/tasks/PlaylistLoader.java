@@ -23,7 +23,7 @@ import javax.swing.JTable;
 public class PlaylistLoader extends ProgressHandler{
     
     private static org.apache.log4j.Logger log = 
-            org.apache.log4j.Logger.getLogger(PlaylistLoader.class);
+            org.apache.log4j.LogManager.getLogger(PlaylistLoader.class);
     
     private final JTable playlistTable;
     

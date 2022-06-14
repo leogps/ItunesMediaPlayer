@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns:xi="http://www.w3.org/2001/XInclude" packages="com.gps.itunes.media.player.ui.handlers">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </Console>
+
+        <RollingFile name="RollingFile"
+                     fileName="${sys:user.home}/.iTunesMediaPlayer/imp.log"
+                     filePattern="${sys:user.home}/.iTunesMediaPlayer/$${date:yyyy-MM}/imp-%d{-dd-MMMM-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- rollover on startup, daily and when the file reaches
+                    10 MegaBytes -->
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy
+                        size="10 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
+        <StatusMessageAppender name="StatusMessageAppender" />
+    </Appenders>
+
+    <Loggers>
+        <!-- LOG everything at INFO level -->
+        <Root level="DEBUG" additivity="false" includeLocation="true">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFile" />
+        </Root>
+
+        <Logger name="com.gps" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="StatusMessageAppender">
+                <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            </AppenderRef>
+        </Logger>
+        <Logger name="org.apache.logging.log4j" level="ALL" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFile" />
+        </Logger>
+    </Loggers>
+</Configuration>

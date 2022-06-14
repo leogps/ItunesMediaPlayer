@@ -6,12 +6,13 @@ import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.itunes.media.player.updater.github.Asset;
 import com.gps.itunes.media.player.updater.github.Release;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Response;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Response;
 import java.io.*;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -25,7 +26,7 @@ import java.util.concurrent.*;
  */
 public class GithubReleaseUpdater {
 
-    private static final Logger LOG = Logger.getLogger(GithubReleaseUpdater.class);
+    private static final Logger LOG = LogManager.getLogger(GithubReleaseUpdater.class);
 
     public InterruptableAsyncTask<Void, UpdateResult> update(String filePath, String repositoryUrl, String assetName,
                                                        String md5SumsAssetName) {

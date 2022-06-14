@@ -8,7 +8,8 @@ import com.gps.itunes.lib.tasks.progressinfo.ProgressTracker;
 import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
 import com.gps.itunes.media.player.ui.tasks.PlaylistCopier;
 import com.gps.itunes.media.player.ui.tasks.TaskParams;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -31,8 +32,7 @@ public class CopyInformationTrackerFrame extends JFrame {
     private static final String SUCCESS = "success";
     private static final String FAILURE = "failure";
 
-    private static final Logger LOGGER = Logger
-            .getLogger(CopyInformationTrackerFrame.class);
+    private static final Logger LOGGER = LogManager.getLogger(CopyInformationTrackerFrame.class);
 
     public CopyInformationTrackerFrame(PlaylistCopier playlistCopier) {
         this.progressTracker = new ProgressTracker(new CopyProgressInformer(), new CopyProgressInformation());

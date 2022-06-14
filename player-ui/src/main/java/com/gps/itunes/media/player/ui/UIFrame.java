@@ -22,7 +22,7 @@ import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
 import com.gps.imp.utils.ui.fileutils.FileBrowserTree;
 import com.gps.imp.utils.ui.fileutils.FileBrowserTreeEventListener;
 import com.gps.imp.utils.ui.fileutils.FileNode;
-import com.gps.itunes.media.player.ui.handlers.StatusMessageWriter;
+import com.gps.itunes.media.player.ui.handlers.StatusMessageAppender;
 import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
@@ -35,7 +35,8 @@ import com.gps.itunes.media.player.vlcj.ui.player.PlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerKeyEventListener;
 import com.gps.itunes.media.player.vlcj.utils.YoutubeDLUtils;
 import com.gps.youtube.dl.update.YoutubeDLUpdater;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -65,7 +66,7 @@ import java.util.ResourceBundle;
  * Created by leogps on 10/11/15.
  */
 public class UIFrame extends JFrame {
-    private static final Logger LOG = Logger.getLogger(UIFrame.class);
+    private static final Logger LOG = LogManager.getLogger(UIFrame.class);
     protected static final String ERROR_OCCURRED_MSG = "Error occurred!!";
 
     private UIFrame instance;
@@ -725,7 +726,7 @@ public class UIFrame extends JFrame {
 
         this.setExtendedState(MAXIMIZED_BOTH);
 
-        StatusMessageWriter.setStatusLabel(statusTextArea);
+        StatusMessageAppender.setStatusLabel(statusTextArea);
     }
 
     private void loadThemesSubMenu() {

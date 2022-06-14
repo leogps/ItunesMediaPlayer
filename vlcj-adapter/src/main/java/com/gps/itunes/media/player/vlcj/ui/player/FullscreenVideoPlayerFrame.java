@@ -1,6 +1,7 @@
 package com.gps.itunes.media.player.vlcj.ui.player;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FullscreenVideoPlayerFrame extends VideoPlayerFrame {
 
-    private static final Logger LOGGER = Logger.getLogger(FullscreenVideoPlayerFrame.class);
+    private static final Logger LOGGER = LogManager.getLogger(FullscreenVideoPlayerFrame.class);
 
     private static Future future;
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();

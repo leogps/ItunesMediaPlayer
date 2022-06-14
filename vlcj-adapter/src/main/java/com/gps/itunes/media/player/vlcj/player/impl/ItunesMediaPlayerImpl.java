@@ -28,8 +28,11 @@ import com.gps.youtube.dl.YoutubeDLProcessor;
 import com.gps.youtube.dl.YoutubeDLResult;
 import com.gps.youtube.dl.event.YoutubeDLResultEvent;
 import com.gps.youtube.dl.event.YoutubeDLResultEventListener;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.media.TextTrackInfo;
@@ -45,8 +48,6 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Response;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
      */
     private static CountDownLatch playSignal = new CountDownLatch(0);
 
-    private static Logger log = Logger.getLogger(ItunesMediaPlayerImpl.class);
+    private static Logger log = LogManager.getLogger(ItunesMediaPlayerImpl.class);
 
     /**
      * To publish this MediaPlayer's events.
@@ -337,6 +338,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
          */
         addMediaPlayerListener(new MediaPlayerEventListener() {
             public void playing(ItunesMediaPlayer player, NowPlayingListData currentTrack) {
+                log.info("Playing.");
                 updateStatusCells(true);
             }
 
@@ -345,6 +347,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             }
 
             public void paused(ItunesMediaPlayer player, String location) {
+                log.info("Paused.");
                 updateStatusCells(false);
             }
 
@@ -638,6 +641,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
         @Override
         public void paused(MediaPlayer mediaPlayer) {
+            log.info("Paused.");
             for(MediaPlayerEventListener eventListener : eventListenerList) {
                 eventListener.paused(instance, getNowPlayingUrl());
             }
@@ -728,6 +732,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     private void fallbackToYoutubeDL(final String urlStr) {
         String youtubeDLExecutable = YoutubeDLUtils.fetchYoutubeDLExecutable();
+        String youtubeDLAdditionalArgs = YoutubeDLUtils.fetchAdditionalArgs();
         try {
             final InterruptableAsyncTask asyncProcess;
             final InterruptableProcessDialog interruptableProcessDialog;
@@ -744,14 +749,14 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                     effectiveURL = YoutubeDL.normalizePlaylistURL(urlStr);
                 }
 
-                asyncProcess = YoutubeDL.fetchPlaylistAsync(youtubeDLExecutable, effectiveURL);
+                asyncProcess = YoutubeDL.fetchPlaylistAsync(youtubeDLExecutable, youtubeDLAdditionalArgs, effectiveURL);
                 interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess, false);
                 YoutubeDLResultEventListener youtubeDLResultEventListener = fetchDefaultPlaylistFetchProcessListener(effectiveURL, watchURLProcessed);
                 ((YoutubeDLProcessor) asyncProcess).addYoutubeDLResultEventListener(youtubeDLResultEventListener);
 
             } else {
                 asyncProcess =
-                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, urlStr, fetchDefaultFetchProcessListeners(urlStr));
+                    YoutubeDL.fetchBestAsyncProcess(youtubeDLExecutable, youtubeDLAdditionalArgs, urlStr, fetchDefaultFetchProcessListeners(urlStr));
                 interruptableProcessDialog = new InterruptableProcessDialog(asyncProcess, true);
             }
 
@@ -942,6 +947,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
 
     public void toggleMute() {
         getCurrentPlayer().audio().setMute(!getCurrentPlayer().audio().isMute());
+        log.info(getCurrentPlayer().audio().isMute() ? "Muted" : "Un-Muted");
     }
 
 
@@ -949,7 +955,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         for(VLCJPlayer vlcjPlayer : VLCJ_PLAYERS) {
             vlcjPlayer.getPlayer().controls().stop();
         }
-        log.debug("Playing stopped");
+        log.info("Playing stopped");
         VLCJ_AUDIO_PLAYER.setPaused();
         VLCJ_VIDEO_PLAYER.setPaused();
     }
@@ -962,6 +968,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         for(MediaPlayer mediaPlayer : this.getAllPlayers()) {
             mediaPlayer.audio().setVolume(volume);
         }
+        log.info("Volume: " + volume);
     }
 
     /**
@@ -1028,8 +1035,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
                             log.debug("Media Player Options loaded: " + StringUtils.join(options, " "));
                             mediaPlayer.media().play(this.currentTrack.getLocation(), options);
 
-                            log.debug("Starting media: " + this.currentTrack.getLocation());
-                            mediaPlayer.media().start(this.currentTrack.getLocation());
+                            log.info("Starting media: " + this.currentTrack.getLocation());
+                            mediaPlayer.media().start(this.currentTrack.getLocation(), options);
 
                         }
 
@@ -1327,7 +1334,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     private void updateSeekPositions(MediaPlayer mediaPlayer, VLCJPlayer[] vlcjPlayers) {
         long mediaLength = mediaPlayer.status().length();
         int seekPosition = (int) (mediaPlayer.status().position() * 100);
-        log.debug("Updating seek position to: " + seekPosition);
+        log.debug("Seeking: " + seekPosition);
 
         SeekInfo seekInfo = new SeekInfo(mediaPlayer.status().time(), mediaLength, seekPosition);
 
@@ -1354,6 +1361,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         for(MediaPlayer mediaPlayer : getAllPlayers()) {
             mediaPlayer.release();
         }
+        log.info("Releasing mediaPlayerFactory...");
         mediaPlayerFactory.release();
     }
 

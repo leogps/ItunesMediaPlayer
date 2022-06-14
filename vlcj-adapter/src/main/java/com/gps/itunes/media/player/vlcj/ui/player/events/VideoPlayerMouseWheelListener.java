@@ -1,6 +1,7 @@
 package com.gps.itunes.media.player.vlcj.ui.player.events;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -13,7 +14,7 @@ import java.util.List;
 public class VideoPlayerMouseWheelListener implements MouseWheelListener {
 
     private List<UserCommandEventListener> userCommandEventListenerList = new ArrayList<UserCommandEventListener>();
-    private static Logger log = Logger.getLogger(VideoPlayerMouseAdapter.class);
+    private static Logger log = LogManager.getLogger(VideoPlayerMouseAdapter.class);
 
     public void addUserCommandEventListener(UserCommandEventListener userCommandEventListener) {
         this.userCommandEventListenerList.add(userCommandEventListener);

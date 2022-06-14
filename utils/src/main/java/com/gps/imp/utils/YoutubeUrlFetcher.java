@@ -30,7 +30,7 @@ public class YoutubeUrlFetcher {
                 throw new URLFetchException("video param 'v' not found in the url");
             }
 
-            URL url = new URL("http://www.youtube.com/get_video_info?video_id=" + vid);
+            URL url = new URL("https://www.youtube.com/get_video_info?video_id=" + vid);
             inStream = url.openStream();
             in = new BufferedReader(new InputStreamReader(inStream));
             String response = "", temp;

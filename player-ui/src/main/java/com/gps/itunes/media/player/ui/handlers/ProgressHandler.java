@@ -26,7 +26,7 @@ public abstract class ProgressHandler implements ProgressingTask {
     private static final int COMPLETE = 100;
     private static final int INVALID_PROGRESS = -1;
     private int progress;
-    private static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProgressHandler.class);
+    private static org.apache.log4j.Logger log = org.apache.log4j.LogManager.getLogger(ProgressHandler.class);
 
     public ProgressHandler(final JProgressBar progressBar,
             final TaskType taskType) {

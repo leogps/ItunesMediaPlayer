@@ -1,6 +1,7 @@
 package com.gps.itunes.media.player.vlcj.player;
 
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
+import javafx.embed.swing.JFXPanel;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
 import javax.swing.*;
@@ -23,6 +24,8 @@ public interface FXPlayerFrame {
     void requestFocus();
 
     JPanel getVideoPanel();
+
+    JFXPanel getJFXPanel();
 
     Canvas getFrameCanvas();
 

@@ -3,6 +3,7 @@ package com.gps.itunes.media.player.vlcj.player.impl;
 import com.gps.itunes.media.player.vlcj.player.FXPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.BasicPlayerControlPanel;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
+import javafx.embed.swing.JFXPanel;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
 import javax.swing.*;
@@ -734,6 +735,11 @@ public class DummyFXPlayerFrame implements FXPlayerFrame {
         dummyPanel.setVisible(false);
     }
 
+    private static final JFXPanel fxPanel = new JFXPanel();
+    static {
+        fxPanel.setVisible(false);
+    }
+
     private static final Canvas dummyCanvas = new Canvas();
     static {
         dummyCanvas.setVisible(false);
@@ -798,6 +804,11 @@ public class DummyFXPlayerFrame implements FXPlayerFrame {
 
     public JPanel getVideoPanel() {
         return dummyPanel;
+    }
+
+    @Override
+    public JFXPanel getJFXPanel() {
+        return fxPanel;
     }
 
     public Canvas getFrameCanvas() {

@@ -41,7 +41,8 @@
 //import javafx.stage.Screen;
 //import javafx.stage.Stage;
 //import javafx.stage.WindowEvent;
-//import org.apache.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 //import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 //import uk.co.caprica.vlcj.player.MediaPlayer;
 //import uk.co.caprica.vlcj.player.direct.BufferFormat;
@@ -73,7 +74,7 @@
 // */
 //public class FXPlayer extends Application implements VLCJPlayer {
 //
-//    private static Logger LOG = Logger.getLogger(FXPlayer.class);
+//    private static Logger LOG = LogManager.getLogger(FXPlayer.class);
 //
 //    public static void main(String args[]) {
 //        launch();

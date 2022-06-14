@@ -2,7 +2,8 @@ package com.gps.itunes.media.player.ui.config;
 
 import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +16,7 @@ import java.util.Properties;
  */
 public class AppConfiguration {
 
-    private static Logger LOG = Logger.getLogger(AppConfiguration.class);
+    private static Logger LOG = LogManager.getLogger(AppConfiguration.class);
 
     public void configure() {
         LOG.debug("Configuring...");

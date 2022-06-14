@@ -16,7 +16,8 @@ import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -38,7 +39,7 @@ import static uk.co.caprica.vlcj.javafx.videosurface.ImageViewVideoSurfaceFactor
  */
 public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame {
 
-    private static Logger LOG = Logger.getLogger(FXPlayerFrameImpl.class);
+    private static Logger LOG = LogManager.getLogger(FXPlayerFrameImpl.class);
 
     private final MediaPlayerFactory mediaPlayerFactory;
 
@@ -374,5 +375,10 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
     public MediaPlayer getPlayer() {
         return embeddedMediaPlayer;
     }
-    
+
+    @Override
+    public JFXPanel getJFXPanel() {
+        return fxPanel;
+    }
+
 }

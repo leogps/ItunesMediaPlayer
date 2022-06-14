@@ -1,7 +1,8 @@
 package com.gps.itunes.media.player;
 
 import com.gps.itunes.media.player.ui.Main;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.desktop.*;
 import java.io.File;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class OSXUtils {
 
-    private static Logger LOG = Logger.getLogger(OSXUtils.class);
+    private static Logger LOG = LogManager.getLogger(OSXUtils.class);
 
     static {
         new NativeAppUtils();
