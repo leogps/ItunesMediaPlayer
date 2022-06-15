@@ -321,7 +321,7 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
         };
 
         //TODO: Is this alright? need new command listener for each?
-        VideoPlayerKeyListener videoPlayerKeyListener = new VideoPlayerKeyListener();
+        VideoPlayerKeyListener videoPlayerKeyListener = new VideoPlayerKeyListener(((VLCJVideoPlayer) VLCJ_VIDEO_PLAYER).getVideoPlayerFrame());
         videoPlayerKeyListener.addUserCommandEventListener(userCommandEventListener);
         VLCJ_VIDEO_PLAYER.attachCommandListener(videoPlayerKeyListener);
 

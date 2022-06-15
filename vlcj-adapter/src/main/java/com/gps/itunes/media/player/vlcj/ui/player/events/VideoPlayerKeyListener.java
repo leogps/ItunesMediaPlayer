@@ -3,6 +3,7 @@ package com.gps.itunes.media.player.vlcj.ui.player.events;
 import com.gps.imp.utils.Constants;
 import com.gps.imp.utils.ui.ApplicationExitHandler;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 /**
@@ -13,6 +14,11 @@ import java.awt.event.KeyEvent;
  */
 public class VideoPlayerKeyListener extends PlayerKeyEventListener {
 
+    private final JFrame videoPlayerFrame;
+
+    public VideoPlayerKeyListener(JFrame videoPlayerFrame) {
+        this.videoPlayerFrame = videoPlayerFrame;
+    }
 
     public void addUserCommandEventListener(UserCommandEventListener userCommandEventListener) {
         this.userCommandEventListenerList.add(userCommandEventListener);
@@ -122,8 +128,8 @@ public class VideoPlayerKeyListener extends PlayerKeyEventListener {
          * App Exit.
          */
         if (keyEvent.getKeyCode() == KeyEvent.VK_Q
-                && ((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
-            ApplicationExitHandler.handle(null);
+                && (((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0) || (keyEvent.getModifiers() & KeyEvent.VK_META) != 0)) {
+            ApplicationExitHandler.handle(videoPlayerFrame);
         }
     }
 }

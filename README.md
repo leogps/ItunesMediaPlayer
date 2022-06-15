@@ -10,7 +10,6 @@ ItunesMediaPlayer
     1. Direct integration with Itunes Library.
     2. Copy Itunes playlists/Tracks.
     3. No VLC's UI or Itunes UI dependencies. Media player UI is built from ground up.
-    4. Full Hardware acceleration that's part of VLC libraries.
     5. Play media from across the web including YouTube and Vimeo. This is enabled by the
        open-source project YouTube-DL (https://github.com/rg3/youtube-dl).
     6. FileSystem Tree view to pin-point the library file being played on the computer.
@@ -18,6 +17,31 @@ ItunesMediaPlayer
 ### Releases
    Download the media player here:
    [releases](https://github.com/leogps/ItunesMediaPlayer/releases)
+
+### Keyboard Shortcuts
+#### Main Window
+| Shortcut              | MacOS          | Windows        | Linux          |
+|-----------------------|----------------|----------------|----------------|
+| Open File             | `CMD` + O      | `CTRL` + O     | `CTRL` + O     |
+| Open Network          | `CMD` + N      | `CTRL` + N     | `CTRL` + N     |
+| Increase Volume       | `SHIFT` + UP   | `SHIFT` + UP   | `SHIFT` + UP   |
+| Decrease Volume       | `SHIFT` + DOWN | `SHIFT` + DOWN | `SHIFT` + DOWN |
+| Seek Position         | `CMD` + G      | `SHIFT` + G    | `SHIFT` + G    |
+| Reload Itunes Library | `CMD` + R      | `CTRL` + R     | `CTRL` + R     |
+| Copy Playlist         | `CMD` + P      | `CTRL` + P     | `CTRL` + P     |
+| Quit                  | `CMD` + Q      | `CTRL` + Q     | `CTRL` + Q     |
+#### Player Window
+| Shortcut             | MacOS            | Windows          | Linux            |
+|----------------------|------------------|------------------|------------------|
+| Toggle Fullscreen    | `CMD` + ENTER    | `CTRL` + ENTER   | `CTRL` + ENTER   |
+| Mute/Un-Mute         | `CTRL` + M       | `CTRL` + M       | `CTRL` + M       |
+| Increase Volume      | `SHIFT` + UP     | `SHIFT` + UP     | `SHIFT` + UP     |
+| Decrease Volume      | `SHIFT` + DOWN   | `SHIFT` + DOWN   | `SHIFT` + DOWN   |
+| Seek Forward         | `SHIFT` + RIGHT  | `SHIFT` + RIGHT  | `SHIFT` + RIGHT  |
+| Seek Backwards       | `SHIFT` + LEFT   | `SHIFT` + LEFT   | `SHIFT` + LEFT   |
+| Seek Forward(3sec)   | RIGHT            | RIGHT            | RIGHT            |
+| Seek Backwards(3sec) | LEFT             | LEFT             | LEFT             |
+| Quit                 | `CMD` + Q        | `CTRL` + Q       | `CTRL` + Q       |
 
 ### Executable
     1. While this can run on any machine with Java and VLC runtimes, this is primarily developed for Mac OSX and executables are compiled as Mac native app.
