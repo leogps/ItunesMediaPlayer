@@ -12,8 +12,7 @@
     <artifactId>player-ui</artifactId>
 
     <properties>
-        <flatlaf.version>1.2</flatlaf.version>
-        <jackson.version>2.9.10.8</jackson.version>
+        <flatlaf.version>2.3</flatlaf.version>
     </properties>
 
     <dependencies>
