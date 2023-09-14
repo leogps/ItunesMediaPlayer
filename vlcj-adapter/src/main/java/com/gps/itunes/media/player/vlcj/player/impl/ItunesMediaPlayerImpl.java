@@ -53,6 +53,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -93,6 +94,8 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
     private final MediaPlayerFactory mediaPlayerFactory;
 
     private final AtomicBoolean libXInitialized = new AtomicBoolean(false);
+
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("vlcjAdapterUi");
 
     /**
      * Now Playing list.
@@ -473,10 +476,20 @@ public class ItunesMediaPlayerImpl implements ItunesMediaPlayer {
             videoPlayer.toggleFullScreen();
         }
 
-        FileBrowserDialog fileBrowserDialog = new FileBrowserDialog(null, "Open Media file to play...", null);
-        fileBrowserDialog.registerFileBrowserDialogListener(mediaFileOpenEventListener);
-        fileBrowserDialog.pack();
-        fileBrowserDialog.setVisible(true);
+        final JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        String title = RESOURCE_BUNDLE.getString("file.open.dialog.title");
+        fileChooser.setDialogTitle(title);
+
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        if(fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+            File selectedFile = fileChooser.getSelectedFile();
+            mediaFileOpenEventListener.onFileSelected(selectedFile);
+        } else {
+            log.debug("request has been cancelled.");
+            mediaFileOpenEventListener.onCancel();
+        }
     }
 
     private void attachVolumeSyncEvents() {
