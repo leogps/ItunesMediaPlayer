@@ -9,6 +9,9 @@ import com.gps.itunes.media.player.ui.exceptions.TaskExecutionException;
 import com.gps.itunes.media.player.ui.tasks.ProgressingTask;
 import com.gps.itunes.media.player.ui.tasks.TaskParams;
 import com.gps.itunes.media.player.ui.tasks.TaskType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Random;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
@@ -26,7 +29,7 @@ public abstract class ProgressHandler implements ProgressingTask {
     private static final int COMPLETE = 100;
     private static final int INVALID_PROGRESS = -1;
     private int progress;
-    private static org.apache.log4j.Logger log = org.apache.log4j.LogManager.getLogger(ProgressHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(ProgressHandler.class);
 
     public ProgressHandler(final JProgressBar progressBar,
             final TaskType taskType) {
@@ -108,7 +111,7 @@ public abstract class ProgressHandler implements ProgressingTask {
     public void setProgressMsg(final String msg) {
         if (taskType == TaskType.SUB_TASK
                 && MajorTaskInfo.isMajorTaskInProgress()) {
-            log.debug(msg);
+            LOGGER.debug(msg);
         } else {
             progressBar.setString(msg);
         }
@@ -134,7 +137,7 @@ public abstract class ProgressHandler implements ProgressingTask {
                 try {
                     Thread.sleep(random.nextInt(oneSec));
                 } catch (InterruptedException ex) {
-                    log.error(ex);
+                    LOGGER.error(ex);
                 }
                 setProgress(progress);
             }

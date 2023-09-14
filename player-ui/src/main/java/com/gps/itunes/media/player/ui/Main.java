@@ -222,6 +222,7 @@ public class Main {
 
                                 @Override
                                 public void finished(ItunesMediaPlayer player, String location) {
+                                    LOG.debug("Play finished");
 
                                 }
 

@@ -97,7 +97,7 @@ OR
 
 `mvn clean install`
 
-`mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.0.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.0" -Dpackaging="jar"`
+`mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.1.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.1" -Dpackaging="jar"`
 
 ---
 
@@ -193,9 +193,3 @@ https://www.jetbrains.com/idea/
     The installed version of the ItunesMediaPlayer can update Youtube-DL using Tools > Check for Updates. This will automatically update the underlying youtube-dl executable.
 
 ---
-
-### Licensing
-
-[License](http://creativecommons.org/licenses/by/4.0/legalcode)
-
-[License summary](http://creativecommons.org/licenses/by/4.0/)

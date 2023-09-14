@@ -17,8 +17,8 @@ import java.util.Map;
 public class YoutubeUrlFetcher {
 
     public static List<YoutubeLink> fetch(String videoUrl) throws IOException, URLFetchException {
-        InputStream inStream = null;
-        BufferedReader in = null;
+        InputStream inStream;
+        BufferedReader in;
 
         List<YoutubeLink> youtubeLinks = new ArrayList<YoutubeLink>();
 

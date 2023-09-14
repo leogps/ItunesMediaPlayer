@@ -10,6 +10,9 @@ import com.gps.imp.utils.ui.ApplicationExitHandler;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
 import com.gps.imp.utils.ui.InterruptableProcessDialog;
+import com.gps.imp.utils.ui.fileutils.FileBrowserTree;
+import com.gps.imp.utils.ui.fileutils.FileBrowserTreeEventListener;
+import com.gps.imp.utils.ui.fileutils.FileNode;
 import com.gps.itunes.lib.items.playlists.Playlist;
 import com.gps.itunes.lib.items.tracks.Track;
 import com.gps.itunes.lib.parser.utils.OSInfo;
@@ -17,14 +20,11 @@ import com.gps.itunes.lib.parser.utils.PropertyManager;
 import com.gps.itunes.media.player.db.ConfigPropertyDao;
 import com.gps.itunes.media.player.db.DbManagerImpl;
 import com.gps.itunes.media.player.db.model.ConfigProperty;
-import com.gps.itunes.media.player.ui.components.TracksContextMenu;
-import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
-import com.gps.imp.utils.ui.fileutils.FileBrowserTree;
-import com.gps.imp.utils.ui.fileutils.FileBrowserTreeEventListener;
-import com.gps.imp.utils.ui.fileutils.FileNode;
-import com.gps.itunes.media.player.ui.handlers.StatusMessageAppender;
 import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.dto.TrackHolder;
+import com.gps.itunes.media.player.ui.components.TracksContextMenu;
+import com.gps.itunes.media.player.ui.events.UIFrameEventListener;
+import com.gps.itunes.media.player.ui.handlers.StatusMessageAppender;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
 import com.gps.itunes.media.player.ui.theme.UITheme;
@@ -39,10 +39,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.BadLocationException;
@@ -50,7 +47,6 @@ import javax.swing.text.Document;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import javax.swing.ImageIcon;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -612,16 +608,17 @@ public class UIFrame extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 StringBuffer message = new StringBuffer();
                 if(VLCJUtils.isVlcInitSucceeded()) {
-
-                    message.append("VLC initialized successfully.");
-                    message.append(String.format("\nVLC Version: %s", VLCJUtils.getVlcVersion()));
-                    message.append("\n" + RESOURCE_BUNDLE.getString("vlc.link"));
-                    //TODO: JEditorPane for hyperlink.
-
+                    String vlcLink = RESOURCE_BUNDLE.getString("vlc.link");
+                    message.append("VLC initialized successfully.")
+                           .append(String.format("<br\\>VLC Version: %s", VLCJUtils.getVlcVersion()))
+                           .append("<br\\>")
+                           .append("<br\\>")
+                           .append(buildLink(vlcLink, vlcLink));
                 } else {
                     message.append("VLC failed to initialize.");
                 }
-                JOptionPane.showMessageDialog(null, message, "About VLC Engine", JOptionPane.INFORMATION_MESSAGE);
+                JEditorPane editor = buildHtmlEditorPane(message.toString());
+                JOptionPane.showMessageDialog(null, editor, "About VLC Engine", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -630,17 +627,21 @@ public class UIFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 StringBuffer message = new StringBuffer();
                 if(VLCJUtils.isVlcInitSucceeded()) {
-
-                    message.append(String.format("VLCJ version %s", VLCJUtils.getVlcJVersion()));
-                    message.append("\n" + RESOURCE_BUNDLE.getString("vlcj.link") + "\n");
-
-                    message.append("\nVLC initialized successfully.");
-                    message.append(String.format("\nVLC Version: %s", VLCJUtils.getVlcVersion()));
+                    String vlcjLink = RESOURCE_BUNDLE.getString("vlcj.link");
+                    message.append(String.format("VLCJ version %s", VLCJUtils.getVlcJVersion()))
+                            .append("<br\\>")
+                            .append(buildLink(vlcjLink, vlcjLink))
+                            .append("<br\\>")
+                            .append("<br\\>")
+                            .append("VLC initialized successfully.")
+                            .append("<br\\>")
+                            .append(String.format("VLC Version: %s", VLCJUtils.getVlcVersion()));
 
                 } else {
                     message.append("VLC failed to initialize.");
                 }
-                JOptionPane.showMessageDialog(null, message, "About VLCJ", JOptionPane.INFORMATION_MESSAGE);
+                JEditorPane editor = buildHtmlEditorPane(message.toString());
+                JOptionPane.showMessageDialog(null, editor, "About VLCJ", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -655,7 +656,7 @@ public class UIFrame extends JFrame {
                     InterruptableAsyncTask<Void, UpdateResult> asyncProcess = youtubeDLUpdater.update(YoutubeDLUtils.fetchYoutubeDLExecutable(),
                             PropertyManager.getConfigurationMap().get("youtube-dl.repository"),
                             PropertyManager.getConfigurationMap().get("youtube-dl.repository.asset.name"),
-                            PropertyManager.getConfigurationMap().get("youtube-dl.repository.md5sums.name"));
+                            PropertyManager.getConfigurationMap().get("youtube-dl.repository.supported.checksum.names"));
 
                     if(asyncProcess == null) {
                         JOptionPane.showMessageDialog(null, "Update failed. Error code: " + 1001,
@@ -699,21 +700,24 @@ public class UIFrame extends JFrame {
         uiMenuBar.getAboutIMPMenuItem().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                StringBuffer message = new StringBuffer();
-                message.append(RESOURCE_BUNDLE.getString("name"));
-                message.append(" ");
-                message.append(RESOURCE_BUNDLE.getString("version"));
+                StringBuilder message = new StringBuilder();
+                String githubLink = RESOURCE_BUNDLE.getString("github");
+                message.append(RESOURCE_BUNDLE.getString("name"))
+                        .append("&nbsp;")
+                        .append(RESOURCE_BUNDLE.getString("version"))
 
-                message.append("\n");
-                message.append("\n");
+                        .append("<br\\>")
+                        .append("<br\\>")
 
-                message.append("Author: " + RESOURCE_BUNDLE.getString("author"));
+                        .append("Author: ")
+                        .append(RESOURCE_BUNDLE.getString("author"))
 
-                message.append("\n");
+                        .append("<br\\>")
 
-                message.append("Github: " + RESOURCE_BUNDLE.getString("github"));
-
-                JOptionPane.showMessageDialog(null, message, "About Itunes Media Player", JOptionPane.INFORMATION_MESSAGE);
+                        .append("Github: ")
+                        .append(buildLink(githubLink, githubLink));
+                JEditorPane editor = buildHtmlEditorPane(message.toString());
+                JOptionPane.showMessageDialog(null, editor, "About Itunes Media Player", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -727,6 +731,32 @@ public class UIFrame extends JFrame {
         this.setExtendedState(MAXIMIZED_BOTH);
 
         StatusMessageAppender.setStatusLabel(statusTextArea);
+    }
+
+    private static JEditorPane buildHtmlEditorPane(String html) {
+        JEditorPane editor = new JEditorPane();
+        editor.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
+        editor.setEditable(false);
+        editor.setText(html);
+        editor.addHyperlinkListener(new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().browse(e.getURL().toURI());
+                    } catch (IOException ex) {
+                        LOG.error(ex);
+                    } catch (URISyntaxException ex) {
+                        LOG.error(ex);
+                    }
+                }
+            }
+        });
+        return editor;
+    }
+
+    private static String buildLink(String link, String text) {
+        return String.format("<a href=\"%s\">%s</a>", link, text);
     }
 
     private void loadThemesSubMenu() {

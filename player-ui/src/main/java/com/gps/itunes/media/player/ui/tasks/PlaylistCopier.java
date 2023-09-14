@@ -18,6 +18,9 @@ import com.gps.itunes.lib.tasks.LibraryParser;
 import com.gps.itunes.lib.tasks.ProgressInformer;
 import com.gps.itunes.lib.tasks.progressinfo.CopyTrackInformation;
 import com.gps.itunes.lib.tasks.progressinfo.ProgressInformation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +38,10 @@ public class PlaylistCopier extends ProgressHandler {
     private final JTable playlistTable;
     private final LibraryParser parser;
     private final ItunesLibraryParsedData itunesLibraryParsedData;
-    private static org.apache.log4j.Logger log =
-            org.apache.log4j.LogManager.getLogger(PlaylistCopier.class);
+    private static final Logger LOGGER = LogManager.getLogger(PlaylistCopier.class);
 
     private final boolean analyzeDuplicates;
-    
+
     private static String currentCopyingPlaylist = "";
 
     private final List<ProgressTracker> progressTrackerList = new ArrayList<ProgressTracker>();
@@ -60,9 +62,9 @@ public class PlaylistCopier extends ProgressHandler {
             MajorTaskInfo.setMajorTaskInfo(true);
             copyPlaylists(params);
             MajorTaskInfo.setMajorTaskInfo(false);
-            log.info("Playlist copied.");
+            LOGGER.info("Playlist copied.");
         } catch (TaskExecutionException ex) {
-            log.error(ex);
+            LOGGER.error(ex);
         }
     }
 
@@ -75,8 +77,8 @@ public class PlaylistCopier extends ProgressHandler {
             final Playlist playlist = ((PlaylistHolder) playlistTable.getValueAt(selectedRow, 0)).getPlaylist();
 
             try {
-                log.info("Copying playlist " + playlist.getName() + " now.");
-                
+                LOGGER.info("Copying playlist " + playlist.getName() + " now.");
+
                 currentCopyingPlaylist = playlist.getName();
 
                 ProgressTracker progressTracker = new ProgressTracker(new CopyProgressInformer(), new CopyProgressInformation());
@@ -133,7 +135,7 @@ public class PlaylistCopier extends ProgressHandler {
                 setProgressMsg("Copying " + info.getCurrentTrack() + " from the playlist '"
                         + currentCopyingPlaylist + "'...");
                 if (info.getProgress() != -1) {
-                    log.info("(" + info.getCurrentTrackNo() + "/" + info.getTrackCount() + ") files copied. "
+                    LOGGER.info("(" + info.getCurrentTrackNo() + "/" + info.getTrackCount() + ") files copied. "
                             + "Copying track: " + info.getCurrentTrack() + " to: " + info.getToDest());
                 }
             }

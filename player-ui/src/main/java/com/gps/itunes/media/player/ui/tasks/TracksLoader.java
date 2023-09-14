@@ -17,6 +17,8 @@ import com.gps.itunes.media.player.ui.tablehelpers.models.TracksTableModel;
 import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
 import com.gps.itunes.media.player.vlcj.player.events.MediaPlayerEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.NowPlayingListData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.util.*;
@@ -24,13 +26,12 @@ import java.util.*;
 /**
  *
  * Loads the tracks for any selected playlists.
- * 
+ *
  * @author leogps
  */
 public class TracksLoader extends ProgressHandler {
 
-    private static org.apache.log4j.Logger log =
-            org.apache.log4j.LogManager.getLogger(TracksLoader.class);
+    private static final Logger LOGGER = LogManager.getLogger(TracksLoader.class);
 
     private final ImageIcon currentlyPlayingIcon = new ImageIcon(TracksLoader.class.getClassLoader().getResource("images/play_20x20.png")) {
         @Override
@@ -68,7 +69,7 @@ public class TracksLoader extends ProgressHandler {
         this.searchQuery = null;
         this.tracksTableHeadingLabel = tracksTableHeadingLabel;
     }
-    
+
     public TracksLoader(final ItunesLibraryParsedData itunesLibraryParsedData, final JProgressBar progressBar,
             final JTable tracksTable, final JTable playlistTable,
             final JMenuItem copyPlaylistsMenuItem,
@@ -174,12 +175,12 @@ public class TracksLoader extends ProgressHandler {
             String tracksTableHeadingText;
             if(searchQuery == null || Constants.EMPTY.equals(searchQuery)){
 
-                log.info(trackMap.size() + " track(s) in " + playlistTable.getSelectedRows().length + " selected playlist(s).");
+                LOGGER.info(trackMap.size() + " track(s) in " + playlistTable.getSelectedRows().length + " selected playlist(s).");
                 setProgressMsg("Tracks loaded.");
                 tracksTableHeadingText = getTracksTableHeading(playlistList);
 
             } else {
-                log.info(trackMap.size() + " track(s) found.");
+                LOGGER.info(trackMap.size() + " track(s) found.");
                 setProgressMsg("Tracks loaded.");
                 tracksTableHeadingText = getTracksTableHeading(playlistList, searchQuery);
             }
@@ -192,9 +193,9 @@ public class TracksLoader extends ProgressHandler {
                 tracksTableHeadingLabel.setText(tracksTableHeadingText);
                 tracksTableHeadingLabel.setToolTipText(tracksTableHeadingText);
             }
-        
+
         } catch(Exception ex){
-            log.error("Exception occurred when loading tracks...", ex);
+            LOGGER.error("Exception occurred when loading tracks...", ex);
         }
 
     }
@@ -241,21 +242,21 @@ public class TracksLoader extends ProgressHandler {
                 holder, //Name
                 TrackDataParser.parseTime(
                     track.getAdditionalTrackInfo().getAdditionalInfo(TIME) //Time
-                    ), 
+                    ),
                 track.getAdditionalTrackInfo().getAdditionalInfo(ARTIST), //Artist
-                track.getAdditionalTrackInfo().getAdditionalInfo(ALBUM), //Album 
-                track.getAdditionalTrackInfo().getAdditionalInfo(GENRE), //Genre 
+                track.getAdditionalTrackInfo().getAdditionalInfo(ALBUM), //Album
+                track.getAdditionalTrackInfo().getAdditionalInfo(GENRE), //Genre
                 track.getAdditionalTrackInfo().getAdditionalInfo(RATING), //Rating
                 track.getAdditionalTrackInfo().getAdditionalInfo(PLAYS), //Plays
             });
 
         }
     }
-    
+
     private void enableCopyPlaylists(final boolean isEnable) {
         copyPlaylistsMenuItem.setEnabled(isEnable);
     }
-    
+
     private static final String ARTIST = "Artist";
     private static final String ALBUM = "Album";
     private static final String TIME = "Total Time";
@@ -264,12 +265,12 @@ public class TracksLoader extends ProgressHandler {
     private static final String PLAYS = "Play Count";
 
     private boolean match(Track track) {
-        
+
         return (doMatch(track.getTrackName()))
-            || (doMatch(track.getAdditionalTrackInfo().getAdditionalInfo(ARTIST))) 
+            || (doMatch(track.getAdditionalTrackInfo().getAdditionalInfo(ARTIST)))
             || (doMatch(track.getAdditionalTrackInfo().getAdditionalInfo(ALBUM)));
     }
-    
+
     private boolean doMatch(final String str){
         return str != null && str.toUpperCase().contains(searchQuery);
     }

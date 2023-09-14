@@ -1,0 +1,3 @@
+com.gps.itunes.media.player.updater.checksum.MD5Handler
+com.gps.itunes.media.player.updater.checksum.Sha256Handler
+com.gps.itunes.media.player.updater.checksum.Sha512Handler

@@ -38,7 +38,7 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     protected FXPlayerFrame fxPlayerFrame;
     protected final boolean isFXPlayer;
 
-    private SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
+    private final SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
 
     private static final Logger LOG = LogManager.getLogger(VLCJVideoPlayer.class);
 
@@ -319,10 +319,10 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         // White with transparent alpha channel - WindowTranslucency is required for translucency.
         transparentWindow.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.55f));
 
-        final JLabel superImposedLightweigtLabel = new JLabel(message, JLabel.CENTER);
-        superImposedLightweigtLabel.setOpaque(true);
+        final JLabel superImposedLightweightLabel = new JLabel(message, JLabel.CENTER);
+        superImposedLightweightLabel.setOpaque(true);
 
-        transparentWindow.getContentPane().add(superImposedLightweigtLabel);
+        transparentWindow.getContentPane().add(superImposedLightweightLabel);
         // Determine what the default GraphicsDevice can support.
 //        GraphicsEnvironment ge =
 //                GraphicsEnvironment.getLocalGraphicsEnvironment();

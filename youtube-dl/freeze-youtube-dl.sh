@@ -26,7 +26,7 @@ freeze_setup="freeze-setup"
 echo "Cleaning directories..."
 rm -rf $parent_dir/$exec_dir/
 
-url=https://yt-dl.org/downloads/latest/youtube-dl
+url=https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos
 
 echo "Not freezing!! Downloading pre-built executable from the youtube-dl project..."
 

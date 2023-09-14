@@ -11,49 +11,51 @@ import com.gps.itunes.media.player.ui.handlers.ProgressHandler;
 import com.gps.itunes.media.player.dto.PlaylistHolder;
 import com.gps.itunes.media.player.ui.tablehelpers.models.PlaylistTableModel;
 import com.gps.itunes.lib.tasks.LibraryParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 
 /**
  *
  * Task to load playlists into the PlaylistTable.
- * 
+ *
  * @author leogps
  */
 public class PlaylistLoader extends ProgressHandler{
-    
-    private static org.apache.log4j.Logger log = 
-            org.apache.log4j.LogManager.getLogger(PlaylistLoader.class);
-    
+
+    private static final Logger LOGGER = LogManager.getLogger(PlaylistLoader.class);
+
     private final JTable playlistTable;
-    
+
     private final ItunesLibraryParsedData itunesLibraryParsedData;
-    
-    
+
+
     public PlaylistLoader(final ItunesLibraryParsedData itunesLibraryParsedData, final JProgressBar progressBar,
             final JTable playlistTable){
         super(progressBar, TaskType.MAJOR_TASK);
         this.itunesLibraryParsedData = itunesLibraryParsedData;
         this.playlistTable = playlistTable;
     }
-    
-    
+
+
     private void loadPlaylist() throws TaskExecutionException{
-        final PlaylistTableModel model = 
-                    (PlaylistTableModel) playlistTable.getModel(); 
-        
+        final PlaylistTableModel model =
+                    (PlaylistTableModel) playlistTable.getModel();
+
 
         model.clear();
-        
+
         try {
             final Playlist plist[] = itunesLibraryParsedData.getAllPlaylists();
-            
+
             for(final Playlist playlist : plist){
                 model.addRow(new PlaylistHolder[]{new PlaylistHolder(playlist)});
             }
-            
+
             setProgressMsg("Playlists loaded.");
-            
+
         } catch (Exception ex) {
             throw new TaskExecutionException(this, ex);
         }
@@ -64,8 +66,8 @@ public class PlaylistLoader extends ProgressHandler{
         try {
             loadPlaylist();
         } catch (TaskExecutionException ex) {
-            log.error(ex);
+            LOGGER.error(ex);
         }
     }
-    
+
 }

@@ -9,8 +9,8 @@ import com.gps.itunes.media.player.updater.UpdateResult;
  */
 public class YoutubeDLUpdater {
 
-    public InterruptableAsyncTask<Void, UpdateResult> update(String youtubeDLExecutable, String repositoryUrl, String assetName, String md5SumsAssetName) {
+    public InterruptableAsyncTask<Void, UpdateResult> update(String youtubeDLExecutable, String repositoryUrl, String assetName, String supportedChecksums) {
         GithubReleaseUpdater githubReleaseUpdater = new GithubReleaseUpdater();
-        return githubReleaseUpdater.update(youtubeDLExecutable, repositoryUrl, assetName, md5SumsAssetName);
+        return githubReleaseUpdater.update(youtubeDLExecutable, repositoryUrl, assetName, supportedChecksums);
     }
 }
