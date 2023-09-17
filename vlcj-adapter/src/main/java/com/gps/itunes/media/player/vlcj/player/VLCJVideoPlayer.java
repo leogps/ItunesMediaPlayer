@@ -3,7 +3,6 @@ package com.gps.itunes.media.player.vlcj.player;
 import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.imp.utils.SingleQueuedThreadExecutor;
 import com.gps.itunes.lib.parser.utils.OSInfo;
-import com.gps.itunes.media.player.vlcj.player.impl.DummyFXPlayerFrame;
 import com.gps.itunes.media.player.vlcj.player.impl.FXPlayerFrameImpl;
 import com.gps.itunes.media.player.vlcj.ui.player.FullscreenVideoPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.VideoPlayerFrame;
@@ -44,13 +43,8 @@ public class VLCJVideoPlayer implements VLCJPlayer {
 
     public VLCJVideoPlayer(MediaPlayerFactory mediaPlayerFactory) {
         this.mediaPlayerFactory = mediaPlayerFactory;
-        if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
-            fxPlayerFrame = new FXPlayerFrameImpl();
-            isFXPlayer = true;
-        } else {
-            fxPlayerFrame = DummyFXPlayerFrame.getDummyInstance();
-            isFXPlayer = false;
-        }
+        fxPlayerFrame = new FXPlayerFrameImpl();
+        isFXPlayer = true;
         init();
 	}
 

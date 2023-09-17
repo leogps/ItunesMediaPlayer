@@ -25,19 +25,19 @@ public class AppConfiguration {
         try {
 
             props.load(AppConfiguration.class.getResourceAsStream("/application.properties"));
-            initDebianConfiguration(props);
+            initNixConfiguration(props);
 
         } catch (IOException e) {
             LOG.error("Failed to load application properties.", e);
         }
     }
 
-    private void initDebianConfiguration(Properties props) {
-        if(!OSInfo.isOSWin() && !OSInfo.isOSMac() && props.get("debian.config.location") != null) {
-            String debianConfigLocation = (String) props.get("debian.config.location");
-            File debianConfigurationFile = new File(debianConfigLocation);
-            if(debianConfigurationFile.exists()) {
-                loadConfigurations(debianConfigurationFile);
+    private void initNixConfiguration(Properties props) {
+        if(!OSInfo.isOSWin() && !OSInfo.isOSMac() && props.get("nix.config.location") != null) {
+            String nixConfigLocation = (String) props.get("nix.config.location");
+            File nixConfigLocationFile = new File(nixConfigLocation);
+            if(nixConfigLocationFile.exists()) {
+                loadConfigurations(nixConfigLocationFile);
             }
         }
     }

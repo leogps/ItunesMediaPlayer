@@ -98,7 +98,6 @@
             <artifactId>javafx-swing</artifactId>
             <version>18.0.2</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -179,11 +178,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

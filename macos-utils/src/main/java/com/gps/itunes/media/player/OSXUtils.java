@@ -1,11 +1,13 @@
 package com.gps.itunes.media.player;
 
-import com.gps.itunes.media.player.ui.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.desktop.*;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
  */
 public class OSXUtils {
 
-    private static Logger LOG = LogManager.getLogger(OSXUtils.class);
+    private static final Logger LOG = LogManager.getLogger(OSXUtils.class);
 
     static {
         new NativeAppUtils();
@@ -52,7 +54,7 @@ public class OSXUtils {
             LOG.debug(openFilesEvent.getFiles());
             LOG.debug(openFilesEvent.getSource().getClass());
 
-            Main.getItunesMediaPlayer().playFiles(openFilesEvent.getFiles());
+            playFiles(openFilesEvent.getFiles());
         }
 
         @Override
@@ -63,10 +65,23 @@ public class OSXUtils {
             LOG.debug(openURIEvent.getSource().getClass());
 
             File uriFile = new File(openURIEvent.getURI());
-            List<File> fileList = new ArrayList<File>();
+            List<File> fileList = new ArrayList<>();
             fileList.add(uriFile);
+            playFiles(fileList);
+        }
 
-            Main.getItunesMediaPlayer().playFiles(fileList);
+        private void playFiles(List<File> fileList) {
+            try {
+                Class clazz = Class.forName("com.gps.itunes.media.player.ui.Main");
+                Method getPlayerMethod = clazz.getMethod("getItunesMediaPlayer");
+                Object player = getPlayerMethod.invoke(null);
+
+                Method playFilesMethod = player.getClass().getMethod("playFiles", List.class);
+                playFilesMethod.invoke(player, fileList);
+            } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+                     IllegalAccessException e) {
+                JOptionPane.showMessageDialog(null, "That doesn't work here.");
+            }
         }
 
         @Override

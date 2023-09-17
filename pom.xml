@@ -26,6 +26,7 @@
         <module>updater</module>
         <module>archiver</module>
         <module>db</module>
+        <module>macos-utils</module>
     </modules>
 
     <dependencies>
