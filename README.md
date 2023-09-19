@@ -83,20 +83,6 @@ YoutubeDL
 ##### Apple JavaExtension
 `mvn install:install-file -Dfile="lib-runtime/ui.jar" -DgroupId="com.apple" -DartifactId="AppleJavaExtensions" -Dversion="1.6" -Dpackaging="jar"`
 
-##### [javafx](http://www.oracle.com/technetwork/java/javafx2-archive-download-1939373.html)
-
-    This is only required for the project to compile and is only used at runtime when running under Mac OSX with JDK 7/8.
-
-`./install_javafx_dependency.sh`
-
-OR
-        
-`mvn install:install-file -Dfile="lib-runtime/jfxrt.jar" -DgroupId="com.oracle" -DartifactId="javafx" -Dversion="2.2" -Dpackaging="jar"`
-
-OR
-
-    Download javafx from http://www.oracle.com/technetwork/java/javafx2-archive-download-1939373.html and install in local repository.
-
 ##### VLC
     Mac OSX: Latest VLC runtime for Mac OSX is already including in the commits.
     For Linux, it is best to install the VLC which sets the LibVLC path automatically.  
@@ -131,16 +117,6 @@ http://www.videolan.org/legal.html
 
 ##### VLCJ library and its license can be found here:
 https://github.com/caprica/vlcj
-
----
-
-##### JavaFX Runtime license can be found here:
-http://www.oracle.com/technetwork/java/javase/downloads/java-se-archive-license-1382604.html
-
----
-
-##### JDK 6 for Mac OSX by Apple can be found here:
-https://support.apple.com/kb/dl1572?locale=en_US
 
 ---
 

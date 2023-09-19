@@ -744,9 +744,7 @@ public class UIFrame extends JFrame {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED && Desktop.isDesktopSupported()) {
                     try {
                         Desktop.getDesktop().browse(e.getURL().toURI());
-                    } catch (IOException ex) {
-                        LOG.error(ex);
-                    } catch (URISyntaxException ex) {
+                    } catch (IOException | URISyntaxException ex) {
                         LOG.error(ex);
                     }
                 }

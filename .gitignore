@@ -1,0 +1,8 @@
+.idea/
+target/
+youtube-dl-exec/
+
+itunes-media-player.deb
+archiver/debian/itunes-media-player/usr/lib/itunes-media-player/youtube-dl
+archiver/debian/itunes-media-player/usr/lib/itunes-media-player/lib/
+archiver/debian/itunes-media-player/usr/lib/itunes-media-player/classes/
