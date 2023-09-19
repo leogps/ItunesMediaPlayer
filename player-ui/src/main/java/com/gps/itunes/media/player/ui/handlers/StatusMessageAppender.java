@@ -78,7 +78,9 @@ public class StatusMessageAppender extends AbstractAppender {
             
             @Override
             public void run(){
-                statusLabel.setText(message);
+                if (statusLabel != null) {
+                    statusLabel.setText(message);
+                }
             }
         });
     }

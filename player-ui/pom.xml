@@ -172,7 +172,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+        <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
@@ -226,10 +226,15 @@
                         <id>copy-archive-debian</id>
                         <phase>package</phase>
                         <configuration>
-                            <target name="copy executable into archive.debian project">
-                                <copy file="${project.build.directory}/ItunesMediaPlayer-jar-with-dependencies.jar"
-                                      tofile="../archiver/debian/itunes-media-player/usr/lib/itunes-media-player/ItunesMediaPlayer-jar-with-dependencies.jar"
-                                overwrite="true"/>
+                            <target name="copy libs and classes into archive.debian project">
+                                <copy todir="../archiver/debian/itunes-media-player/usr/lib/itunes-media-player/lib"
+                                    overwrite="true">
+                                    <fileset dir="${project.build.directory}/lib"/>
+                                </copy>
+                                <copy todir="../archiver/debian/itunes-media-player/usr/lib/itunes-media-player/classes"
+                                      overwrite="true">
+                                    <fileset dir="${project.build.directory}/classes"/>
+                                </copy>
                                 <copy file="../youtube-dl-exec/youtube-dl" tofile="../archiver/debian/itunes-media-player/usr/lib/itunes-media-player/youtube-dl"
                                       overwrite="true"/>
                             </target>
@@ -240,106 +245,29 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--<plugin>-->
-                <!--<artifactId>maven-resources-plugin</artifactId>-->
-                <!--<version>2.4.3</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>copy-resources-folder</id>-->
-                        <!--&lt;!&ndash; here the phase you need &ndash;&gt;-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-resources</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<outputDirectory>${basedir}/target/resources</outputDirectory>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/../resources</directory>-->
-                                    <!--<filtering>true</filtering>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>copy-libvlc-folder</id>-->
-                        <!--&lt;!&ndash; here the phase you need &ndash;&gt;-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-resources</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<outputDirectory>${basedir}/target/LibVLC</outputDirectory>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/../LibVLC</directory>-->
-                                    <!--<filtering>true</filtering>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>copy-config-folder</id>-->
-                        <!--&lt;!&ndash; here the phase you need &ndash;&gt;-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>copy-resources</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<outputDirectory>${basedir}/target/config</outputDirectory>-->
-                            <!--<resources>-->
-                                <!--<resource>-->
-                                    <!--<directory>${basedir}/../config</directory>-->
-                                    <!--<filtering>true</filtering>-->
-                                <!--</resource>-->
-                            <!--</resources>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
-            <!-- TODO: Quick test, build and copy the jar file into the .app>Contents>Java folder.-->
-            <!-- App bundle for Mac OSX-->
-            <!-- Java app with jdk 1.6 does not work. So linux script to run the java command needs to be in place.
-                Also, the Info.plist needs to be updated, -Duser.dir needs to be set to load the config, vlc etc correctly.  -->
-            <!--TODO: Automate the creation of the app. -->
-            <!--<plugin>-->
-                <!--<groupId>sh.tak.appbundler</groupId>-->
-                <!--<artifactId>appbundle-maven-plugin</artifactId>-->
-                <!--<version>1.0.4</version>-->
-                <!--<configuration>-->
-                    <!--<mainClass>com.gps.itunes.media.player.ui.Main</mainClass>-->
-                    <!--&lt;!&ndash;<jrePath>/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home</jrePath>&ndash;&gt;-->
-                    <!--<jvmVersion>1.6</jvmVersion>-->
-                    <!--<bundleName>ItunesMediaPlayer</bundleName>-->
-                    <!--<version>1.0</version>-->
-                    <!--<additionalResources>-->
-                        <!--<additionalResource>-->
-                            <!--<directory>-->
-                                <!--${basedir}/../executable-dependencies-->
-                            <!--</directory>-->
-                        <!--</additionalResource>-->
-                    <!--</additionalResources>-->
-
-                    <!--&lt;!&ndash;-->
-                    <!--//TODO: Update the following files.-->
-                    <!--<dictionaryFile>YourCustomInfo.plist</dictionaryFile>&ndash;&gt;-->
-                    <!--<iconFile>${basedir}/../executable-dependencies/resources/imp.icns</iconFile>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>bundle</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>delete-folder</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>rm</executable> <!-- Use "del" on Windows -->
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>-rf</argument>
+                                <argument>${project.build.sourceDirectory}/com/gps/imp</argument>
+                                <argument>${project.build.sourceDirectory}/com/gps/itunes/media/player/vlcj</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-
-
 </project>

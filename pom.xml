@@ -15,6 +15,7 @@
         <jackson.version>2.13.5</jackson.version>
         <jersey.version>3.0.11</jersey.version>
         <testng.version>7.8.0</testng.version>
+        <openjfx.version>18.0.2</openjfx.version>
     </properties>
 
     <modules>
