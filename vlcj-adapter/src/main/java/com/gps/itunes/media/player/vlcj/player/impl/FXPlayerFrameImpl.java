@@ -19,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.javafx.videosurface.ImageViewVideoSurface;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
@@ -32,8 +33,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static uk.co.caprica.vlcj.javafx.videosurface.ImageViewVideoSurfaceFactory.videoSurfaceForImageView;
-
 /**
  * Created by leogps on 10/1/15.
  */
@@ -46,9 +45,9 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
     private final EmbeddedMediaPlayer embeddedMediaPlayer;
 
     private ImageView videoImageView;
-    
+
 //    private WritableImage writableImage;
-//    
+//
 //    private AtomicReference<WritableImage> writableImageReference = new AtomicReference<WritableImage>();
 //    private AtomicReference<PixelWriter> pixelWriterReference = new AtomicReference<PixelWriter>();
 
@@ -101,8 +100,8 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
     private void initFX(JFXPanel fxPanel) {
         this.videoImageView = new ImageView();
         this.videoImageView.setPreserveRatio(true);
-        embeddedMediaPlayer.videoSurface().set(videoSurfaceForImageView(this.videoImageView));
-        
+        embeddedMediaPlayer.videoSurface().set(new ImageViewVideoSurface(this.videoImageView));
+
         // This method is invoked on JavaFX thread
         Scene scene = createScene();
         fxPanel.setScene(scene);
@@ -147,7 +146,7 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
         root.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
         root.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
         root.addEventFilter(javafx.scene.input.KeyEvent.ANY, handler);
-        
+
         scene.addEventFilter(MouseEvent.MOUSE_MOVED, handler);
         scene.addEventFilter(MouseEvent.MOUSE_CLICKED, handler);
         scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, handler);
@@ -220,8 +219,6 @@ public class FXPlayerFrameImpl extends VideoPlayerFrame implements FXPlayerFrame
 
     private void bringToFront() {
         getVideoPanel().requestFocus();
-        setFullScreen();
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         getFooterPanel().requestFocus();
         reinitAutoHideLater();

@@ -3,7 +3,6 @@ package com.gps.itunes.media.player.vlcj.player;
 import com.gps.imp.utils.JavaVersionUtils;
 import com.gps.imp.utils.SingleQueuedThreadExecutor;
 import com.gps.itunes.lib.parser.utils.OSInfo;
-import com.gps.itunes.media.player.vlcj.player.impl.DummyFXPlayerFrame;
 import com.gps.itunes.media.player.vlcj.player.impl.FXPlayerFrameImpl;
 import com.gps.itunes.media.player.vlcj.ui.player.FullscreenVideoPlayerFrame;
 import com.gps.itunes.media.player.vlcj.ui.player.VideoPlayerFrame;
@@ -38,19 +37,14 @@ public class VLCJVideoPlayer implements VLCJPlayer {
     protected FXPlayerFrame fxPlayerFrame;
     protected final boolean isFXPlayer;
 
-    private SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
+    private final SingleQueuedThreadExecutor singleQueuedThreadExecutor = new SingleQueuedThreadExecutor();
 
     private static final Logger LOG = LogManager.getLogger(VLCJVideoPlayer.class);
 
     public VLCJVideoPlayer(MediaPlayerFactory mediaPlayerFactory) {
         this.mediaPlayerFactory = mediaPlayerFactory;
-        if(JavaVersionUtils.isGreaterThan6() && OSInfo.isOSMac()) {
-            fxPlayerFrame = new FXPlayerFrameImpl();
-            isFXPlayer = true;
-        } else {
-            fxPlayerFrame = DummyFXPlayerFrame.getDummyInstance();
-            isFXPlayer = false;
-        }
+        fxPlayerFrame = new FXPlayerFrameImpl();
+        isFXPlayer = true;
         init();
 	}
 
@@ -319,10 +313,10 @@ public class VLCJVideoPlayer implements VLCJPlayer {
         // White with transparent alpha channel - WindowTranslucency is required for translucency.
         transparentWindow.setBackground(new Color(1.0f, 1.0f, 1.0f, 0.55f));
 
-        final JLabel superImposedLightweigtLabel = new JLabel(message, JLabel.CENTER);
-        superImposedLightweigtLabel.setOpaque(true);
+        final JLabel superImposedLightweightLabel = new JLabel(message, JLabel.CENTER);
+        superImposedLightweightLabel.setOpaque(true);
 
-        transparentWindow.getContentPane().add(superImposedLightweigtLabel);
+        transparentWindow.getContentPane().add(superImposedLightweightLabel);
         // Determine what the default GraphicsDevice can support.
 //        GraphicsEnvironment ge =
 //                GraphicsEnvironment.getLocalGraphicsEnvironment();

@@ -16,8 +16,8 @@
 
         <!-- Using latest LibVLC. -->
         <fileSet>
-            <directory>${project.parent.basedir}/LibVLC/macOs/intel-64_3.0.14</directory>
-            <outputDirectory>/Contents/MacOS/LibVLC/macOs/intel-64_3.0.14</outputDirectory>
+            <directory>${project.parent.basedir}/LibVLC/macOs/intel-64_3.0.18</directory>
+            <outputDirectory>/Contents/MacOS/LibVLC/macOs/intel-64_3.0.18</outputDirectory>
         </fileSet>
 
         <!-- Using YouTube-DL. -->

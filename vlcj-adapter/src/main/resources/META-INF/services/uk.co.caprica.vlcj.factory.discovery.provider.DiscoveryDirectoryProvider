@@ -1,0 +1,9 @@
+com.gps.itunes.media.player.vlcj.discovery.provider.CustomVlcDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.ConfigDirConfigFileDiscoveryDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.JnaLibraryPathDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.LinuxWellKnownDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.MacOsWellKnownDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.SystemPathDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.UserDirConfigFileDiscoveryDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.UserDirDirectoryProvider
+uk.co.caprica.vlcj.factory.discovery.provider.WindowsInstallDirectoryProvider

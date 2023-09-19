@@ -62,28 +62,7 @@ However, in order to update youtube-dl or to create the Mac OS X native app prog
         Please see installing dependent library ItunesLibraryParser below.
     
 YoutubeDL    
-    YoutubeDL project builds an executable for Linux/Mac OSX and also for Windows.
-    
-    Building on Mac OSX or Linux requires `CURL` to be available. The last few OSX comes with curl, some linux distributions may require this to be installed. 
-        
-OR
-    
-    Freezing Youtube-DL scripts currently seem to be broken and needs fixing. However, to freeze the youtube-dl, the following tools are required and also the corresponding freeze setup.py needs to be fixed. 
-    
-    git (Optional)
-        To download and build youtube-dl.
-                
-    Python (Optional)
-        To compile youtube-dl.
-        youtube-dl is a very active project and contains many improvements and fixes especially updating youtube cerificates in order to resolve youtube video links correctly.
-        
-    cx_Freeze (Optional)
-        To freeze youtube-dl executable for the OS. 
-        *Note: This can be avoided by using the compiled youtube-dl executable but that would still have a dependency on python and the resulting app is not portable, avoid cx_Freeze (with python dependency) likewise: https://rg3.github.io/youtube-dl/download.html
-        
-        The project however makes the media player completely portable by removing python dependency on the final executable. This is achieved by the youtube-dl maven module. With the help of cx_Freeze the said module will try to remove the python dependency altogether.
-        While cx_Freeze can be installed in several ways depending on the OS, general installation involves python and pip. 
-        More info: http://cx-freeze.sourceforge.net
+    YoutubeDL project downloads executable for Linux/Mac OSX and also for Windows.
 
         
 #### Dependent libraries
@@ -97,7 +76,7 @@ OR
 
 `mvn clean install`
 
-`mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.0.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.0" -Dpackaging="jar"`
+`mvn install:install-file -Dfile="parser/target/com.gps.ilp-parser-2.0.1.jar" -DgroupId="com.gps" -DartifactId="ilp-parser" -Dversion="2.0.1" -Dpackaging="jar"`
 
 ---
 
@@ -193,9 +172,3 @@ https://www.jetbrains.com/idea/
     The installed version of the ItunesMediaPlayer can update Youtube-DL using Tools > Check for Updates. This will automatically update the underlying youtube-dl executable.
 
 ---
-
-### Licensing
-
-[License](http://creativecommons.org/licenses/by/4.0/legalcode)
-
-[License summary](http://creativecommons.org/licenses/by/4.0/)

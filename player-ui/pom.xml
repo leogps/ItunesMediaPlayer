@@ -19,16 +19,6 @@
 
         <!-- local dependencies -->
         <dependency>
-            <groupId>com.gps.ilp</groupId>
-            <artifactId>parser</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gps.ilp</groupId>
-            <artifactId>utils</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.gps.imp</groupId>
             <artifactId>vlcj-adapter</artifactId>
             <version>1.0.0</version>
@@ -157,7 +147,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -187,8 +177,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 

@@ -6,8 +6,8 @@ import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.youtube.dl.event.YoutubeDLResultEventListener;
 import com.gps.youtube.dl.exception.YoutubeDLException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

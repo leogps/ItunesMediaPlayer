@@ -11,14 +11,6 @@
 
     <artifactId>youtube-dl</artifactId>
 
-    <description>
-        <![CDATA[
-            Usage:
-            Disable cloning youtube-dl and freezing it by passing:
-            mvn clean -Ddisable_freeze=true
-        ]]>
-    </description>
-
     <dependencies>
         <dependency>
             <groupId>com.gps.imp</groupId>
@@ -31,8 +23,8 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
             <version>${http.components.version}</version>
         </dependency>
     </dependencies>
@@ -42,37 +34,17 @@
             <plugin>
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>freeze youtube-dl</id>
+                        <id>youtube-dl download</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>${basedir}/freeze-youtube-dl.sh</executable>
-                            <arguments>
-                                <argument>-disable_freeze</argument>
-                                <argument>${disable_freeze}</argument>
-                            </arguments>
+                            <executable>${basedir}/youtube-dl-download.sh</executable>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptor>src/assembly/youtube-dl-frozen-exec.xml</descriptor>
-                    <finalName>youtube-dl-executable-${pom.version}-${os.name}-${os.version}-${os.arch}-${maven.build.timestamp}</finalName>
-                    <outputDirectory>${project.basedir}/youtube-dl-exec-frozen/</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

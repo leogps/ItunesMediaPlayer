@@ -24,6 +24,8 @@ import com.gps.itunes.media.player.vlcj.player.ItunesMediaPlayer;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerControlEventListener;
 import com.gps.itunes.media.player.vlcj.ui.player.events.PlayerMediaFilesDroppedEventListener;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.dnd.DropTargetDropEvent;
@@ -39,12 +41,11 @@ import java.util.List;
  */
 public class Controller {
 
-    private static org.apache.log4j.Logger log =
-            org.apache.log4j.LogManager.getLogger(Controller.class);
+    private static final Logger LOGGER = LogManager.getLogger(Controller.class);
     private final UIFrame uiFrame;
     private LibraryParser parser;
     private ItunesLibraryParsedData itunesLibraryParsedData;
-    
+
     private PlayerControlEventListener listener;
 
     public Controller(final UIFrame uiFrame) throws NoChildrenException, TaskExecutionException {
@@ -89,7 +90,7 @@ public class Controller {
             try {
                 getPlayer().stopPlay();
             } catch(Exception e) {
-                log.error("Could not stop playing!", e);
+                LOGGER.error("Could not stop playing!", e);
             }
         }
         letUserSpecifyLibrary();
@@ -100,28 +101,28 @@ public class Controller {
         if (libFileLocation != null
                 && !libFileLocation.equals(Constants.EMPTY)) {
             try {
-                log.info("Loading library file: " + libFileLocation);
+                LOGGER.info("Loading library file: " + libFileLocation);
                 parser = new LibraryParser();
                 parser.addParseConfiguration(
                         PropertyManager.Property.LIBRARY_FILE_LOCATION_PROPERTY.getKey(),
                         libFileLocation);
                 loadData();
             } catch (LibraryParseException lpe) {
-                log.error("Specified file is not a valid Itunes library file.", lpe);
-                log.info("Specified file is not a valid Itunes library file.");
+                LOGGER.error("Specified file is not a valid Itunes library file.", lpe);
+                LOGGER.info("Specified file is not a valid Itunes library file.");
                 JOptionPane.showMessageDialog(uiFrame, "Specified file is not a valid Itunes library file.");
 
             }
         } else {
             try {
-                log.info("Loading library...");
+                LOGGER.info("Loading library...");
                 parser = new LibraryParser();
                 loadData();
-                log.info("Playlists loaded: " + itunesLibraryParsedData.getAllPlaylists().length);
+                LOGGER.info("Playlists loaded: " + itunesLibraryParsedData.getAllPlaylists().length);
             } catch (LibraryParseException lpe) {
-                log.debug(lpe.getMessage(), lpe);
+                LOGGER.debug(lpe.getMessage(), lpe);
                 if (lpe.isLibraryFileNotFound()) {
-                    log.info("ITunes Library file not found. Reload manually by going to Library > Reload.");
+                    LOGGER.info("ITunes Library file not found. Reload manually by going to Library > Reload.");
                     if(promptLibraryFileBrowse()) {
                         letUserSpecifyLibrary();
                     }
@@ -137,7 +138,7 @@ public class Controller {
     }
 
     private void letUserSpecifyLibrary() throws NoChildrenException, TaskExecutionException {
-        log.debug("Let user specifiy Library file.");
+        LOGGER.debug("Let user specifiy Library file.");
 
         LibraryFileBrowser.browseLibraryFileShowBrowser(uiFrame, new FileBrowserDialogListener() {
 
@@ -146,15 +147,15 @@ public class Controller {
                 try {
                     doLoadLibrary(file.getAbsolutePath());
                 } catch (NoChildrenException e) {
-                    log.error(e);
+                    LOGGER.error(e);
                 } catch (TaskExecutionException e) {
-                    log.error(e);
+                    LOGGER.error(e);
                 }
             }
 
             @Override
             public void onCancel() {
-                log.info("Selecting the library file cancelled.");
+                LOGGER.info("Selecting the library file cancelled.");
             }
         });
     }
@@ -184,7 +185,7 @@ public class Controller {
                 try {
                     playlistLoader.submitTask(new TaskParams());
                 } catch (TaskExecutionException e) {
-                    log.error(e);
+                    LOGGER.error(e);
                 }
                 uiFrame.getPlaylistTable().repaint();
             }
@@ -199,7 +200,7 @@ public class Controller {
      * @throws TaskExecutionException
      */
     public void loadTracks() throws TaskExecutionException {
-        
+
         final TracksLoader tracksLoader = new TracksLoader(itunesLibraryParsedData, uiFrame.getProgressBar(), uiFrame.getTracksTable(),
                 uiFrame.getPlaylistTable(), uiFrame.getUiMenuBar().getCopyPlaylistsMenuItem(), uiFrame.getTracksTableHeadingLabel());
 
@@ -210,7 +211,7 @@ public class Controller {
                     try {
                         tracksLoader.submitTask(new TaskParams());
                     } catch (TaskExecutionException e) {
-                        log.error(e);
+                        LOGGER.error(e);
                     }
                 } else {
                     tracksLoader.runTask(new TaskParams());
@@ -239,7 +240,7 @@ public class Controller {
 
                         MajorTaskInfo.setMajorTaskInfo(true);
 
-                        log.info("Copying " + uiFrame.getTracksTable().getRowCount() + " track(s) in "
+                        LOGGER.info("Copying " + uiFrame.getTracksTable().getRowCount() + " track(s) in "
                                 + uiFrame.getPlaylistTable().getSelectedRows().length + " playlist(s)...");
 
                         final CopyTaskParams params = new CopyTaskParams();
@@ -259,35 +260,35 @@ public class Controller {
 
 
         } else {
-            log.info("Copying cancelled.");
+            LOGGER.info("Copying cancelled.");
         }
 
     }
 
     /**
-     * 
+     *
      * Searches the tracks with the query provided.
-     * 
-     * @param searchQuery 
+     *
+     * @param searchQuery
      */
     public void searchTracks(final String searchQuery) throws TaskExecutionException {
         final TracksLoader tracksLoader = new TracksLoader(itunesLibraryParsedData, uiFrame.getProgressBar(), uiFrame.getTracksTable(),
                 uiFrame.getPlaylistTable(), uiFrame.getUiMenuBar().getCopyPlaylistsMenuItem(), uiFrame.getTracksTableHeadingLabel(), searchQuery);
-        
+
         if (!MajorTaskInfo.isMajorTaskInProgress()) {
             tracksLoader.submitTask(new TaskParams());
         } else {
             tracksLoader.runTask(new TaskParams());
         }
     }
-    
+
     public void playTracks(final List<Track> trackList) {
         synchronized(this){
             final ItunesMediaPlayer player = getPlayer();
             player.play(trackList);
         }
     }
-    
+
     public ItunesMediaPlayer getPlayer() {
         return Main.getItunesMediaPlayer();
     }

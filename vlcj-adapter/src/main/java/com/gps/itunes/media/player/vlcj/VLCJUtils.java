@@ -1,14 +1,12 @@
 package com.gps.itunes.media.player.vlcj;
 
-import com.gps.itunes.lib.parser.utils.OSInfo;
 import com.gps.itunes.lib.parser.utils.PropertyManager;
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
+import com.gps.itunes.media.player.vlcj.discovery.NativeDiscoveryStrategyResolver;
+import com.gps.itunes.media.player.vlcj.discovery.provider.CustomVlcDirectoryProvider;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.binding.RuntimeUtil;
+import uk.co.caprica.vlcj.binding.lib.LibVlc;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 
 import java.io.File;
@@ -17,25 +15,21 @@ public class VLCJUtils {
 
     private static boolean vlcInitSucceeded = false;
 
-    private static Logger LOGGER = Logger.getLogger(VLCJUtils.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(VLCJUtils.class.getName());
 
     static {
-        //TODO: Use Bitness-checker to determine underlying OS architecture.
-        // FIXME: Below will give JRE architecture not OS architecture.
-        String path = new File("").getAbsolutePath() + (OSInfo.isArch64()
-                ? PropertyManager.getConfigurationMap().get("vlc-intel-64")
-                : PropertyManager.getConfigurationMap().get("vlc-intel-32"));
+        String path = new File("").getAbsolutePath()
+                + PropertyManager.getConfigurationMap().get("vlc-intel-64");
 
-        String pluginsPath = new File("").getAbsolutePath() + (OSInfo.isArch64()
-                ? PropertyManager.getConfigurationMap().get("vlc-intel-64-plugins")
-                : PropertyManager.getConfigurationMap().get("vlc-intel-32-plugins"));
+        String pluginsPath = new File("").getAbsolutePath()
+                + PropertyManager.getConfigurationMap().get("vlc-intel-64-plugins");
 
         try {
             System.setProperty("jna.debug_load", "true");
 
-            uk.co.caprica.vlcj.binding.LibC.INSTANCE.setenv("VLC_PLUGIN_PATH", pluginsPath, 1);
-            NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
-            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+            CustomVlcDirectoryProvider.addToCache(path, pluginsPath);
+            vlcInitSucceeded = new NativeDiscovery(NativeDiscoveryStrategyResolver.resolve())
+                    .discover();
 
             LOGGER.info("vlc native library path set to:" + path);
 

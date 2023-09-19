@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gps.imp.utils.ssl.HttpClientUtils;
 import com.gps.imp.utils.ui.AsyncTaskListener;
 import com.gps.imp.utils.ui.InterruptableAsyncTask;
+import com.gps.itunes.media.player.updater.checksum.ChecksumHandler;
 import com.gps.itunes.media.player.updater.github.Asset;
 import com.gps.itunes.media.player.updater.github.Release;
 import jakarta.ws.rs.client.Client;
@@ -15,11 +16,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.URL;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by leogps on 2/25/17.
@@ -28,13 +28,27 @@ public class GithubReleaseUpdater {
 
     private static final Logger LOG = LogManager.getLogger(GithubReleaseUpdater.class);
 
+    private final ServiceLoader<ChecksumHandler> checksumHandlers = ServiceLoader.load(ChecksumHandler.class);
+
+    public List<ChecksumHandler> getChecksumHandlers() {
+        List<ChecksumHandler> handlers = new ArrayList<>();
+        for (ChecksumHandler handler: checksumHandlers) {
+            handlers.add(handler);
+        }
+        return handlers;
+    }
+
     public InterruptableAsyncTask<Void, UpdateResult> update(String filePath, String repositoryUrl, String assetName,
-                                                       String md5SumsAssetName) {
+                                                             String supportedChecksums) {
 
         if(filePath == null || repositoryUrl == null || assetName == null) {
             return null;
         }
-        return updateProcess(filePath, repositoryUrl, assetName, md5SumsAssetName);
+        Set<String> supportedChecksumSet = Arrays
+                .stream(
+                        StringUtils.split(supportedChecksums, ",")
+                ).collect(Collectors.toSet());
+        return updateProcess(filePath, repositoryUrl, assetName, supportedChecksumSet);
     }
 
     public static String getContent(String url) throws Exception {
@@ -56,8 +70,10 @@ public class GithubReleaseUpdater {
         }
     }
 
-    private InterruptableAsyncTask<Void, UpdateResult> updateProcess(final String filePath, final String repositoryUrl, final String assetName, final String md5SumsAssetName) {
-
+    private InterruptableAsyncTask<Void, UpdateResult> updateProcess(final String filePath,
+                                                                     final String repositoryUrl,
+                                                                     final String assetName,
+                                                                     final Set<String> supportedChecksumSet) {
         return new InterruptableAsyncTask<Void, UpdateResult>() {
 
             private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -67,41 +83,39 @@ public class GithubReleaseUpdater {
 
             public Void execute() throws Exception {
                 try {
-                    Callable<UpdateResult> callable = new Callable<UpdateResult>() {
-                        public UpdateResult call() throws Exception {
+                    Callable<UpdateResult> callable = () -> {
 
-                            UpdateResult updateResult = new UpdateResult();
+                        UpdateResult updateResult = new UpdateResult();
 
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            String content = getContent(repositoryUrl);
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String content = getContent(repositoryUrl);
 
-                            if(content == null) {
-                                LOG.error("Release metadata could not be loaded!! " + repositoryUrl);
-                                updateResult.setUpdated(false);
-                                updateResult.setReason(UpdateResult.Reason.METADATA_COULD_NOT_BE_LOADED);
-                                return updateResult;
-                            }
-
-                            Release release = objectMapper.readValue(content, Release.class);
-
-                            if(!isUpdateAvailable(filePath, release, assetName, md5SumsAssetName)) {
-                                LOG.debug("No Update available.");
-                                updateResult.setUpdated(false);
-                                updateResult.setReason(UpdateResult.Reason.UPDATE_NOT_AVAILABLE);
-                                return updateResult;
-                            }
-                            LOG.debug("Update available...");
-                            String assetUrl = resolveAssetURL(assetName, release);
-
-                            boolean replaced = replace(filePath, assetUrl);
-                            updateResult.setUpdated(replaced);
-                            if(replaced) {
-                                updateResult.setReason(UpdateResult.Reason.UPDATE_SUCCESS);
-                            } else {
-                                updateResult.setReason(UpdateResult.Reason.UPDATE_FAILED_UNKNOWN);
-                            }
+                        if(content == null) {
+                            LOG.error("Release metadata could not be loaded!! " + repositoryUrl);
+                            updateResult.setUpdated(false);
+                            updateResult.setReason(UpdateResult.Reason.METADATA_COULD_NOT_BE_LOADED);
                             return updateResult;
                         }
+
+                        Release release = objectMapper.readValue(content, Release.class);
+
+                        if(!isUpdateAvailable(filePath, release, assetName, supportedChecksumSet)) {
+                            LOG.debug("No Update available.");
+                            updateResult.setUpdated(false);
+                            updateResult.setReason(UpdateResult.Reason.UPDATE_NOT_AVAILABLE);
+                            return updateResult;
+                        }
+                        LOG.debug("Update available...");
+                        String assetUrl = resolveAssetURL(assetName, release);
+
+                        boolean replaced = replace(filePath, assetUrl);
+                        updateResult.setUpdated(replaced);
+                        if(replaced) {
+                            updateResult.setReason(UpdateResult.Reason.UPDATE_SUCCESS);
+                        } else {
+                            updateResult.setReason(UpdateResult.Reason.UPDATE_FAILED_UNKNOWN);
+                        }
+                        return updateResult;
                     };
                     Future<UpdateResult> future = executorService.submit(callable);
                     awaitResult(future);
@@ -212,130 +226,98 @@ public class GithubReleaseUpdater {
     }
 
     public boolean isUpdateAvailable(String filePath, Release release, String assetName,
-                                     String md5sAssetName) throws IOException, NoSuchAlgorithmException {
+                                     Set<String> supportedChecksumSet) throws IOException, NoSuchAlgorithmException {
+        if (supportedChecksumSet.isEmpty()) {
+            LOG.warn("No supported checksum found.");
+            return true;
+        }
 
         File updatable = new File(filePath);
         if(!updatable.exists()) {
-            LOG.debug("Updatable file does not exist");
+            LOG.warn("Updatable file does not exist");
             return true;
         }
 
-        String calculatedMD5Checksum = getMD5Checksum(updatable);
-        LOG.debug("CalculatedMD5Checksum: " + calculatedMD5Checksum);
-        if(StringUtils.isBlank(calculatedMD5Checksum)) {
-            return true;
+        if (release.getAssets() == null) {
+            LOG.warn("No assets found. Something's fishy");
+            return false;
         }
+        for (Asset releaseAsset: release.getAssets()) {
+            String releaseAssetName = releaseAsset.getName();
+            if (!supportedChecksumSet.contains(releaseAssetName)) {
+                continue;
+            }
+            LOG.info("Found supported checksum: {}", releaseAssetName);
 
-        File md5Sums = getAssetByByName(md5sAssetName, release);
-        if(md5Sums == null) {
-            LOG.debug("md5Asset could not be downloaded: " + md5sAssetName);
-            return true;
+            for (ChecksumHandler handler: checksumHandlers) {
+                if (!handler.canHandle(releaseAssetName)) {
+                    LOG.debug("Not a checksum or not supported by this handler: {}, {}. Skipping...",
+                            releaseAssetName, handler.getName());
+                    continue;
+                }
+
+                LOG.info("Handling checksum: {}", handler.getName());
+                String calculatedChecksum = handler.calculateChecksum(updatable);
+                LOG.debug("CalculatedChecksum: " + calculatedChecksum);
+                if(StringUtils.isBlank(calculatedChecksum)) {
+                    LOG.warn("CalculatedChecksum is empty");
+                    return true;
+                }
+                File checksumsFile = retrieveChecksumAsset(releaseAsset);
+                if(checksumsFile == null) {
+                    LOG.warn("checksum asset could not be downloaded: " + releaseAssetName);
+                    continue;
+                }
+                return !readChecksumsFileAndCompare(calculatedChecksum, checksumsFile, assetName);
+            }
         }
-
-        return !readMD5ChecksumsAndCompare(calculatedMD5Checksum, md5Sums, assetName);
+        return true;
     }
 
-    private boolean readMD5ChecksumsAndCompare(String calculatedMD5Checksum, File md5Sums, String assetName) throws IOException {
-        InputStream fis = null;
-        try {
-            fis = new FileInputStream(md5Sums);
+    private boolean readChecksumsFileAndCompare(String calculatedChecksum, File checksumsFile, String assetName) throws IOException {
+        try (InputStream fis = new FileInputStream(checksumsFile)) {
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader br = new BufferedReader(isr);
 
             String line;
-            while((line = br.readLine()) != null) {
-                String[] md5SumSplit = StringUtils.split(line, " ");
-                if(md5SumSplit != null && md5SumSplit.length >= 2) {
-                    String md5 = md5SumSplit[0];
-                    String asset = md5SumSplit[1];
-                    if(StringUtils.equals(asset, assetName)) {
-
-                        LOG.debug("Asset matched. MD5 Checksum read: " + md5);
-                        boolean md5Matched = StringUtils.equals(md5, calculatedMD5Checksum);
-                        LOG.debug("MD5 Checksums matched? " + md5Matched);
-
-                        return md5Matched;
+            while ((line = br.readLine()) != null) {
+                String[] checksumSplit = StringUtils.split(line, " ");
+                if (checksumSplit != null && checksumSplit.length >= 2) {
+                    String checksum = checksumSplit[0];
+                    String asset = checksumSplit[1];
+                    if (StringUtils.equals(asset, assetName)) {
+                        LOG.debug("Asset matched. Checksum read: " + checksum);
+                        boolean isChecksumMatched = StringUtils.equals(checksum, calculatedChecksum);
+                        LOG.debug("Checksums matched? " + isChecksumMatched);
+                        return isChecksumMatched;
                     }
                 }
             }
         } catch (IOException e) {
-            LOG.error("Exception occurred when reading md5Sums file: ", e);
-        } finally {
-            if(fis != null) {
-                fis.close();
-            }
+            LOG.error("Exception occurred when reading checksums file: ", e);
+            throw e;
         }
 
-        LOG.debug("MD5 Checksum comparision failed.");
+        LOG.debug("Checksum comparison failed.");
         return false;
     }
 
-    public static String getMD5Checksum(File file) throws NoSuchAlgorithmException, IOException {
-        //Use MD5 algorithm
-        MessageDigest md5Digest = MessageDigest.getInstance("MD5");
-        return getFileChecksum(md5Digest, file);
-    }
-
-    private File getAssetByByName(String md5sAssetName, Release release) throws IOException {
-        if(release == null || release.getAssets() == null || release.getAssets().length < 1
-                || StringUtils.isBlank(md5sAssetName)) {
-            LOG.debug("Sanity check failed.");
+    private File retrieveChecksumAsset(Asset asset) throws IOException {
+        LOG.debug("Matched Asset Url: " + asset.getDownloadUrl());
+        if(StringUtils.isBlank(asset.getDownloadUrl())) {
+            LOG.warn("No download url for the asset");
             return null;
         }
 
-        for(Asset asset : release.getAssets()) {
-            if(asset == null) {
-                continue;
-            }
+        String prefix = "imp-asset-checksum-";
+        String suffix = ".hash";
+        LOG.debug(String.format("Creating tmp file, %s.%s", prefix, suffix));
+        File tmpFile = File.createTempFile(prefix, suffix);
 
-            if(StringUtils.equals(asset.getName(), md5sAssetName)) {
-                LOG.debug("Asset matched: " + asset.getDownloadUrl());
-                if(StringUtils.isBlank(asset.getDownloadUrl())) {
-                    return null;
-                }
+        LOG.debug("Writing checksums file to: " + tmpFile);
+        FileUtils.copyURLToFile(new URL(asset.getDownloadUrl()), tmpFile);
+        LOG.debug("Writing checksums file completed successfully: " + tmpFile);
 
-                String prefix = "md5sum-";
-                String suffix = ".md5";
-                LOG.debug(String.format("Creating tmp file, %s.%s", prefix, suffix));
-                File tmpFile = File.createTempFile(prefix, suffix);
-
-                LOG.debug("Writing md5Sums file to: " + tmpFile);
-                FileUtils.copyURLToFile(new URL(asset.getDownloadUrl()), tmpFile);
-                LOG.debug("Writing md5Sums completed successfully: " + tmpFile);
-
-                return tmpFile;
-            }
-        }
-        return null;
-    }
-
-    private static String getFileChecksum(MessageDigest digest, File file) throws IOException {
-        //Get file input stream for reading the file content
-        FileInputStream fis = new FileInputStream(file);
-
-        //Create byte array to read data in chunks
-        byte[] byteArray = new byte[1024];
-        int bytesCount = 0;
-
-        //Read file data and update in message digest
-        while ((bytesCount = fis.read(byteArray)) != -1) {
-            digest.update(byteArray, 0, bytesCount);
-        }
-
-        //close the stream; We don't need it now.
-        fis.close();
-
-        //Get the hash's bytes
-        byte[] bytes = digest.digest();
-
-        //This bytes[] has bytes in decimal format;
-        //Convert it to hexadecimal format
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i< bytes.length; i++) {
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
-
-        //return complete hash
-        return sb.toString();
+        return tmpFile;
     }
 }

@@ -13,16 +13,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.gps.ilp</groupId>
-            <artifactId>parser</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.gps.ilp</groupId>
-            <artifactId>utils</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.gps.imp</groupId>
             <artifactId>utils</artifactId>
             <version>1.0.0</version>
@@ -31,7 +21,7 @@
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
-            <version>4.7.3</version>
+            <version>4.8.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.java.dev.jna</groupId>
@@ -46,7 +36,7 @@
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj-javafx</artifactId>
-            <version>1.0.3</version>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
@@ -96,14 +86,18 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>18.0.1</version>
+            <version>18.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>18.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
-            <version>18.0.1</version>
+            <version>18.0.2</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -185,16 +179,11 @@
             </plugin>
 
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.1</version>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>

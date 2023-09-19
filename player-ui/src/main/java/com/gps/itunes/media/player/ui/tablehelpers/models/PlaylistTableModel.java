@@ -13,27 +13,24 @@ import javax.swing.table.DefaultTableModel;
  * @author leogps
  */
 public class PlaylistTableModel extends DefaultTableModel {
-    
-    private static org.apache.log4j.Logger log = 
-            org.apache.log4j.LogManager.getLogger(PlaylistTableModel.class);
-    
+
 
     public PlaylistTableModel() {
         this.setColumnCount(columns.length);
         this.setRowCount(0);
-        this.setColumnIdentifiers(columns);    
+        this.setColumnIdentifiers(columns);
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return canEdit[columnIndex];
     }
-    
-    
+
+
     private final boolean[] canEdit = new boolean[]{
         false
     };
-    
+
     private final String[] columns = {"Playlists"};
 
 
